@@ -267,7 +267,7 @@ public class OperationSetBasicInstantMessagingIrcImpl
      *         complete message.
      */
     @Override
-    public int getMaxMessageSize(final Contact contact)
+    public Integer getMaxMessageSize(final Contact contact)
     {
         IrcConnection connection = this.provider.getIrcStack().getConnection();
         if (connection == null)
@@ -276,17 +276,5 @@ public class OperationSetBasicInstantMessagingIrcImpl
         }
         return connection.getMessageManager().calculateMaximumMessageSize(
             contact);
-    }
-
-    /**
-     * Calculate number of messages allowed to send over IRC.
-     *
-     * @param contact contact receiving the messages
-     * @return returns number of messages that can be received at maximum
-     */
-    @Override
-    public int getMaxNumberOfMessages(final Contact contact)
-    {
-        return OperationSetBasicInstantMessagingTransport.UNLIMITED;
     }
 }

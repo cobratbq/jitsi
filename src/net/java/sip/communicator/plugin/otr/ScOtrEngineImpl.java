@@ -425,10 +425,12 @@ public class ScOtrEngineImpl
         /**
          * Provide fragmenter instructions according to the Instant Messaging
          * transport channel of the contact's protocol.
+         *
+         * @param sessionID ID of the session for which the request is made.
+         * @return returns maximum fragment size or null for no upper bound
          */
         @Override
-        public FragmenterInstructions getFragmenterInstructions(
-            final SessionID sessionID)
+        public Integer getMaxFragmentSize(final SessionID sessionID)
         {
             final OtrContact otrContact = getOtrContact(sessionID);
             final OperationSetBasicInstantMessagingTransport transport =
@@ -446,28 +448,16 @@ public class ScOtrEngineImpl
                 }
                 return null;
             }
-            int messageSize = transport.getMaxMessageSize(otrContact.contact);
-            if (messageSize
-                == OperationSetBasicInstantMessagingTransport.UNLIMITED)
-            {
-                messageSize = FragmenterInstructions.UNLIMITED;
-            }
-            int numberOfMessages =
-                transport.getMaxNumberOfMessages(otrContact.contact);
-            if (numberOfMessages
-                == OperationSetBasicInstantMessagingTransport.UNLIMITED)
-            {
-                numberOfMessages = FragmenterInstructions.UNLIMITED;
-            }
+            final Integer messageSize =
+                transport.getMaxMessageSize(otrContact.contact);
             if (logger.isDebugEnabled())
             {
                 logger.debug("OTR fragmentation instructions for sending a "
                     + "message to " + otrContact.contact.getDisplayName()
                     + " (" + otrContact.contact.getAddress()
-                    + "). Maximum number of " + "messages: " + numberOfMessages
-                    + ", maximum message size: " + messageSize);
+                    + "). Maximum message size: " + messageSize);
             }
-            return new FragmenterInstructions(numberOfMessages, messageSize);
+            return messageSize;
         }
     }
 
