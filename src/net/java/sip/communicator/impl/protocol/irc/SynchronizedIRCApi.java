@@ -271,11 +271,29 @@ public class SynchronizedIRCApi
     }
 
     @Override
+    public synchronized void dccReceive(final File aFile, final Integer aSize,
+        final SocketAddress aAddress, final DCCReceiveCallback aCallback,
+        final Proxy aProxy)
+    {
+        this.irc.dccReceive(aFile, aSize, aAddress, aCallback, aProxy);
+    }
+
+    @Override
     public synchronized void dccResume(final File aFile,
         final Integer aResumePosition, final Integer aSize,
         final SocketAddress aAddress, final DCCReceiveCallback aCallback)
     {
         this.irc.dccResume(aFile, aResumePosition, aSize, aAddress, aCallback);
+    }
+
+    @Override
+    public synchronized void dccResume(final File aFile,
+        final Integer aResumePosition, final Integer aSize,
+        final SocketAddress aAddress, final DCCReceiveCallback aCallback,
+        final Proxy aProxy)
+    {
+        this.irc.dccResume(aFile, aResumePosition, aSize, aAddress, aCallback,
+            aProxy);
     }
 
     @Override
