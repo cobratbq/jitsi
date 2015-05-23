@@ -479,12 +479,6 @@ public class ScOtrEngineImpl
             "net.java.sip.communicator.plugin.otr.SESSION_STATUS_TIMEOUT",
             30000);
 
-    /**
-     * Manages the scheduling of TimerTasks that are used to set Contact's
-     * ScSessionStatus (to TIMED_OUT) after a period of time.
-     */
-    private ScSessionStatusScheduler scheduler = new ScSessionStatusScheduler();
-
     private static final Map<ScSessionID, OtrContact> contactsMap =
         new Hashtable<ScSessionID, OtrContact>();
 
@@ -574,17 +568,12 @@ public class ScOtrEngineImpl
                 String resourceName = otrContact.resource != null ?
                     "/" + otrContact.resource.getResourceName() : "";
                 Contact contact = otrContact.contact;
-                // Cancels any scheduled tasks that will change the
-                // ScSessionStatus for this Contact
-                scheduler.cancel(otrContact);
 
-                ScSessionStatus scSessionStatus = getSessionStatus(otrContact);
                 String message = "";
                 final Session session = otrEngine.getSession(sessionID);
                 switch (session.getSessionStatus())
                 {
                 case ENCRYPTED:
-                    scSessionStatus = ScSessionStatus.ENCRYPTED;
                     PublicKey remotePubKey = session.getRemotePublicKey();
 
                     String remoteFingerprint = null;
@@ -714,7 +703,6 @@ public class ScOtrEngineImpl
 
                     break;
                 case FINISHED:
-                    scSessionStatus = ScSessionStatus.FINISHED;
                     message =
                         OtrActivator.resourceService.getI18NString(
                             "plugin.otr.activator.sessionfinished",
@@ -722,7 +710,6 @@ public class ScOtrEngineImpl
                                 {contact.getDisplayName() + resourceName});
                     break;
                 case PLAINTEXT:
-                    scSessionStatus = ScSessionStatus.PLAINTEXT;
                     message =
                         OtrActivator.resourceService.getI18NString(
                             "plugin.otr.activator.sessionlost", new String[]
@@ -883,78 +870,8 @@ public class ScOtrEngineImpl
         }
     }
 
-    /**
-     * Manages the scheduling of TimerTasks that are used to set Contact's
-     * ScSessionStatus after a period of time.
-     * 
-     * @author Marin Dzhigarov
-     */
-    private class ScSessionStatusScheduler
-    {
-        private final Timer timer = new Timer();
-
-        private final Map<OtrContact, TimerTask> tasks =
-            new ConcurrentHashMap<OtrContact, TimerTask>();
-
-        public void scheduleScSessionStatusChange(
-            final OtrContact otrContact, final ScSessionStatus status)
-        {
-            cancel(otrContact);
-
-            TimerTask task
-                = new TimerTask()
-                {
-                    @Override
-                    public void run()
-                    {
-                        setSessionStatus(otrContact, status);
-                    }
-                };
-            timer.schedule(task, SESSION_TIMEOUT);
-            tasks.put(otrContact, task);
-        }
-
-        public void cancel(final OtrContact otrContact)
-        {
-            TimerTask task = tasks.get(otrContact);
-            if (task != null)
-                task.cancel();
-            tasks.remove(otrContact);
-        }
-
-        public void serviceChanged(ServiceEvent ev)
-        {
-            Object service
-                = OtrActivator.bundleContext.getService(
-                    ev.getServiceReference());
-
-            if (!(service instanceof ProtocolProviderService))
-                return;
-    
-            if (ev.getType() == ServiceEvent.UNREGISTERING)
-            {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService) service;
-    
-                Iterator<OtrContact> i = tasks.keySet().iterator();
-    
-                while (i.hasNext())
-                {
-                    OtrContact otrContact = i.next();
-                    if (provider.equals(
-                        otrContact.contact.getProtocolProvider()))
-                    {
-                        cancel(otrContact);
-                        i.remove();
-                    }
-                }
-            }
-        }
-    }
-
     private void setSessionStatus(OtrContact contact, ScSessionStatus status)
     {
-        scheduler.cancel(contact);
         for (ScOtrEngineListener l : getListeners())
             l.sessionStatusChanged(contact);
     }
@@ -1079,7 +996,6 @@ public class ScOtrEngineImpl
                 if (provider.equals(i.next().contact.getProtocolProvider()))
                     i.remove();
             }
-            scheduler.serviceChanged(ev);
         }
     }
 
@@ -1133,15 +1049,10 @@ public class ScOtrEngineImpl
     {
         SessionID sessionID = getSessionID(otrContact);
 
-        ScSessionStatus scSessionStatus = getSessionStatus(otrContact);
-        scSessionStatus = ScSessionStatus.LOADING;
         for (ScOtrEngineListener l : getListeners())
         {
             l.sessionStatusChanged(otrContact);
         }
-
-        scheduler.scheduleScSessionStatusChange(
-            otrContact, ScSessionStatus.TIMED_OUT);
 
         try
         {
