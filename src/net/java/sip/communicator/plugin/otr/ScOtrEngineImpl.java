@@ -485,13 +485,6 @@ public class ScOtrEngineImpl
      */
     private ScSessionStatusScheduler scheduler = new ScSessionStatusScheduler();
 
-    /**
-     * This mapping is used for taking care of keeping SessionStatus and
-     * ScSessionStatus in sync for every Session object.
-     */
-    private Map<SessionID, ScSessionStatus> scSessionStatusMap =
-        new ConcurrentHashMap<SessionID, ScSessionStatus>();
-
     private static final Map<ScSessionID, OtrContact> contactsMap =
         new Hashtable<ScSessionID, OtrContact>();
 
@@ -568,7 +561,6 @@ public class ScOtrEngineImpl
         // Clears the map after previous instance
         // This is required because of OSGi restarts in the same VM on Android
         contactsMap.clear();
-        scSessionStatusMap.clear();
 
         this.otrEngine.addOtrEngineListener(new OtrEngineListener()
         {
@@ -593,7 +585,6 @@ public class ScOtrEngineImpl
                 {
                 case ENCRYPTED:
                     scSessionStatus = ScSessionStatus.ENCRYPTED;
-                    scSessionStatusMap.put(sessionID, scSessionStatus);
                     PublicKey remotePubKey = session.getRemotePublicKey();
 
                     String remoteFingerprint = null;
@@ -724,7 +715,6 @@ public class ScOtrEngineImpl
                     break;
                 case FINISHED:
                     scSessionStatus = ScSessionStatus.FINISHED;
-                    scSessionStatusMap.put(sessionID, scSessionStatus);
                     message =
                         OtrActivator.resourceService.getI18NString(
                             "plugin.otr.activator.sessionfinished",
@@ -733,7 +723,6 @@ public class ScOtrEngineImpl
                     break;
                 case PLAINTEXT:
                     scSessionStatus = ScSessionStatus.PLAINTEXT;
-                    scSessionStatusMap.put(sessionID, scSessionStatus);
                     message =
                         OtrActivator.resourceService.getI18NString(
                             "plugin.otr.activator.sessionlost", new String[]
@@ -965,7 +954,6 @@ public class ScOtrEngineImpl
 
     private void setSessionStatus(OtrContact contact, ScSessionStatus status)
     {
-        scSessionStatusMap.put(getSessionID(contact), status);
         scheduler.cancel(contact);
         for (ScOtrEngineListener l : getListeners())
             l.sessionStatusChanged(contact);
@@ -976,24 +964,22 @@ public class ScOtrEngineImpl
     {
         SessionID sessionID = getSessionID(contact);
         SessionStatus sessionStatus = otrEngine.getSession(sessionID).getSessionStatus();
-        ScSessionStatus scSessionStatus = null;
-        if (!scSessionStatusMap.containsKey(sessionID))
+        final ScSessionStatus scSessionStatus;
+        switch (sessionStatus)
         {
-            switch (sessionStatus)
-            {
-            case PLAINTEXT:
-                scSessionStatus = ScSessionStatus.PLAINTEXT;
-                break;
-            case ENCRYPTED:
-                scSessionStatus = ScSessionStatus.ENCRYPTED;
-                break;
-            case FINISHED:
-                scSessionStatus = ScSessionStatus.FINISHED;
-                break;
-            }
-            scSessionStatusMap.put(sessionID, scSessionStatus);
+        default:
+            // fallthrough, assume plain text for unknown states
+        case PLAINTEXT:
+            scSessionStatus = ScSessionStatus.PLAINTEXT;
+            break;
+        case ENCRYPTED:
+            scSessionStatus = ScSessionStatus.ENCRYPTED;
+            break;
+        case FINISHED:
+            scSessionStatus = ScSessionStatus.FINISHED;
+            break;
         }
-        return scSessionStatusMap.get(sessionID);
+        return scSessionStatus;
     }
 
     @Override
@@ -1081,7 +1067,6 @@ public class ScOtrEngineImpl
                     if (provider.equals(
                         otrContact.contact.getProtocolProvider()))
                     {
-                        scSessionStatusMap.remove(getSessionID(otrContact));
                         i.remove();
                     }
                 }
@@ -1150,7 +1135,6 @@ public class ScOtrEngineImpl
 
         ScSessionStatus scSessionStatus = getSessionStatus(otrContact);
         scSessionStatus = ScSessionStatus.LOADING;
-        scSessionStatusMap.put(sessionID, scSessionStatus);
         for (ScOtrEngineListener l : getListeners())
         {
             l.sessionStatusChanged(otrContact);
@@ -1316,7 +1300,6 @@ public class ScOtrEngineImpl
 
         Session session = getSession(contact);
 
-        scSessionStatusMap.remove(session.getSessionID());
         return session.setOutgoingInstance(tag);
     }
 
