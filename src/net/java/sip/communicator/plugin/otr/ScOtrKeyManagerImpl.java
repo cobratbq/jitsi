@@ -169,7 +169,7 @@ public class ScOtrKeyManagerImpl
     {
         try
         {
-            return new OtrCryptoEngineImpl().getFingerprint(pubKey);
+            return OtrCryptoEngine.getFingerprint(pubKey);
         }
         catch (OtrCryptoException e)
         {
@@ -189,7 +189,7 @@ public class ScOtrKeyManagerImpl
 
         try
         {
-            return new OtrCryptoEngineImpl().getFingerprint(pubKey);
+            return OtrCryptoEngine.getFingerprint(pubKey);
         }
         catch (OtrCryptoException e)
         {
@@ -209,7 +209,7 @@ public class ScOtrKeyManagerImpl
 
         try
         {
-            return new OtrCryptoEngineImpl().getFingerprintRaw(pubKey);
+            return OtrCryptoEngine.getFingerprintRaw(pubKey);
         }
         catch (OtrCryptoException e)
         {

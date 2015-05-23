@@ -427,8 +427,7 @@ public class ScOtrEngineImpl
          * transport channel of the contact's protocol.
          */
         @Override
-        public FragmenterInstructions getFragmenterInstructions(
-            final SessionID sessionID)
+        public int getMaxFragmentSize(final SessionID sessionID)
         {
             final OtrContact otrContact = getOtrContact(sessionID);
             final OperationSetBasicInstantMessagingTransport transport =
@@ -444,20 +443,20 @@ public class ScOtrEngineImpl
                         + "BasicInstantMessagingTransport available. Assuming "
                         + "OTR defaults for OTR fragmentation instructions.");
                 }
-                return null;
+                return Integer.MAX_VALUE;
             }
             int messageSize = transport.getMaxMessageSize(otrContact.contact);
             if (messageSize
                 == OperationSetBasicInstantMessagingTransport.UNLIMITED)
             {
-                messageSize = FragmenterInstructions.UNLIMITED;
+                messageSize = Integer.MAX_VALUE;
             }
             int numberOfMessages =
                 transport.getMaxNumberOfMessages(otrContact.contact);
             if (numberOfMessages
                 == OperationSetBasicInstantMessagingTransport.UNLIMITED)
             {
-                numberOfMessages = FragmenterInstructions.UNLIMITED;
+                numberOfMessages = Integer.MAX_VALUE;
             }
             if (logger.isDebugEnabled())
             {
@@ -467,7 +466,7 @@ public class ScOtrEngineImpl
                     + "). Maximum number of " + "messages: " + numberOfMessages
                     + ", maximum message size: " + messageSize);
             }
-            return new FragmenterInstructions(numberOfMessages, messageSize);
+            return messageSize;
         }
     }
 
@@ -550,7 +549,7 @@ public class ScOtrEngineImpl
 
     public ScOtrEngineImpl()
     {
-        otrEngine = new OtrSessionManagerImpl(otrEngineHost);
+        otrEngine = new OtrSessionManager(otrEngineHost);
 
         // Clears the map after previous instance
         // This is required because of OSGi restarts in the same VM on Android
@@ -580,8 +579,7 @@ public class ScOtrEngineImpl
                     try
                     {
                         remoteFingerprint =
-                            new OtrCryptoEngineImpl().
-                                getFingerprint(remotePubKey);
+                            OtrCryptoEngine.getFingerprint(remotePubKey);
                     }
                     catch (OtrCryptoException e)
                     {
@@ -838,7 +836,7 @@ public class ScOtrEngineImpl
         if (policy < 0)
             return getGlobalPolicy();
         else
-            return new OtrPolicyImpl(policy);
+            return new OtrPolicy(policy);
     }
 
     @Override
@@ -849,7 +847,7 @@ public class ScOtrEngineImpl
          */
         int defaultScOtrPolicy =
             OtrPolicy.OTRL_POLICY_DEFAULT & ~OtrPolicy.SEND_WHITESPACE_TAG;
-        return new OtrPolicyImpl(this.configurator.getPropertyInt(
+        return new OtrPolicy(this.configurator.getPropertyInt(
             "GLOBAL_POLICY", defaultScOtrPolicy));
     }
 
