@@ -54,8 +54,6 @@ public class OtrMetaContactButton
 
     private Image unlockedPadlockImage;
 
-    private Image timedoutPadlockImage;
-
     public void sessionStatusChanged(OtrContact otrContact)
     {
         // OtrMetaContactButton.this.contact can be null.
@@ -158,9 +156,6 @@ public class OtrMetaContactButton
                 unlockedPadlockImage = ImageIO.read(
                         OtrActivator.resourceService.getImageURL(
                             "plugin.otr.PLAINTEXT_ICON_22x22"));
-                timedoutPadlockImage = ImageIO.read(
-                        OtrActivator.resourceService.getImageURL(
-                            "plugin.otr.BROKEN_ICON_22x22"));
             } catch (IOException e)
             {
                 logger.debug("Failed to load padlock image");
@@ -185,12 +180,10 @@ public class OtrMetaContactButton
                         OtrActivator.scOtrEngine.setContactPolicy(
                             otrContact.contact, policy);
                     case FINISHED:
-                    case LOADING:
                         // Default action for finished, encrypted and loading
                         // sessions is end session.
                         OtrActivator.scOtrEngine.endSession(otrContact);
                         break;
-                    case TIMED_OUT:
                     case PLAINTEXT:
                         policy =
                             OtrActivator.scOtrEngine.getContactPolicy(
@@ -245,7 +238,7 @@ public class OtrMetaContactButton
         {
             this.otrContact = null;
             this.setPolicy(null);
-            this.setStatus(ScSessionStatus.PLAINTEXT);
+            this.setStatus(SessionStatus.PLAINTEXT);
             return;
         }
 
@@ -308,7 +301,7 @@ public class OtrMetaContactButton
      *
      * @param status the {@link SessionStatus}.
      */
-    private void setStatus(ScSessionStatus status)
+    private void setStatus(SessionStatus status)
     {
         animatedPadlockImage.pause();
         Image image;
@@ -339,15 +332,6 @@ public class OtrMetaContactButton
         case PLAINTEXT:
             image = unlockedPadlockImage;
             tipKey = "plugin.otr.menu.START_OTR";
-            break;
-        case LOADING:
-            image = animatedPadlockImage;
-            animatedPadlockImage.start();
-            tipKey = "plugin.otr.menu.LOADING_OTR";
-            break;
-        case TIMED_OUT:
-            image = timedoutPadlockImage;
-            tipKey = "plugin.otr.menu.TIMED_OUT";
             break;
         default:
             return;

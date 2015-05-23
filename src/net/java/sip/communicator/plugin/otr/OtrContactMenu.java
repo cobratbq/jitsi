@@ -12,6 +12,7 @@ import java.security.*;
 import javax.swing.*;
 
 import net.java.otr4j.*;
+import net.java.otr4j.session.*;
 import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.*;
@@ -66,7 +67,7 @@ class OtrContactMenu
      */
     private OtrPolicy otrPolicy;
 
-    private ScSessionStatus sessionStatus;
+    private SessionStatus sessionStatus;
 
     private final JMenu parentMenu;
 
@@ -284,19 +285,6 @@ class OtrContactMenu
 
         switch (this.sessionStatus)
         {
-        case LOADING:
-            if (separateMenu != null)
-            {
-                separateMenu.add(endOtr);
-                separateMenu.add(refreshOtr);
-            }
-            else
-            {
-                parentMenu.add(endOtr);
-                parentMenu.add(refreshOtr);
-            }
-            break;
-
         case ENCRYPTED:
             JMenuItem authBuddy = new JMenuItem();
             authBuddy.setText(OtrActivator.resourceService
@@ -332,7 +320,6 @@ class OtrContactMenu
             }
             break;
 
-        case TIMED_OUT:
         case PLAINTEXT:
             if (separateMenu != null)
                 separateMenu.add(startOtr);
@@ -446,7 +433,7 @@ class OtrContactMenu
      *
      * @param sessionStatus the {@link ScSessionStatus}.
      */
-    private void setSessionStatus(ScSessionStatus sessionStatus)
+    private void setSessionStatus(SessionStatus sessionStatus)
     {
         if (sessionStatus != this.sessionStatus)
         {

@@ -811,7 +811,7 @@ public class ScOtrEngineImpl
         SessionID sessionID = getSessionID(otrContact);
         try
         {
-            setSessionStatus(otrContact, ScSessionStatus.PLAINTEXT);
+            setSessionStatus(otrContact, SessionStatus.PLAINTEXT);
 
             otrEngine.getSession(sessionID).endSession();
         }
@@ -868,33 +868,17 @@ public class ScOtrEngineImpl
         }
     }
 
-    private void setSessionStatus(OtrContact contact, ScSessionStatus status)
+    private void setSessionStatus(OtrContact contact, SessionStatus status)
     {
         for (ScOtrEngineListener l : getListeners())
             l.sessionStatusChanged(contact);
     }
 
     @Override
-    public ScSessionStatus getSessionStatus(OtrContact contact)
+    public SessionStatus getSessionStatus(OtrContact contact)
     {
         SessionID sessionID = getSessionID(contact);
-        SessionStatus sessionStatus = otrEngine.getSession(sessionID).getSessionStatus();
-        final ScSessionStatus scSessionStatus;
-        switch (sessionStatus)
-        {
-        default:
-            // fallthrough, assume plain text for unknown states
-        case PLAINTEXT:
-            scSessionStatus = ScSessionStatus.PLAINTEXT;
-            break;
-        case ENCRYPTED:
-            scSessionStatus = ScSessionStatus.ENCRYPTED;
-            break;
-        case FINISHED:
-            scSessionStatus = ScSessionStatus.FINISHED;
-            break;
-        }
-        return scSessionStatus;
+        return otrEngine.getSession(sessionID).getSessionStatus();
     }
 
     @Override

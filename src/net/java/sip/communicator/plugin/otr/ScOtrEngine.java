@@ -165,7 +165,7 @@ public interface ScOtrEngine
      *            interested in.
      * @return the {@link ScSessionStatus}.
      */
-    public abstract ScSessionStatus getSessionStatus(OtrContact contact);
+    public abstract SessionStatus getSessionStatus(OtrContact contact);
 
     // New Methods (Misc)
 
