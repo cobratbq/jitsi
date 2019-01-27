@@ -22,7 +22,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import net.java.otr4j.session.*;
+import net.java.otr4j.api.InstanceTag;
 import net.java.sip.communicator.plugin.desktoputil.*;
 import net.java.sip.communicator.plugin.otr.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;

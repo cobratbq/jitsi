@@ -17,22 +17,25 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.security.*;
-
-import javax.imageio.*;
-
-import net.java.otr4j.*;
-import net.java.otr4j.session.*;
-import net.java.sip.communicator.plugin.desktoputil.*;
+import net.java.otr4j.api.OtrException;
+import net.java.otr4j.api.OtrPolicy;
+import net.java.sip.communicator.plugin.desktoputil.AnimatedImage;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommButton;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.gui.AbstractPluginComponent;
 import net.java.sip.communicator.service.gui.Container;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.gui.PluginComponentFactory;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.util.Logger;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.security.interfaces.DSAPublicKey;
 
 /**
  * A {@link AbstractPluginComponent} that registers the Off-the-Record button in
@@ -72,8 +75,12 @@ public class OtrMetaContactButton
         // OtrMetaContactButton.this.contact can be null.
         if (otrContact.equals(OtrMetaContactButton.this.otrContact))
         {
-            setStatus(
-                OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            try {
+                setStatus(
+                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            } catch (OtrException e) {
+                logger.warn("Failed to set status.", e);
+            }
         }
     }
 
@@ -100,8 +107,12 @@ public class OtrMetaContactButton
         // OtrMetaContactButton.this.contact can be null.
         if (otrContact.equals(OtrMetaContactButton.this.otrContact))
         {
-            setStatus(
-                OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            try {
+                setStatus(
+                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            } catch (OtrException e) {
+                logger.warn("Failed to set status.", e);
+            }
         }
     }
 
@@ -121,9 +132,7 @@ public class OtrMetaContactButton
          * are gone, this instance will become obsolete and OtrWeakListener will
          * remove it as a listener of scOtrEngine and scOtrKeyManager.
          */
-        new OtrWeakListener<OtrMetaContactButton>(
-            this,
-            OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
+        new OtrWeakListener<>(this, OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
     }
 
     /**
@@ -209,7 +218,7 @@ public class OtrMetaContactButton
                         OtrPolicy globalPolicy =
                             OtrActivator.scOtrEngine.getGlobalPolicy();
                         policy.setSendWhitespaceTag(
-                            globalPolicy.getSendWhitespaceTag());
+                            globalPolicy.isSendWhitespaceTag());
                         OtrActivator.scOtrEngine.setContactPolicy(
                             otrContact.contact, policy);
                         // Default action for timed_out and plaintext sessions
@@ -256,7 +265,11 @@ public class OtrMetaContactButton
         {
             this.otrContact = null;
             this.setPolicy(null);
-            this.setStatus(ScSessionStatus.PLAINTEXT);
+            try {
+                this.setStatus(ScSessionStatus.PLAINTEXT);
+            } catch (OtrException e) {
+                logger.warn("Failed to set status.", e);
+            }
             return;
         }
 
@@ -267,8 +280,12 @@ public class OtrMetaContactButton
             if (this.otrContact == otrContact)
                 return;
             this.otrContact = otrContact;
-            this.setStatus(
-                OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            try {
+                this.setStatus(
+                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            } catch (OtrException e) {
+                logger.warn("Failed to set status.", e);
+            }
             this.setPolicy(
                 OtrActivator.scOtrEngine.getContactPolicy(contact));
             return;
@@ -282,8 +299,12 @@ public class OtrMetaContactButton
                 if (this.otrContact == otrContact)
                     return;
                 this.otrContact = otrContact;
-                this.setStatus(
-                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+                try {
+                    this.setStatus(
+                        OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+                } catch (OtrException e) {
+                    logger.warn("Failed to set status.", e);
+                }
                 this.setPolicy(
                     OtrActivator.scOtrEngine.getContactPolicy(contact));
                 return;
@@ -311,27 +332,23 @@ public class OtrMetaContactButton
     private void setPolicy(OtrPolicy contactPolicy)
     {
         getButton().setEnabled(
-            contactPolicy != null && contactPolicy.getEnableManual());
+            contactPolicy != null && contactPolicy.isEnableManual());
     }
 
     /**
-     * Sets the button icon according to the passed in {@link SessionStatus}.
+     * Sets the button icon according to the passed in {@link ScSessionStatus}.
      *
-     * @param status the {@link SessionStatus}.
+     * @param status the {@link ScSessionStatus}.
      */
-    private void setStatus(ScSessionStatus status)
-    {
+    private void setStatus(ScSessionStatus status) throws OtrException {
         animatedPadlockImage.pause();
         Image image;
         String tipKey;
         switch (status)
         {
         case ENCRYPTED:
-            PublicKey pubKey =
-                OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
-            String fingerprint =
-                OtrActivator.scOtrKeyManager.
-                    getFingerprintFromPublicKey(pubKey);
+            DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+            String fingerprint = OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
             image
                 = OtrActivator.scOtrKeyManager.isVerified(
                         otrContact.contact, fingerprint)
@@ -381,8 +398,12 @@ public class OtrMetaContactButton
         // OtrMetaContactButton.this.contact can be null.
         if (otrContact.equals(OtrMetaContactButton.this.otrContact))
         {
-            setStatus(
-                OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            try {
+                setStatus(
+                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+            } catch (OtrException e) {
+                logger.warn("Failed to set status.", e);
+            }
         }
     }
 }

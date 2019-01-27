@@ -17,9 +17,9 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.util.*;
+import net.java.otr4j.api.SessionID;
 
-import net.java.otr4j.session.*;
+import java.util.UUID;
 
 /**
  * Class used to associate a random UUID to an OTR4J SessionID.

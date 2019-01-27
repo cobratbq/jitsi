@@ -19,6 +19,7 @@ package net.java.sip.communicator.plugin.otr.authdialog;
 
 import java.awt.*;
 import java.security.*;
+import java.security.interfaces.DSAPublicKey;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -120,7 +121,7 @@ public class FingerprintAuthenticationPanel
         cbAction.addItem(actionIHave);
         cbAction.addItem(actionIHaveNot);
 
-        PublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
         cbAction.setSelectedItem(OtrActivator.scOtrKeyManager
@@ -155,10 +156,6 @@ public class FingerprintAuthenticationPanel
         return cbAction;
     }
 
-    /**
-     * Sets up the {@link OtrBuddyAuthenticationDialog} components so that they
-     * reflect the {@link OtrBuddyAuthenticationDialog#otrContact}
-     */
     private void loadContact()
     {
         // Local fingerprint.
@@ -173,7 +170,7 @@ public class FingerprintAuthenticationPanel
 
         // Remote fingerprint.
         String user = otrContact.contact.getDisplayName();
-        PublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
         txtRemoteFingerprint.setText(OtrActivator.resourceService
@@ -204,7 +201,7 @@ public class FingerprintAuthenticationPanel
 
     public void compareFingerprints()
     {
-        PublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
 
@@ -239,12 +236,6 @@ public class FingerprintAuthenticationPanel
         I_HAVE, I_HAVE_NOT
     }
 
-    /**
-     * A special {@link JComboBox} that is hosted in
-     * {@link OtrBuddyAuthenticationDialog#cbAction}.
-     *
-     * @author George Politis
-     */
     class ActionComboBoxItem
     {
         public ActionComboBoxItemIndex action;

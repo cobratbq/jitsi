@@ -17,17 +17,18 @@
  */
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.List;
+import net.java.otr4j.api.OtrPolicy;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommCheckBox;
+import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
+import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.service.protocol.AccountID;
 
 import javax.swing.*;
-import javax.swing.border.*;
-
-import net.java.otr4j.*;
-import net.java.sip.communicator.plugin.desktoputil.*;
-import net.java.sip.communicator.plugin.otr.*;
-import net.java.sip.communicator.service.protocol.*;
+import javax.swing.border.EtchedBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * A special {@link Panel} that manages the OTR configuration.
@@ -255,12 +256,12 @@ public class OtrConfigurationPanel
             OtrPolicy otrPolicy
                 = OtrActivator.scOtrEngine.getGlobalPolicy();
 
-            boolean otrEnabled = otrPolicy.getEnableManual();
+            boolean otrEnabled = otrPolicy.isEnableManual();
             cbEnable.setSelected(otrEnabled);
             cbAutoInitiate.setEnabled(otrEnabled);
             cbRequireOtr.setEnabled(otrEnabled);
 
-            boolean isAutoInit = otrPolicy.getEnableAlways();
+            boolean isAutoInit = otrPolicy.isEnableAlways();
 
             cbAutoInitiate.setSelected(isAutoInit);
 
@@ -271,7 +272,7 @@ public class OtrConfigurationPanel
                 = OtrActivator.resourceService.getSettingsString(
                     OtrActivator.OTR_MANDATORY_PROP);
 
-            boolean isMandatory = otrPolicy.getRequireEncryption();
+            boolean isMandatory = otrPolicy.isRequireEncryption();
             if (otrMandatoryPropValue != null)
                 isMandatory = Boolean.parseBoolean(otrMandatoryPropValue);
             else if (!isMandatory && defaultOtrPropValue != null)

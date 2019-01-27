@@ -33,4 +33,5 @@ Import-Package: org.osgi.framework,
  org.bouncycastle.crypto.modes,
  org.bouncycastle.util,
  org.bouncycastle.util.encoders,
+ org.bouncycastle.math.ec.rfc8032,
  net.java.sip.communicator.service.msghistory

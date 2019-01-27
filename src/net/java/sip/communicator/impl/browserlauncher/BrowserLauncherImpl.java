@@ -17,13 +17,11 @@
  */
 package net.java.sip.communicator.impl.browserlauncher;
 
-import net.java.sip.communicator.service.browserlauncher.*;
-import net.java.sip.communicator.util.Logger;
-
-import org.jitsi.service.configuration.*;
-import org.jitsi.util.*;
-
 import com.apple.eio.*;
+import net.java.sip.communicator.service.browserlauncher.BrowserLauncherService;
+import net.java.sip.communicator.util.Logger;
+import org.jitsi.service.configuration.ConfigurationService;
+import org.jitsi.util.OSUtils;
 
 /**
  * Implements a <tt>BrowserLauncherService</tt> which opens a specified URL in

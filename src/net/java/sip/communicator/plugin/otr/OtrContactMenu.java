@@ -17,16 +17,16 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.awt.event.*;
-import java.security.*;
+import net.java.otr4j.api.OtrPolicy;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommMenu;
+import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.util.Logger;
 
 import javax.swing.*;
-
-import net.java.otr4j.*;
-import net.java.sip.communicator.plugin.desktoputil.*;
-import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.security.interfaces.DSAPublicKey;
 
 /**
  * A special {@link JMenu} that holds the menu items for controlling the
@@ -156,7 +156,7 @@ class OtrContactMenu
                 OtrActivator.scOtrEngine.getContactPolicy(contact.contact);
             OtrPolicy globalPolicy =
                 OtrActivator.scOtrEngine.getGlobalPolicy();
-            policy.setSendWhitespaceTag(globalPolicy.getSendWhitespaceTag());
+            policy.setSendWhitespaceTag(globalPolicy.isSendWhitespaceTag());
             OtrActivator.scOtrEngine.setContactPolicy(contact.contact, policy);
 
             // Start session.
@@ -282,14 +282,14 @@ class OtrContactMenu
         JMenuItem startOtr = new JMenuItem();
         startOtr.setText(OtrActivator.resourceService
             .getI18NString("plugin.otr.menu.START_OTR"));
-        startOtr.setEnabled(policy.getEnableManual());
+        startOtr.setEnabled(policy.isEnableManual());
         startOtr.setActionCommand(ACTION_COMMAND_START_OTR);
         startOtr.addActionListener(this);
 
         JMenuItem refreshOtr = new JMenuItem();
         refreshOtr.setText(OtrActivator.resourceService
             .getI18NString("plugin.otr.menu.REFRESH_OTR"));
-        refreshOtr.setEnabled(policy.getEnableManual());
+        refreshOtr.setEnabled(policy.isEnableManual());
         refreshOtr.setActionCommand(ACTION_COMMAND_REFRESH_OTR);
         refreshOtr.addActionListener(this);
 
@@ -356,7 +356,7 @@ class OtrContactMenu
         JCheckBoxMenuItem cbEnable = new JCheckBoxMenuItem();
         cbEnable.setText(OtrActivator.resourceService
             .getI18NString("plugin.otr.menu.CB_ENABLE"));
-        cbEnable.setSelected(policy.getEnableManual());
+        cbEnable.setSelected(policy.isEnableManual());
         cbEnable.setActionCommand(ACTION_COMMAND_CB_ENABLE);
         cbEnable.addActionListener(this);
 
@@ -367,9 +367,9 @@ class OtrContactMenu
                         "plugin.otr.menu.CB_AUTO",
                         new String[]
                             {contact.contact.getDisplayName()})));
-        cbAlways.setEnabled(policy.getEnableManual());
+        cbAlways.setEnabled(policy.isEnableManual());
 
-        cbAlways.setSelected(policy.getEnableAlways());
+        cbAlways.setSelected(policy.isEnableAlways());
 
         cbAlways.setActionCommand(ACTION_COMMAND_CB_AUTO);
         cbAlways.addActionListener(this);
@@ -377,10 +377,10 @@ class OtrContactMenu
         JCheckBoxMenuItem cbAlwaysAll = new JCheckBoxMenuItem();
         cbAlwaysAll.setText(OtrActivator.resourceService
             .getI18NString("plugin.otr.menu.CB_AUTO_ALL"));
-        cbAlwaysAll.setEnabled(policy.getEnableManual());
+        cbAlwaysAll.setEnabled(policy.isEnableManual());
 
         boolean isAutoInit =
-            OtrActivator.scOtrEngine.getGlobalPolicy().getEnableAlways();
+            OtrActivator.scOtrEngine.getGlobalPolicy().isEnableAlways();
 
         cbAlwaysAll.setSelected(isAutoInit);
 
@@ -390,7 +390,7 @@ class OtrContactMenu
         JCheckBoxMenuItem cbRequire = new JCheckBoxMenuItem();
         cbRequire.setText(OtrActivator.resourceService
             .getI18NString("plugin.otr.menu.CB_REQUIRE"));
-        cbRequire.setEnabled(policy.getEnableManual());
+        cbRequire.setEnabled(policy.isEnableManual());
 
         String otrMandatoryPropValue
             = OtrActivator.configService.getString(
@@ -399,7 +399,7 @@ class OtrContactMenu
             = OtrActivator.resourceService.getSettingsString(
                 OtrActivator.OTR_MANDATORY_PROP);
 
-        boolean isMandatory = policy.getRequireEncryption();
+        boolean isMandatory = policy.isRequireEncryption();
         if (otrMandatoryPropValue != null)
             isMandatory = Boolean.parseBoolean(otrMandatoryPropValue);
         else if (!isMandatory && defaultOtrPropValue != null)
@@ -510,8 +510,7 @@ class OtrContactMenu
         switch (sessionStatus)
         {
         case ENCRYPTED:
-            PublicKey pubKey =
-                OtrActivator.scOtrEngine.getRemotePublicKey(contact);
+            final DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(contact);
             String fingerprint =
                 OtrActivator.scOtrKeyManager.
                     getFingerprintFromPublicKey(pubKey);

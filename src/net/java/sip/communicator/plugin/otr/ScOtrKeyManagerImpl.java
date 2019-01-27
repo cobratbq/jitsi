@@ -18,6 +18,8 @@
 package net.java.sip.communicator.plugin.otr;
 
 import java.security.*;
+import java.security.interfaces.DSAPrivateKey;
+import java.security.interfaces.DSAPublicKey;
 import java.security.spec.*;
 import java.util.*;
 
@@ -35,8 +37,7 @@ public class ScOtrKeyManagerImpl
 {
     private final OtrConfigurator configurator = new OtrConfigurator();
 
-    private final List<ScOtrKeyManagerListener> listeners =
-        new Vector<ScOtrKeyManagerListener>();
+    private final List<ScOtrKeyManagerListener> listeners = new Vector<>();
 
     public void addListener(ScOtrKeyManagerListener l)
     {
@@ -60,9 +61,7 @@ public class ScOtrKeyManagerImpl
     {
         synchronized (listeners)
         {
-            return
-                listeners.toArray(
-                        new ScOtrKeyManagerListener[listeners.size()]);
+            return listeners.toArray(new ScOtrKeyManagerListener[0]);
         }
     }
 
@@ -137,7 +136,7 @@ public class ScOtrKeyManagerImpl
             try
             {
                 keyFactory = KeyFactory.getInstance("DSA");
-                PublicKey pubKey = keyFactory.generatePublic(publicKeySpec);
+                DSAPublicKey pubKey = (DSAPublicKey) keyFactory.generatePublic(publicKeySpec);
 
                 boolean isVerified =
                     this.configurator.getPropertyBoolean(userID
@@ -160,11 +159,7 @@ public class ScOtrKeyManagerImpl
                 this.configurator.appendProperty(
                     userID + ".fingerprints", fingerprint);
             }
-            catch (NoSuchAlgorithmException e)
-            {
-                e.printStackTrace();
-            }
-            catch (InvalidKeySpecException e)
+            catch (NoSuchAlgorithmException | InvalidKeySpecException e)
             {
                 e.printStackTrace();
             }
@@ -176,57 +171,25 @@ public class ScOtrKeyManagerImpl
             contact.getAddress() + ".fingerprints");
     }
 
-    public String getFingerprintFromPublicKey(PublicKey pubKey)
+    public String getFingerprintFromPublicKey(DSAPublicKey pubKey)
     {
-        try
-        {
-            return new OtrCryptoEngineImpl().getFingerprint(pubKey);
-        }
-        catch (OtrCryptoException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return OtrCryptoEngine.getFingerprint(pubKey);
     }
 
     public String getLocalFingerprint(AccountID account)
     {
-        KeyPair keyPair = loadKeyPair(account);
-
+        DSAKeyPair keyPair = loadKeyPair(account);
         if (keyPair == null)
             return null;
-
-        PublicKey pubKey = keyPair.getPublic();
-
-        try
-        {
-            return new OtrCryptoEngineImpl().getFingerprint(pubKey);
-        }
-        catch (OtrCryptoException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return OtrCryptoEngine.getFingerprint(keyPair.getPublic());
     }
 
     public byte[] getLocalFingerprintRaw(AccountID account)
     {
-        KeyPair keyPair = loadKeyPair(account);
-
+        DSAKeyPair keyPair = loadKeyPair(account);
         if (keyPair == null)
             return null;
-
-        PublicKey pubKey = keyPair.getPublic();
-
-        try
-        {
-            return new OtrCryptoEngineImpl().getFingerprintRaw(pubKey);
-        }
-        catch (OtrCryptoException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return OtrCryptoEngine.getFingerprintRaw(keyPair.getPublic());
     }
 
     public void saveFingerprint(Contact contact, String fingerprint)
@@ -241,7 +204,7 @@ public class ScOtrKeyManagerImpl
             + ".fingerprint.verified", false);
     }
 
-    public KeyPair loadKeyPair(AccountID account)
+    public DSAKeyPair loadKeyPair(AccountID account)
     {
         if (account == null)
             return null;
@@ -264,29 +227,24 @@ public class ScOtrKeyManagerImpl
 
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(b64PubKey);
 
-        PublicKey publicKey;
-        PrivateKey privateKey;
+        DSAPublicKey publicKey;
+        DSAPrivateKey privateKey;
 
         // Generate KeyPair.
         KeyFactory keyFactory;
         try
         {
             keyFactory = KeyFactory.getInstance("DSA");
-            publicKey = keyFactory.generatePublic(publicKeySpec);
-            privateKey = keyFactory.generatePrivate(privateKeySpec);
+            publicKey = (DSAPublicKey) keyFactory.generatePublic(publicKeySpec);
+            privateKey = (DSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
         }
-        catch (NoSuchAlgorithmException e)
-        {
-            e.printStackTrace();
-            return null;
-        }
-        catch (InvalidKeySpecException e)
+        catch (NoSuchAlgorithmException | InvalidKeySpecException e)
         {
             e.printStackTrace();
             return null;
         }
 
-        return new KeyPair(publicKey, privateKey);
+        return new DSAKeyPair(privateKey, publicKey);
     }
 
     public void generateKeyPair(AccountID account)
@@ -295,15 +253,16 @@ public class ScOtrKeyManagerImpl
             return;
 
         String accountID = account.getAccountUniqueID();
-        KeyPair keyPair;
+        final KeyPair keyPair;
         try
         {
-            keyPair = KeyPairGenerator.getInstance("DSA").genKeyPair();
+            final KeyPairGenerator kg = KeyPairGenerator.getInstance("DSA");
+            kg.initialize(1024);
+            keyPair = kg.genKeyPair();
         }
-        catch (NoSuchAlgorithmException e)
+        catch (final NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
-            return;
+            throw new IllegalStateException("Failed to generate new DSA keypair.", e);
         }
 
         // Store Public Key.

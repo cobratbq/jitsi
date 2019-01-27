@@ -20,6 +20,7 @@ package net.java.sip.communicator.plugin.otr;
 import net.java.otr4j.io.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
 
 /**
@@ -103,8 +104,8 @@ public class OtrTransformLayer
                 new MessageDeliveredEvent(processedMessage, contact,
                     evt.getTimestamp());
 
-            if (processedMessage.getContent().contains(
-                SerializationConstants.HEAD))
+            // FIXME should we use otr4j constant for this?
+            if (processedMessage.getContent().contains("?OTR:"))
             {
                 processedEvent.setMessageEncrypted(true);
             }
@@ -130,8 +131,7 @@ public class OtrTransformLayer
         String processedMessageContent =
             OtrActivator.scOtrEngine.transformReceiving(otrContact, msgContent);
 
-        if (processedMessageContent == null
-            || processedMessageContent.length() < 1)
+        if (processedMessageContent == null)
             return null;
 
         if (processedMessageContent.equals(msgContent))

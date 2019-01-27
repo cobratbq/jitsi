@@ -17,25 +17,37 @@
  */
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.security.*;
-import java.util.*;
-
-import javax.imageio.*;
-import javax.swing.*;
-import javax.swing.Timer;
-
-import net.java.otr4j.session.*;
-import net.java.sip.communicator.plugin.desktoputil.*;
-import net.java.sip.communicator.plugin.otr.*;
+import net.java.otr4j.api.OtrException;
+import net.java.otr4j.api.Session;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommMenu;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommMenuBar;
+import net.java.sip.communicator.plugin.desktoputil.SelectedObject;
+import net.java.sip.communicator.plugin.otr.OtrActivator;
+import net.java.sip.communicator.plugin.otr.OtrContactManager;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.gui.*;
+import net.java.sip.communicator.plugin.otr.OtrWeakListener;
+import net.java.sip.communicator.plugin.otr.ScOtrEngineListener;
+import net.java.sip.communicator.plugin.otr.ScOtrKeyManagerListener;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.contactlist.MetaContactGroup;
 import net.java.sip.communicator.service.gui.Container;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.service.gui.PluginComponent;
+import net.java.sip.communicator.service.gui.PluginComponentFactory;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.util.Logger;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.security.PublicKey;
+import java.security.interfaces.DSAPublicKey;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A special {@link JMenuBar} that controls the switching of OTRv3 outgoing
@@ -69,8 +81,7 @@ public class OTRv3OutgoingSessionSwitcher
      * A map used for storing each <tt>Session</tt>s corresponding <tt>JMenuItem
      * </tt>.
      */
-    private final Map<Session, JMenuItem> outgoingSessions
-        = new HashMap<Session, JMenuItem>();
+    private final Map<Session, JMenuItem> outgoingSessions = new HashMap<>();
 
     /**
      * An animated {@link JMenu} 
@@ -180,9 +191,7 @@ public class OTRv3OutgoingSessionSwitcher
          * obsolete and OtrWeakListener will remove it as a listener of
          * scOtrEngine and scOtrKeyManager.
          */
-        new OtrWeakListener<OTRv3OutgoingSessionSwitcher>(
-            this,
-            OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
+        new OtrWeakListener<>(this, OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
 
         try
         {
@@ -353,14 +362,13 @@ public class OTRv3OutgoingSessionSwitcher
      *
      * @param otrContact the contact which is logged in multiple locations
      */
-    private void buildMenu(OtrContact otrContact)
-    {
+    private void buildMenu(OtrContact otrContact) {
         if (otrContact == null || !this.contact.equals(otrContact))
         {
             return;
         }
         menu.removeAll();
-        java.util.List<Session> multipleInstances =
+        java.util.List<? extends Session> multipleInstances =
             OtrActivator.scOtrEngine.getSessionInstances(
                 otrContact);
 
@@ -384,8 +392,12 @@ public class OTRv3OutgoingSessionSwitcher
             switch (session.getSessionStatus(session.getReceiverInstanceTag()))
             {
             case ENCRYPTED:
-                PublicKey pubKey = 
-                    session.getRemotePublicKey(session.getReceiverInstanceTag());
+                DSAPublicKey pubKey = null;
+                try {
+                    pubKey = session.getRemotePublicKey(session.getReceiverInstanceTag());
+                } catch (OtrException e) {
+                    logger.warn("Failed to acquire public key.", e);
+                }
                 String fingerprint =
                     OtrActivator.scOtrKeyManager.
                         getFingerprintFromPublicKey(pubKey);

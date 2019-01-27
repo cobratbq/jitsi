@@ -5,7 +5,7 @@
 
     <dirname property="sc.basedir" file="${ant.file.jitsi}"/>
     <property environment="system"/>
-    <property name="jdk.home" value="/usr/java/java"/>
+    <property name="jdk.home" value="/usr/lib/jvm/java-1.8.0"/>
     <property name="dest" value="classes"/>
     <property name="bundles.dest" value="sc-bundles"/>
     <property name="bundles.dest.mac" value="${bundles.dest}/os-specific/macosx"/>
@@ -986,7 +986,7 @@
         <copy file="${lib.noinst}/httpcore-osgi-4.2.3.jar" tofile="${bundles.dest}/httpcore.jar"/>
         <copy file="${lib.noinst}/sdes4j-1.1.3.jar" tofile="${bundles.dest}/sdes4j.jar"/>
         <copy file="${lib.noinst}/bcpkix-jdk15on-1.54.jar" tofile="${bundles.dest}/bcpkix.jar"/>
-        <copy file="${lib.noinst}/bcprov-jdk15on-1.54.jar" tofile="${bundles.dest}/bouncycastle.jar"/>
+        <copy file="${lib.noinst}/bcprov-jdk15on-1.60.jar" tofile="${bundles.dest}/bouncycastle.jar"/>
         <copy file="${lib.noinst}/bccontrib-1.0.jar" tofile="${bundles.dest}/bccontrib.jar"/>
         <copy file="${lib.noinst}/jmork-1.0.5.jar" tofile="${bundles.dest}/jmork.jar"/>
         <copy file="${lib.noinst}/weupnp-0.1.4.jar" tofile="${bundles.dest}/weupnp.jar"/>
@@ -2180,6 +2180,7 @@ javax.swing.event, javax.swing.border"/>
             <zipfileset dir="${dest}/net/java/sip/communicator/plugin/otr"
                 prefix="net/java/sip/communicator/plugin/otr"/>
             <zipfileset src="${lib.noinst}/otr4j.jar"/>
+            <zipfileset src="${lib.noinst}/joldilocks-1.0-SNAPSHOT.jar"/>
         </jar>
     </target>
 

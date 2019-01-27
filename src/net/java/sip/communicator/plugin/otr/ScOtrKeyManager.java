@@ -17,11 +17,13 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.security.*;
-import java.util.*;
-
+import net.java.otr4j.crypto.DSAKeyPair;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+
+import java.security.interfaces.DSAPublicKey;
+import java.util.List;
 
 /**
  *
@@ -41,7 +43,7 @@ public interface ScOtrKeyManager
 
     public abstract boolean isVerified(Contact contact, String fingerprint);
 
-    public abstract String getFingerprintFromPublicKey(PublicKey pubKey);
+    public abstract String getFingerprintFromPublicKey(DSAPublicKey pubKey);
 
     public abstract List<String> getAllRemoteFingerprints(Contact contact);
 
@@ -51,7 +53,7 @@ public interface ScOtrKeyManager
 
     public abstract void saveFingerprint(Contact contact, String fingerprint);
 
-    public abstract KeyPair loadKeyPair(AccountID accountID);
+    public abstract DSAKeyPair loadKeyPair(AccountID accountID);
 
     public abstract void generateKeyPair(AccountID accountID);
 

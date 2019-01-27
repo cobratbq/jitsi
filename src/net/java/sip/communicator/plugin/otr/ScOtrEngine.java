@@ -20,8 +20,10 @@ package net.java.sip.communicator.plugin.otr;
 import java.security.*;
 import java.util.*;
 
-import net.java.otr4j.*;
-import net.java.otr4j.session.*;
+import net.java.otr4j.api.InstanceTag;
+import net.java.otr4j.api.OtrException;
+import net.java.otr4j.api.OtrPolicy;
+import net.java.otr4j.api.Session;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.*;
 
@@ -147,7 +149,7 @@ public interface ScOtrEngine
      * 
      * @return A list of all instances of the session for the specified contact.
      */
-    public abstract List<Session> getSessionInstances(OtrContact contact);
+    public abstract List<? extends Session> getSessionInstances(OtrContact contact);
 
     /**
      * Some IM networks always relay all messages to all sessions of a client
@@ -205,7 +207,7 @@ public interface ScOtrEngine
      */
     public abstract void removeListener(ScOtrEngineListener listener);
 
-    public abstract PublicKey getRemotePublicKey(OtrContact otrContact);
+    public abstract PublicKey getRemotePublicKey(OtrContact otrContact) throws OtrException;
 
     // New Methods (Policy management)
     /**

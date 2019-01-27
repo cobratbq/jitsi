@@ -17,23 +17,62 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.net.*;
-import java.security.*;
-import java.util.*;
-import java.util.concurrent.*;
-
-import net.java.otr4j.*;
-import net.java.otr4j.crypto.*;
-import net.java.otr4j.session.*;
+import net.java.otr4j.api.ClientProfile;
+import net.java.otr4j.api.InstanceTag;
+import net.java.otr4j.api.OtrEngineHost;
+import net.java.otr4j.api.OtrEngineListener;
+import net.java.otr4j.api.OtrException;
+import net.java.otr4j.api.OtrPolicy;
+import net.java.otr4j.api.Session;
+import net.java.otr4j.api.Session.Version;
+import net.java.otr4j.api.SessionID;
+import net.java.otr4j.api.SessionStatus;
+import net.java.otr4j.crypto.DSAKeyPair;
+import net.java.otr4j.crypto.OtrCryptoEngine;
+import net.java.otr4j.crypto.ed448.EdDSAKeyPair;
+import net.java.otr4j.crypto.ed448.Point;
+import net.java.otr4j.session.OtrSessionManager;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
-import net.java.sip.communicator.plugin.otr.authdialog.*;
-import net.java.sip.communicator.service.browserlauncher.*;
-import net.java.sip.communicator.service.contactlist.*;
-import net.java.sip.communicator.service.gui.*;
-import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.util.*;
+import net.java.sip.communicator.plugin.otr.authdialog.SmpAuthenticateBuddyDialog;
+import net.java.sip.communicator.plugin.otr.authdialog.SmpProgressDialog;
+import net.java.sip.communicator.service.browserlauncher.BrowserLauncherService;
+import net.java.sip.communicator.service.contactlist.MetaContact;
+import net.java.sip.communicator.service.gui.Chat;
+import net.java.sip.communicator.service.gui.ChatLinkClickedListener;
+import net.java.sip.communicator.service.protocol.AccountID;
+import net.java.sip.communicator.service.protocol.Contact;
+import net.java.sip.communicator.service.protocol.ContactResource;
+import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
+import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessagingTransport;
+import net.java.sip.communicator.service.protocol.ProtocolProviderService;
+import net.java.sip.communicator.util.Logger;
+import net.java.sip.communicator.util.ServiceUtils;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
 
-import org.osgi.framework.*;
+import java.net.URI;
+import java.security.SecureRandom;
+import java.security.interfaces.DSAPublicKey;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.TreeSet;
+import java.util.UUID;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.Collections.singleton;
 
 /**
  *
@@ -48,20 +87,35 @@ public class ScOtrEngineImpl
                ChatLinkClickedListener,
                ServiceListener
 {
-    private class ScOtrEngineHost
-        implements OtrEngineHost
+    private class ScOtrEngineHost implements OtrEngineHost
     {
+        private final HashSet<Integer> versions = new HashSet<>(Arrays.asList(Version.THREE, Version.FOUR));
+        private final InstanceTag tag = InstanceTag.random(new SecureRandom());
+        private final EdDSAKeyPair longTermKeyPair = EdDSAKeyPair.generate(new SecureRandom());
+        private final Point forgingKey = EdDSAKeyPair.generate(new SecureRandom()).getPublicKey();
+
         @Override
-        public KeyPair getLocalKeyPair(SessionID sessionID)
+        public DSAKeyPair getLocalKeyPair(SessionID sessionID)
         {
             AccountID accountID =
                 OtrActivator.getAccountIDByUID(sessionID.getAccountID());
-            KeyPair keyPair =
+            DSAKeyPair keyPair =
                 OtrActivator.scOtrKeyManager.loadKeyPair(accountID);
             if (keyPair == null)
                 OtrActivator.scOtrKeyManager.generateKeyPair(accountID);
 
             return OtrActivator.scOtrKeyManager.loadKeyPair(accountID);
+        }
+
+        @Override
+        public EdDSAKeyPair getLongTermKeyPair(final SessionID sessionID) {
+            return this.longTermKeyPair;
+        }
+
+        @Override
+        public ClientProfile getClientProfile(final SessionID sessionID) {
+            return new ClientProfile(this.tag, this.longTermKeyPair.getPublicKey(),
+                    this.forgingKey, this.versions, getLocalKeyPair(sessionID).getPublic());
         }
 
         @Override
@@ -152,9 +206,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void unreadableMessageReceived(SessionID sessionID)
-            throws OtrException
-        {
+        public void unreadableMessageReceived(SessionID sessionID) {
             OtrContact otrContact = getOtrContact(sessionID);
             String resourceName = otrContact.resource != null ?
                 "/" + otrContact.resource.getResourceName() : "";
@@ -172,9 +224,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void unencryptedMessageReceived(SessionID sessionID, String msg)
-            throws OtrException
-        {
+        public void unencryptedMessageReceived(SessionID sessionID, String msg) {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
                 return;
@@ -190,9 +240,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void smpError(SessionID sessionID, int tlvType, boolean cheated)
-            throws OtrException
-        {
+        public void smpError(SessionID sessionID, int tlvType, boolean cheated) {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
                 return;
@@ -223,8 +271,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void smpAborted(SessionID sessionID) throws OtrException
-        {
+        public void smpAborted(SessionID sessionID) {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
                 return;
@@ -256,9 +303,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void finishedSessionMessage(SessionID sessionID, String msgText)
-            throws OtrException
-        {
+        public void finishedSessionMessage(SessionID sessionID, String msgText) {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
                 return;
@@ -278,9 +323,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void requireEncryptedMessage(SessionID sessionID, String msgText)
-            throws OtrException
-        {
+        public void requireEncryptedMessage(SessionID sessionID, String msgText) {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
                 return;
@@ -308,7 +351,7 @@ public class ScOtrEngineImpl
 
         @Override
         public void askForSecret(
-            SessionID sessionID, InstanceTag receiverTag, String question)
+                SessionID sessionID, InstanceTag receiverTag, String question)
         {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
@@ -332,8 +375,7 @@ public class ScOtrEngineImpl
         }
 
         @Override
-        public void verify(
-            SessionID sessionID, String fingerprint, boolean approved)
+        public void verify(SessionID sessionID, String fingerprint)
         {
             OtrContact otrContact = getOtrContact(sessionID);
             if (otrContact == null)
@@ -392,9 +434,7 @@ public class ScOtrEngineImpl
             AccountID accountID =
                 OtrActivator.getAccountIDByUID(sessionID.getAccountID());
 
-            return OtrActivator.resourceService.getI18NString(
-                "plugin.otr.activator.fallbackmessage",
-                new String[] {accountID.getDisplayName()});
+            return "Try using OTR";
         }
 
         @Override
@@ -417,6 +457,11 @@ public class ScOtrEngineImpl
                 new Date(), Chat.SYSTEM_MESSAGE,
                 message,
                 OperationSetBasicInstantMessaging.HTML_MIME_TYPE);
+        }
+
+        @Override
+        public void extraSymmetricKeyDiscovered(final SessionID sessionID, final String s, final byte[] bytes, final byte[] bytes1) {
+            logger.info("Signal for use of extra symmetric key encountered. Ignoring.");
         }
 
         @Override
@@ -446,8 +491,7 @@ public class ScOtrEngineImpl
          * transport channel of the contact's protocol.
          */
         @Override
-        public FragmenterInstructions getFragmenterInstructions(
-            final SessionID sessionID)
+        public int getMaxFragmentSize(final SessionID sessionID)
         {
             final OtrContact otrContact = getOtrContact(sessionID);
             final OperationSetBasicInstantMessagingTransport transport =
@@ -463,30 +507,22 @@ public class ScOtrEngineImpl
                         + "BasicInstantMessagingTransport available. Assuming "
                         + "OTR defaults for OTR fragmentation instructions.");
                 }
-                return null;
+                return Integer.MAX_VALUE;
             }
             int messageSize = transport.getMaxMessageSize(otrContact.contact);
             if (messageSize
                 == OperationSetBasicInstantMessagingTransport.UNLIMITED)
             {
-                messageSize = FragmenterInstructions.UNLIMITED;
-            }
-            int numberOfMessages =
-                transport.getMaxNumberOfMessages(otrContact.contact);
-            if (numberOfMessages
-                == OperationSetBasicInstantMessagingTransport.UNLIMITED)
-            {
-                numberOfMessages = FragmenterInstructions.UNLIMITED;
+                messageSize = Integer.MAX_VALUE;
             }
             if (logger.isDebugEnabled())
             {
                 logger.debug("OTR fragmentation instructions for sending a "
                     + "message to " + otrContact.contact.getDisplayName()
                     + " (" + otrContact.contact.getAddress()
-                    + "). Maximum number of " + "messages: " + numberOfMessages
-                    + ", maximum message size: " + messageSize);
+                    + "). Maximum message size: " + messageSize);
             }
-            return new FragmenterInstructions(numberOfMessages, messageSize);
+            return messageSize;
         }
     }
 
@@ -566,10 +602,9 @@ public class ScOtrEngineImpl
 
     private final OtrConfigurator configurator = new OtrConfigurator();
 
-    private final List<String> injectedMessageUIDs = new Vector<String>();
+    private final List<String> injectedMessageUIDs = new Vector<>();
 
-    private final List<ScOtrEngineListener> listeners =
-        new Vector<ScOtrEngineListener>();
+    private final List<ScOtrEngineListener> listeners = new Vector<>();
 
     /**
      * The logger
@@ -582,7 +617,7 @@ public class ScOtrEngineImpl
 
     public ScOtrEngineImpl()
     {
-        otrEngine = new OtrSessionManagerImpl(otrEngineHost);
+        otrEngine = new OtrSessionManager(otrEngineHost);
 
         // Clears the map after previous instance
         // This is required because of OSGi restarts in the same VM on Android
@@ -592,7 +627,7 @@ public class ScOtrEngineImpl
         this.otrEngine.addOtrEngineListener(new OtrEngineListener()
         {
             @Override
-            public void sessionStatusChanged(SessionID sessionID)
+            public void sessionStatusChanged(SessionID sessionID, InstanceTag instance)
             {
                 OtrContact otrContact = getOtrContact(sessionID);
                 if (otrContact == null)
@@ -613,21 +648,16 @@ public class ScOtrEngineImpl
                 case ENCRYPTED:
                     scSessionStatus = ScSessionStatus.ENCRYPTED;
                     scSessionStatusMap.put(sessionID, scSessionStatus);
-                    PublicKey remotePubKey = session.getRemotePublicKey();
+                    DSAPublicKey remotePubKey = null;
+                    try {
+                        remotePubKey = session.getRemotePublicKey();
+                    } catch (OtrException e) {
+                        // FIXME determine what to do here as we aren't really in ENCRYPTED session anymore.
+                        break;
+                    }
 
                     String remoteFingerprint = null;
-                    try
-                    {
-                        remoteFingerprint =
-                            new OtrCryptoEngineImpl().
-                                getFingerprint(remotePubKey);
-                    }
-                    catch (OtrCryptoException e)
-                    {
-                        logger.debug(
-                            "Could not get the fingerprint from the "
-                            + "public key of contact: " + contact);
-                    }
+                    remoteFingerprint = OtrCryptoEngine.getFingerprint(remotePubKey);
 
                     List<String> allFingerprintsOfContact =
                         OtrActivator.scOtrKeyManager.
@@ -879,7 +909,7 @@ public class ScOtrEngineImpl
         if (policy < 0)
             return getGlobalPolicy();
         else
-            return new OtrPolicyImpl(policy);
+            return new OtrPolicy(policy);
     }
 
     @Override
@@ -890,7 +920,7 @@ public class ScOtrEngineImpl
          */
         int defaultScOtrPolicy =
             OtrPolicy.OTRL_POLICY_DEFAULT & ~OtrPolicy.SEND_WHITESPACE_TAG;
-        return new OtrPolicyImpl(this.configurator.getPropertyInt(
+        return new OtrPolicy(this.configurator.getPropertyInt(
             "GLOBAL_POLICY", defaultScOtrPolicy));
     }
 
@@ -1307,18 +1337,22 @@ public class ScOtrEngineImpl
     }
 
     @Override
-    public PublicKey getRemotePublicKey(OtrContact otrContact)
-    {
+    public DSAPublicKey getRemotePublicKey(OtrContact otrContact) {
         if (otrContact == null)
             return null;
 
         Session session = getSession(otrContact);
 
-        return session.getRemotePublicKey();
+        try {
+            return session.getRemotePublicKey();
+        } catch (OtrException e) {
+            logger.warn("Failed to acquire remote public key.", e);
+            return null;
+        }
     }
 
     @Override
-    public List<Session> getSessionInstances(OtrContact otrContact)
+    public List<? extends Session> getSessionInstances(OtrContact otrContact)
     {
         if (otrContact == null)
             return Collections.emptyList();
@@ -1334,7 +1368,8 @@ public class ScOtrEngineImpl
         Session session = getSession(contact);
 
         scSessionStatusMap.remove(session.getSessionID());
-        return session.setOutgoingInstance(tag);
+        session.setOutgoingSession(tag);
+        return true;
     }
 
     @Override
@@ -1345,6 +1380,6 @@ public class ScOtrEngineImpl
 
         SessionID sessionID = getSessionID(contact);
 
-        return otrEngine.getSession(sessionID).getOutgoingInstance();
+        return otrEngine.getSession(sessionID).getOutgoingSession();
     }
 }

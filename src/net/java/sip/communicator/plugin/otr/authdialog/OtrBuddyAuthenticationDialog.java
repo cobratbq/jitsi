@@ -20,6 +20,7 @@ package net.java.sip.communicator.plugin.otr.authdialog;
 import java.awt.*;
 import java.awt.event.*;
 import java.security.*;
+import java.security.interfaces.DSAPublicKey;
 
 import javax.swing.*;
 
@@ -191,8 +192,7 @@ public class OtrBuddyAuthenticationDialog
                     ActionComboBoxItem actionItem =
                         (ActionComboBoxItem) fingerprintPanel.
                             getCbAction().getSelectedItem();
-                    PublicKey pubKey =
-                        OtrActivator.scOtrEngine.getRemotePublicKey(contact);
+                    DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(contact);
                     String fingerprint =
                         OtrActivator.scOtrKeyManager.
                             getFingerprintFromPublicKey(pubKey);
