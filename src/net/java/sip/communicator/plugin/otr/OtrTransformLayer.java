@@ -17,7 +17,6 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import net.java.otr4j.io.*;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.Message;
@@ -28,12 +27,12 @@ import net.java.sip.communicator.service.protocol.event.*;
  *
  * @author George Politis
  */
-public class OtrTransformLayer
-    implements TransformLayer
+final class OtrTransformLayer implements TransformLayer
 {
     /*
      * Implements TransformLayer#messageDelivered(MessageDeliveredEvent).
      */
+    @Override
     public MessageDeliveredEvent messageDelivered(MessageDeliveredEvent evt)
     {
         if (OtrActivator.scOtrEngine.isMessageUIDInjected(evt
@@ -49,6 +48,7 @@ public class OtrTransformLayer
      * Implements
      * TransformLayer#messageDeliveryFailed(MessageDeliveryFailedEvent).
      */
+    @Override
     public MessageDeliveryFailedEvent messageDeliveryFailed(
         MessageDeliveryFailedEvent evt)
     {
@@ -58,6 +58,7 @@ public class OtrTransformLayer
     /*
      * Implements TransformLayer#messageDeliveryPending(MessageDeliveredEvent).
      */
+    @Override
     public MessageDeliveredEvent[] messageDeliveryPending(
         MessageDeliveredEvent evt)
     {
@@ -119,6 +120,7 @@ public class OtrTransformLayer
     /*
      * Implements TransformLayer#messageReceived(MessageReceivedEvent).
      */
+    @Override
     public MessageReceivedEvent messageReceived(MessageReceivedEvent evt)
     {
         Contact contact = evt.getSourceContact();
@@ -148,11 +150,8 @@ public class OtrTransformLayer
                 evt.getSourceMessage().getMessageUID());
 
         // Create a new event and return.
-        MessageReceivedEvent processedEvent =
-            new MessageReceivedEvent(processedMessage, contact, evt
+        return new MessageReceivedEvent(processedMessage, contact, evt
                 .getContactResource(), evt.getTimestamp(),
                 evt.getCorrectedMessageUID());
-
-        return processedEvent;
     }
 }

@@ -17,7 +17,6 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import net.java.otr4j.api.OtrException;
 import net.java.otr4j.api.OtrPolicy;
 import net.java.sip.communicator.plugin.desktoputil.AnimatedImage;
 import net.java.sip.communicator.plugin.desktoputil.SIPCommButton;
@@ -44,10 +43,8 @@ import java.security.interfaces.DSAPublicKey;
  * @author George Politis
  * @author Marin Dzhigarov
  */
-public class OtrMetaContactButton
-    extends AbstractPluginComponent
-    implements ScOtrEngineListener,
-               ScOtrKeyManagerListener
+final class OtrMetaContactButton extends AbstractPluginComponent
+    implements ScOtrEngineListener, ScOtrKeyManagerListener
 {
     /**
      * The logger
@@ -70,54 +67,8 @@ public class OtrMetaContactButton
 
     private Image timedoutPadlockImage;
 
-    public void sessionStatusChanged(OtrContact otrContact)
-    {
-        // OtrMetaContactButton.this.contact can be null.
-        if (otrContact.equals(OtrMetaContactButton.this.otrContact))
-        {
-            try {
-                setStatus(
-                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
-            } catch (OtrException e) {
-                logger.warn("Failed to set status.", e);
-            }
-        }
-    }
-
-    public void contactPolicyChanged(Contact contact)
-    {
-        // OtrMetaContactButton.this.contact can be null.
-        if (OtrMetaContactButton.this.otrContact != null &&
-            contact.equals(OtrMetaContactButton.this.otrContact.contact))
-        {
-            setPolicy(
-                OtrActivator.scOtrEngine.getContactPolicy(contact));
-        }
-    }
-
-    public void globalPolicyChanged()
-    {
-        if (OtrMetaContactButton.this.otrContact != null)
-            setPolicy(
-                OtrActivator.scOtrEngine.getContactPolicy(otrContact.contact));
-    }
-
-    public void contactVerificationStatusChanged(OtrContact otrContact)
-    {
-        // OtrMetaContactButton.this.contact can be null.
-        if (otrContact.equals(OtrMetaContactButton.this.otrContact))
-        {
-            try {
-                setStatus(
-                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
-            } catch (OtrException e) {
-                logger.warn("Failed to set status.", e);
-            }
-        }
-    }
-
-    public OtrMetaContactButton(Container container,
-                                PluginComponentFactory parentFactory)
+    OtrMetaContactButton(Container container,
+                         PluginComponentFactory parentFactory)
     {
         super(container, parentFactory);
 
@@ -133,6 +84,46 @@ public class OtrMetaContactButton
          * remove it as a listener of scOtrEngine and scOtrKeyManager.
          */
         new OtrWeakListener<>(this, OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
+    }
+
+    @Override
+    public void sessionStatusChanged(OtrContact otrContact)
+    {
+        // OtrMetaContactButton.this.contact can be null.
+        if (otrContact.equals(OtrMetaContactButton.this.otrContact))
+        {
+            setStatus(OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+        }
+    }
+
+    @Override
+    public void contactPolicyChanged(Contact contact)
+    {
+        // OtrMetaContactButton.this.contact can be null.
+        if (OtrMetaContactButton.this.otrContact != null &&
+            contact.equals(OtrMetaContactButton.this.otrContact.contact))
+        {
+            setPolicy(
+                OtrActivator.scOtrEngine.getContactPolicy(contact));
+        }
+    }
+
+    @Override
+    public void globalPolicyChanged()
+    {
+        if (OtrMetaContactButton.this.otrContact != null) {
+            setPolicy(OtrActivator.scOtrEngine.getContactPolicy(otrContact.contact));
+        }
+    }
+
+    @Override
+    public void contactVerificationStatusChanged(OtrContact otrContact)
+    {
+        // OtrMetaContactButton.this.contact can be null.
+        if (otrContact.equals(OtrMetaContactButton.this.otrContact))
+        {
+            setStatus(OtrActivator.scOtrEngine.getSessionStatus(otrContact));
+        }
     }
 
     /**
@@ -237,6 +228,7 @@ public class OtrMetaContactButton
      * which is the component of this plugin creating it first if it doesn't
      * exist.
      */
+    @Override
     public Object getComponent()
     {
         return getButton();
@@ -245,6 +237,7 @@ public class OtrMetaContactButton
     /*
      * Implements PluginComponent#getName().
      */
+    @Override
     public String getName()
     {
         return "";
@@ -259,17 +252,14 @@ public class OtrMetaContactButton
         setCurrentContact(contact, null);
     }
 
+    @Override
     public void setCurrentContact(Contact contact, String resourceName)
     {
         if (contact == null)
         {
             this.otrContact = null;
             this.setPolicy(null);
-            try {
-                this.setStatus(ScSessionStatus.PLAINTEXT);
-            } catch (OtrException e) {
-                logger.warn("Failed to set status.", e);
-            }
+            this.setStatus(ScSessionStatus.PLAINTEXT);
             return;
         }
 
@@ -280,12 +270,8 @@ public class OtrMetaContactButton
             if (this.otrContact == otrContact)
                 return;
             this.otrContact = otrContact;
-            try {
-                this.setStatus(
-                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
-            } catch (OtrException e) {
-                logger.warn("Failed to set status.", e);
-            }
+            this.setStatus(
+                OtrActivator.scOtrEngine.getSessionStatus(otrContact));
             this.setPolicy(
                 OtrActivator.scOtrEngine.getContactPolicy(contact));
             return;
@@ -299,12 +285,8 @@ public class OtrMetaContactButton
                 if (this.otrContact == otrContact)
                     return;
                 this.otrContact = otrContact;
-                try {
-                    this.setStatus(
-                        OtrActivator.scOtrEngine.getSessionStatus(otrContact));
-                } catch (OtrException e) {
-                    logger.warn("Failed to set status.", e);
-                }
+                this.setStatus(
+                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
                 this.setPolicy(
                     OtrActivator.scOtrEngine.getContactPolicy(contact));
                 return;
@@ -340,7 +322,7 @@ public class OtrMetaContactButton
      *
      * @param status the {@link ScSessionStatus}.
      */
-    private void setStatus(ScSessionStatus status) throws OtrException {
+    private void setStatus(ScSessionStatus status) {
         animatedPadlockImage.pause();
         Image image;
         String tipKey;
@@ -349,14 +331,10 @@ public class OtrMetaContactButton
         case ENCRYPTED:
             DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
             String fingerprint = OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
-            image
-                = OtrActivator.scOtrKeyManager.isVerified(
-                        otrContact.contact, fingerprint)
+            image = OtrActivator.scOtrKeyManager.isVerified(otrContact.contact, fingerprint)
                     ? verifiedLockedPadlockImage
                     : unverifiedLockedPadlockImage;
-            tipKey = 
-                OtrActivator.scOtrKeyManager.isVerified(
-                        otrContact.contact, fingerprint)
+            tipKey = OtrActivator.scOtrKeyManager.isVerified(otrContact.contact, fingerprint)
                 ? "plugin.otr.menu.VERIFIED"
                 : "plugin.otr.menu.UNVERIFIED";
             break;
@@ -398,12 +376,7 @@ public class OtrMetaContactButton
         // OtrMetaContactButton.this.contact can be null.
         if (otrContact.equals(OtrMetaContactButton.this.otrContact))
         {
-            try {
-                setStatus(
-                    OtrActivator.scOtrEngine.getSessionStatus(otrContact));
-            } catch (OtrException e) {
-                logger.warn("Failed to set status.", e);
-            }
+            setStatus(OtrActivator.scOtrEngine.getSessionStatus(otrContact));
         }
     }
 }

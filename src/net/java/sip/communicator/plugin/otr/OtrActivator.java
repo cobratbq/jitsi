@@ -42,7 +42,6 @@ public class OtrActivator
     extends AbstractServiceDependentActivator
     implements ServiceListener
 {
-
     /**
      * The {@link BundleContext} of the {@link OtrActivator}.
      */
@@ -118,14 +117,16 @@ public class OtrActivator
      * The {@link OtrContactManager} of the {@link OtrActivator}.
      */
     private static OtrContactManager otrContactManager;
-    
+
+    private OtrTransformLayer otrTransformLayer;
+
     /**
      * Gets an {@link AccountID} by its UID.
      *
      * @param uid The {@link AccountID} UID.
      * @return The {@link AccountID} with the requested UID or null.
      */
-    public static AccountID getAccountIDByUID(String uid)
+    static AccountID getAccountIDByUID(String uid)
     {
         if (uid == null || uid.length() < 1)
             return null;
@@ -162,7 +163,7 @@ public class OtrActivator
         if (providerFactoriesMap == null)
             return null;
 
-        List<AccountID> accountIDs = new Vector<AccountID>();
+        List<AccountID> accountIDs = new Vector<>();
 
         for (ProtocolProviderFactory providerFactory
                 : providerFactoriesMap.values())
@@ -178,11 +179,9 @@ public class OtrActivator
         getProtocolProviderFactories()
     {
         Collection<ServiceReference<ProtocolProviderFactory>> serRefs
-            = ServiceUtils.getServiceReferences(
-                    bundleContext,
+            = ServiceUtils.getServiceReferences(bundleContext,
                     ProtocolProviderFactory.class);
-        Map<Object, ProtocolProviderFactory> providerFactoriesMap
-            = new Hashtable<Object, ProtocolProviderFactory>();
+        Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
 
         if (!serRefs.isEmpty())
         {
@@ -198,8 +197,6 @@ public class OtrActivator
         }
         return providerFactoriesMap;
     }
-
-    private OtrTransformLayer otrTransformLayer;
 
     /**
      * The dependent class. We are waiting for the ui service.
@@ -287,10 +284,7 @@ public class OtrActivator
     @Override
     public void start(Object dependentService)
     {
-        configService
-            = ServiceUtils.getService(
-                    bundleContext,
-                    ConfigurationService.class);
+        configService = ServiceUtils.getService(bundleContext, ConfigurationService.class);
         // Check whether someone has disabled this plug-in.
         if(configService.getBoolean(OTR_DISABLED_PROP, false))
         {
@@ -343,8 +337,7 @@ public class OtrActivator
 
         if(!OSUtils.IS_ANDROID)
         {
-            Hashtable<String, String> containerFilter
-                = new Hashtable<String, String>();
+            Hashtable<String, String> containerFilter = new Hashtable<>();
 
             // Register the right-click menu item.
             containerFilter.put(Container.CONTAINER_ID,
@@ -403,8 +396,7 @@ public class OtrActivator
         if (!configService.getBoolean(OTR_CHAT_CONFIG_DISABLED_PROP, false)
                 && !OSUtils.IS_ANDROID)
         {
-            Dictionary<String, String> properties
-                = new Hashtable<String, String>();
+            Dictionary<String, String> properties = new Hashtable<>();
 
             properties.put( ConfigurationForm.FORM_TYPE,
                             ConfigurationForm.SECURITY_TYPE);

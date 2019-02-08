@@ -18,7 +18,6 @@
 package net.java.sip.communicator.plugin.otr.authdialog;
 
 import java.awt.*;
-import java.security.*;
 import java.security.interfaces.DSAPublicKey;
 
 import javax.swing.*;
@@ -58,7 +57,7 @@ public class FingerprintAuthenticationPanel
     /**
      * The "I have" / "I have not" combo box.
      */
-    private JComboBox cbAction;
+    private JComboBox<ActionComboBoxItem> cbAction;
 
     private ActionComboBoxItem actionIHave =
         new ActionComboBoxItem(ActionComboBoxItemIndex.I_HAVE);
@@ -117,7 +116,7 @@ public class FingerprintAuthenticationPanel
         c.insets = new Insets(5, 5, 5, 5);
         c.weightx = 0.0;
 
-        cbAction = new JComboBox();
+        cbAction = new JComboBox<>();
         cbAction.addItem(actionIHave);
         cbAction.addItem(actionIHaveNot);
 
@@ -151,7 +150,7 @@ public class FingerprintAuthenticationPanel
         c.gridy = 0;
     }
 
-    public JComboBox getCbAction()
+    JComboBox getCbAction()
     {
         return cbAction;
     }
@@ -199,7 +198,7 @@ public class FingerprintAuthenticationPanel
         compareFingerprints();
     }
 
-    public void compareFingerprints()
+    private void compareFingerprints()
     {
         DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
         String remoteFingerprint =
@@ -236,13 +235,13 @@ public class FingerprintAuthenticationPanel
         I_HAVE, I_HAVE_NOT
     }
 
-    class ActionComboBoxItem
+    static class ActionComboBoxItem
     {
         public ActionComboBoxItemIndex action;
 
         private String text;
 
-        public ActionComboBoxItem(ActionComboBoxItemIndex actionIndex)
+        ActionComboBoxItem(ActionComboBoxItemIndex actionIndex)
         {
             this.action = actionIndex;
             switch (action)

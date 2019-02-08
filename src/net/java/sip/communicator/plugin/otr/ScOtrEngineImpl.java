@@ -64,15 +64,11 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeSet;
 import java.util.UUID;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.util.Collections.singleton;
 
 /**
  *
@@ -82,10 +78,8 @@ import static java.util.Collections.singleton;
  * @author Marin Dzhigarov
  * @author Danny van Heumen
  */
-public class ScOtrEngineImpl
-    implements ScOtrEngine,
-               ChatLinkClickedListener,
-               ServiceListener
+public final class ScOtrEngineImpl implements ScOtrEngine,
+        ChatLinkClickedListener, ServiceListener
 {
     private class ScOtrEngineHost implements OtrEngineHost
     {
@@ -1360,16 +1354,15 @@ public class ScOtrEngineImpl
     }
 
     @Override
-    public boolean setOutgoingSession(OtrContact contact, InstanceTag tag)
+    public void setOutgoingSession(OtrContact contact, InstanceTag tag)
     {
         if (contact == null)
-            return false;
+            return;
 
         Session session = getSession(contact);
 
         scSessionStatusMap.remove(session.getSessionID());
         session.setOutgoingSession(tag);
-        return true;
     }
 
     @Override

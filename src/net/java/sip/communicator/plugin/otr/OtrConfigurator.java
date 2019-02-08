@@ -30,7 +30,7 @@ import org.jitsi.service.configuration.*;
  *
  * @author George Politis
  */
-public class OtrConfigurator
+final class OtrConfigurator
 {
     /**
      * Gets an XML tag friendly {@link String} from a {@link String}.
@@ -82,7 +82,7 @@ public class OtrConfigurator
      * @return the <tt>byte[]</tt> value of the property with the specified
      *         name.
      */
-    public byte[] getPropertyBytes(String id)
+    byte[] getPropertyBytes(String id)
     {
         String value = OtrActivator.configService.getString(getID(id));
 
@@ -99,7 +99,7 @@ public class OtrConfigurator
      * @return the <tt>Boolean</tt> value of the property with the specified
      *         name.
      */
-    public boolean getPropertyBoolean(String id, boolean defaultValue)
+    boolean getPropertyBoolean(String id, boolean defaultValue)
     {
         return
             OtrActivator.configService.getBoolean(getID(id), defaultValue);
@@ -113,7 +113,7 @@ public class OtrConfigurator
      * @param id the name of the property to change.
      * @param value the new value of the specified property.
      */
-    public void setProperty(String id, byte[] value)
+    void setProperty(String id, byte[] value)
     {
         String valueToStore = new String(Base64.encode(value));
 
@@ -127,7 +127,7 @@ public class OtrConfigurator
      * @param id the name of the property to change.
      * @param value the new value of the specified property.
      */
-    public void setProperty(String id, Object value)
+    void setProperty(String id, Object value)
     {
         OtrActivator.configService.setProperty(getID(id), value);
     }
@@ -138,7 +138,7 @@ public class OtrConfigurator
      *
      * @param id the name of the property to change.
      */
-    public void removeProperty(String id)
+    void removeProperty(String id)
     {
         OtrActivator.configService.removeProperty(getID(id));
     }
@@ -151,7 +151,7 @@ public class OtrConfigurator
      *            name is not associated with a value.
      * @return the <tt>int</tt> value of the property
      */
-    public int getPropertyInt(String id, int defaultValue)
+    int getPropertyInt(String id, int defaultValue)
     {
         return OtrActivator.configService.getInt(getID(id), defaultValue);
     }
@@ -163,7 +163,7 @@ public class OtrConfigurator
      * @param id the name of the property to append to
      * @param value the value to append
      */
-    public void appendProperty(String id, Object value)
+    void appendProperty(String id, Object value)
     {
         Object oldValue = OtrActivator.configService.getProperty(getID(id));
 
@@ -173,7 +173,7 @@ public class OtrConfigurator
         setProperty(id, newValue);
     }
 
-    public List<String> getAppendedProperties(String id)
+    List<String> getAppendedProperties(String id)
     {
         String listProperties =
            (String) OtrActivator.configService.getProperty(getID(id));

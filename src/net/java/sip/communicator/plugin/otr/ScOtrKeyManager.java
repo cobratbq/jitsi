@@ -33,28 +33,27 @@ import java.util.List;
 public interface ScOtrKeyManager
 {
 
-    public abstract void addListener(ScOtrKeyManagerListener l);
+    void addListener(ScOtrKeyManagerListener l);
 
-    public abstract void removeListener(ScOtrKeyManagerListener l);
+    void removeListener(ScOtrKeyManagerListener l);
 
-    public abstract void verify(OtrContact contact, String fingerprint);
+    void verify(OtrContact contact, String fingerprint);
 
-    public abstract void unverify(OtrContact contact, String fingerprint);
+    void unverify(OtrContact contact, String fingerprint);
 
-    public abstract boolean isVerified(Contact contact, String fingerprint);
+    boolean isVerified(Contact contact, String fingerprint);
 
-    public abstract String getFingerprintFromPublicKey(DSAPublicKey pubKey);
+    String getFingerprintFromPublicKey(DSAPublicKey pubKey);
 
-    public abstract List<String> getAllRemoteFingerprints(Contact contact);
+    List<String> getAllRemoteFingerprints(Contact contact);
 
-    public abstract String getLocalFingerprint(AccountID account);
+    String getLocalFingerprint(AccountID account);
 
-    public abstract byte[] getLocalFingerprintRaw(AccountID account);
+    byte[] getLocalFingerprintRaw(AccountID account);
 
-    public abstract void saveFingerprint(Contact contact, String fingerprint);
+    void saveFingerprint(Contact contact, String fingerprint);
 
-    public abstract DSAKeyPair loadKeyPair(AccountID accountID);
+    DSAKeyPair loadKeyPair(AccountID accountID);
 
-    public abstract void generateKeyPair(AccountID accountID);
-
+    void generateKeyPair(AccountID accountID);
 }

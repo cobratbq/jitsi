@@ -34,10 +34,8 @@ import net.java.sip.communicator.service.protocol.*;
  * @author George Politis
  * @author Lubomir Marinov
  */
-public class OtrMetaContactMenu
-    extends AbstractPluginComponent
-    implements ActionListener,
-               PopupMenuListener
+final class OtrMetaContactMenu extends AbstractPluginComponent
+    implements ActionListener, PopupMenuListener
 {
 
     /**
@@ -65,8 +63,8 @@ public class OtrMetaContactMenu
      */
     private JMenuItem whatsThis;
 
-    public OtrMetaContactMenu(Container container,
-                              PluginComponentFactory parentFactory)
+    OtrMetaContactMenu(Container container,
+                       PluginComponentFactory parentFactory)
     {
         super(container, parentFactory);
 

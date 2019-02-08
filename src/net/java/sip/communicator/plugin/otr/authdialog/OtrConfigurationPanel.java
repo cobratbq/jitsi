@@ -35,6 +35,7 @@ import java.util.List;
  *
  * @author George Politis
  */
+// FIXME is this class being used?
 @SuppressWarnings("serial")
 public class OtrConfigurationPanel
     extends TransparentPanel
@@ -61,7 +62,7 @@ public class OtrConfigurationPanel
 
         private JButton btnGenerate;
 
-        public PrivateKeysPanel()
+        PrivateKeysPanel()
         {
             super(new BorderLayout());
 
@@ -76,7 +77,7 @@ public class OtrConfigurationPanel
          * @author George Politis
          */
         private static class AccountsComboBox
-            extends JComboBox
+            extends JComboBox<AccountsComboBox.AccountsComboBoxItem>
         {
             /**
              * A class hosted in an {@link AccountsComboBox} that holds a single
@@ -88,7 +89,7 @@ public class OtrConfigurationPanel
             {
                 public final AccountID accountID;
 
-                public AccountsComboBoxItem(AccountID accountID)
+                AccountsComboBoxItem(AccountID accountID)
                 {
                     this.accountID = accountID;
                 }
@@ -100,7 +101,7 @@ public class OtrConfigurationPanel
                 }
             }
 
-            public AccountsComboBox()
+            AccountsComboBox()
             {
                 List<AccountID> accountIDs = OtrActivator.getAllAccountIDs();
 
@@ -117,7 +118,7 @@ public class OtrConfigurationPanel
              *
              * @return the selected account id
              */
-            public AccountID getSelectedAccountID()
+            AccountID getSelectedAccountID()
             {
                 Object selectedItem = this.getSelectedItem();
                 if (selectedItem instanceof AccountsComboBoxItem)
@@ -240,7 +241,7 @@ public class OtrConfigurationPanel
         extends TransparentPanel
     {
         // TODO We should listen for configuration value changes.
-        public DefaultOtrPolicyPanel()
+        DefaultOtrPolicyPanel()
         {
             this.initComponents();
             this.loadPolicy();
@@ -251,7 +252,7 @@ public class OtrConfigurationPanel
          * reflect the global OTR policy.
          *
          */
-        public void loadPolicy()
+        void loadPolicy()
         {
             OtrPolicy otrPolicy
                 = OtrActivator.scOtrEngine.getGlobalPolicy();
@@ -301,9 +302,7 @@ public class OtrConfigurationPanel
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    OtrPolicy otrPolicy
-                        = OtrActivator.scOtrEngine
-                            .getGlobalPolicy();
+                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
 
                     otrPolicy.setEnableManual(((JCheckBox) e.getSource())
                         .isSelected());
@@ -322,9 +321,7 @@ public class OtrConfigurationPanel
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    OtrPolicy otrPolicy =
-                        OtrActivator.scOtrEngine
-                            .getGlobalPolicy();
+                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
 
                     boolean isAutoInit
                         = ((JCheckBox) e.getSource()).isSelected();

@@ -36,10 +36,8 @@ import java.security.interfaces.DSAPublicKey;
  * @author Lyubomir Marinov
  * @author Marin Dzhigarov
  */
-class OtrContactMenu
-    implements ActionListener,
-               ScOtrEngineListener,
-               ScOtrKeyManagerListener
+final class OtrContactMenu implements ActionListener,
+               ScOtrEngineListener, ScOtrKeyManagerListener
 {
     private final Logger logger = Logger.getLogger(OtrContactMenu.class);
 
@@ -91,10 +89,10 @@ class OtrContactMenu
      * displayed in the Mac OS X screen menu bar; <tt>false</tt>, otherwise
      * @param menu the parent menu
      */
-    public OtrContactMenu(  OtrContact otrContact,
-                            boolean inMacOSXScreenMenuBar,
-                            JMenu menu,
-                            boolean isSeparateMenu)
+    OtrContactMenu(OtrContact otrContact,
+                   boolean inMacOSXScreenMenuBar,
+                   JMenu menu,
+                   boolean isSeparateMenu)
     {
         this.contact = otrContact;
         this.inMacOSXScreenMenuBar = inMacOSXScreenMenuBar;
@@ -103,10 +101,8 @@ class OtrContactMenu
             otrContact.resource != null
                 ? "/" + otrContact.resource.getResourceName()
                 : "";
-        separateMenu
-            = isSeparateMenu
-                ? new SIPCommMenu(otrContact.contact.getDisplayName()
-                                    + resourceName)
+        separateMenu = isSeparateMenu
+                ? new SIPCommMenu(otrContact.contact.getDisplayName() + resourceName)
                 : null;
 
         /*
@@ -120,8 +116,7 @@ class OtrContactMenu
          * are gone, this instance will become obsolete and OtrWeakListener will
          * remove it as a listener of scOtrEngine and scOtrKeyManager.
          */
-        new OtrWeakListener<OtrContactMenu>(
-                this,
+        new OtrWeakListener<>(this,
                 OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
 
         setSessionStatus(
@@ -135,6 +130,7 @@ class OtrContactMenu
     /*
      * Implements ActionListener#actionPerformed(ActionEvent).
      */
+    @Override
     public void actionPerformed(ActionEvent e)
     {
         String actionCommand = e.getActionCommand();
@@ -222,6 +218,7 @@ class OtrContactMenu
     /*
      * Implements ScOtrEngineListener#contactPolicyChanged(Contact).
      */
+    @Override
     public void contactPolicyChanged(Contact contact)
     {
         // Update the corresponding to the contact menu.
@@ -234,6 +231,7 @@ class OtrContactMenu
      * Implements ScOtrKeyManagerListener#contactVerificationStatusChanged(
      * Contact).
      */
+    @Override
     public void contactVerificationStatusChanged(OtrContact otrContact)
     {
         if (otrContact.equals(OtrContactMenu.this.contact))
@@ -249,6 +247,7 @@ class OtrContactMenu
      */
     void dispose()
     {
+        // FIXME check if we need to call `dispose` manually
         OtrActivator.scOtrEngine.removeListener(this);
         OtrActivator.scOtrKeyManager.removeListener(this);
     }
@@ -256,6 +255,7 @@ class OtrContactMenu
     /*
      * Implements ScOtrEngineListener#globalPolicyChanged().
      */
+    @Override
     public void globalPolicyChanged()
     {
         setOtrPolicy(OtrActivator.scOtrEngine.getContactPolicy(contact.contact));
@@ -443,6 +443,7 @@ class OtrContactMenu
     /*
      * Implements ScOtrEngineListener#sessionStatusChanged(Contact).
      */
+    @Override
     public void sessionStatusChanged(OtrContact otrContact)
     {
         if (otrContact.equals(OtrContactMenu.this.contact))
@@ -511,12 +512,8 @@ class OtrContactMenu
         {
         case ENCRYPTED:
             final DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(contact);
-            String fingerprint =
-                OtrActivator.scOtrKeyManager.
-                    getFingerprintFromPublicKey(pubKey);
-            imageID
-                = OtrActivator.scOtrKeyManager.isVerified(
-                    contact.contact, fingerprint)
+            String fingerprint = OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
+            imageID = OtrActivator.scOtrKeyManager.isVerified(contact.contact, fingerprint)
                     ? "plugin.otr.ENCRYPTED_ICON_16x16"
                     : "plugin.otr.ENCRYPTED_UNVERIFIED_ICON_16x16";
             break;

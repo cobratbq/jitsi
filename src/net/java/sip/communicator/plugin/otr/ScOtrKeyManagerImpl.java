@@ -32,13 +32,13 @@ import net.java.sip.communicator.service.protocol.*;
  * @author George Politis
  * @author Lyubomir Marinov
  */
-public class ScOtrKeyManagerImpl
-    implements ScOtrKeyManager
+final class ScOtrKeyManagerImpl implements ScOtrKeyManager
 {
     private final OtrConfigurator configurator = new OtrConfigurator();
 
     private final List<ScOtrKeyManagerListener> listeners = new Vector<>();
 
+    @Override
     public void addListener(ScOtrKeyManagerListener l)
     {
         synchronized (listeners)
@@ -65,6 +65,7 @@ public class ScOtrKeyManagerImpl
         }
     }
 
+    @Override
     public void removeListener(ScOtrKeyManagerListener l)
     {
         synchronized (listeners)
@@ -73,6 +74,7 @@ public class ScOtrKeyManagerImpl
         }
     }
 
+    @Override
     public void verify(OtrContact otrContact, String fingerprint)
     {
         if ((fingerprint == null) || otrContact == null)
@@ -85,6 +87,7 @@ public class ScOtrKeyManagerImpl
             l.contactVerificationStatusChanged(otrContact);
     }
 
+    @Override
     public void unverify(OtrContact otrContact, String fingerprint)
     {
         if ((fingerprint == null) || otrContact == null)
@@ -97,6 +100,7 @@ public class ScOtrKeyManagerImpl
             l.contactVerificationStatusChanged(otrContact);
     }
 
+    @Override
     public boolean isVerified(Contact contact, String fingerprint)
     {
         if (fingerprint == null || contact == null)
@@ -107,6 +111,7 @@ public class ScOtrKeyManagerImpl
                 + ".fingerprint.verified", false);
     }
 
+    @Override
     public List<String> getAllRemoteFingerprints(Contact contact)
     {
         if (contact == null)
@@ -129,13 +134,10 @@ public class ScOtrKeyManagerImpl
             // We delete the old format property because we are going to convert
             // it in the new format
             this.configurator.removeProperty(userID + ".publicKey");
-
-            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(b64PubKey);
-
-            KeyFactory keyFactory;
             try
             {
-                keyFactory = KeyFactory.getInstance("DSA");
+                X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(b64PubKey);
+                final KeyFactory keyFactory = KeyFactory.getInstance("DSA");
                 DSAPublicKey pubKey = (DSAPublicKey) keyFactory.generatePublic(publicKeySpec);
 
                 boolean isVerified =
@@ -149,17 +151,18 @@ public class ScOtrKeyManagerImpl
                 String fingerprint = getFingerprintFromPublicKey(pubKey);
 
                 // Now we can store the old properties in the new format.
-                if (isVerified)
+                if (isVerified) {
                     verify(OtrContactManager.getOtrContact(contact, null), fingerprint);
-                else
+                } else {
                     unverify(OtrContactManager.getOtrContact(contact, null), fingerprint);
+                }
 
                 // Finally we append the new fingerprint to out stored list of
                 // fingerprints.
                 this.configurator.appendProperty(
                     userID + ".fingerprints", fingerprint);
             }
-            catch (NoSuchAlgorithmException | InvalidKeySpecException e)
+            catch (final NoSuchAlgorithmException | InvalidKeySpecException e)
             {
                 e.printStackTrace();
             }
@@ -171,11 +174,13 @@ public class ScOtrKeyManagerImpl
             contact.getAddress() + ".fingerprints");
     }
 
+    @Override
     public String getFingerprintFromPublicKey(DSAPublicKey pubKey)
     {
         return OtrCryptoEngine.getFingerprint(pubKey);
     }
 
+    @Override
     public String getLocalFingerprint(AccountID account)
     {
         DSAKeyPair keyPair = loadKeyPair(account);
@@ -184,6 +189,7 @@ public class ScOtrKeyManagerImpl
         return OtrCryptoEngine.getFingerprint(keyPair.getPublic());
     }
 
+    @Override
     public byte[] getLocalFingerprintRaw(AccountID account)
     {
         DSAKeyPair keyPair = loadKeyPair(account);
@@ -192,6 +198,7 @@ public class ScOtrKeyManagerImpl
         return OtrCryptoEngine.getFingerprintRaw(keyPair.getPublic());
     }
 
+    @Override
     public void saveFingerprint(Contact contact, String fingerprint)
     {
         if (contact == null)
@@ -204,6 +211,7 @@ public class ScOtrKeyManagerImpl
             + ".fingerprint.verified", false);
     }
 
+    @Override
     public DSAKeyPair loadKeyPair(AccountID account)
     {
         if (account == null)
@@ -227,8 +235,8 @@ public class ScOtrKeyManagerImpl
 
         X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(b64PubKey);
 
-        DSAPublicKey publicKey;
-        DSAPrivateKey privateKey;
+        final DSAPublicKey publicKey;
+        final DSAPrivateKey privateKey;
 
         // Generate KeyPair.
         KeyFactory keyFactory;
@@ -238,15 +246,15 @@ public class ScOtrKeyManagerImpl
             publicKey = (DSAPublicKey) keyFactory.generatePublic(publicKeySpec);
             privateKey = (DSAPrivateKey) keyFactory.generatePrivate(privateKeySpec);
         }
-        catch (NoSuchAlgorithmException | InvalidKeySpecException e)
+        catch (final NoSuchAlgorithmException | InvalidKeySpecException e)
         {
-            e.printStackTrace();
-            return null;
+            throw new IllegalStateException("Failed to generate new keypair.", e);
         }
 
         return new DSAKeyPair(privateKey, publicKey);
     }
 
+    @Override
     public void generateKeyPair(AccountID account)
     {
         if (account == null)
@@ -256,6 +264,7 @@ public class ScOtrKeyManagerImpl
         final KeyPair keyPair;
         try
         {
+            // FIXME adopt generating DSA keypair by `DSAKeyPair.generate()` method.
             final KeyPairGenerator kg = KeyPairGenerator.getInstance("DSA");
             kg.initialize(1024);
             keyPair = kg.genKeyPair();

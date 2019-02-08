@@ -37,7 +37,7 @@ public class ScSessionID
      *
      * @param sessionID the OTR4J SessionID that is being wrapped.
      */
-    public ScSessionID(SessionID sessionID)
+    ScSessionID(SessionID sessionID)
     {
         this.sessionID = sessionID;
     }
@@ -51,7 +51,7 @@ public class ScSessionID
     @Override
     public boolean equals(Object obj)
     {
-        return (obj != null) && sessionID.toString().equals(obj.toString());
+        return sessionID.equals(obj);
     }
 
     /**
@@ -59,6 +59,7 @@ public class ScSessionID
      *
      * @return The GUID generated for this SessionID.
      */
+    // FIXME what is the UUID good for?
     public UUID getGUID()
     {
         return guid;
@@ -69,7 +70,7 @@ public class ScSessionID
      *
      * @return sessionID
      */
-    public SessionID getSessionID()
+    SessionID getSessionID()
     {
         return sessionID;
     }

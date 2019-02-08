@@ -17,7 +17,7 @@
  */
 package net.java.sip.communicator.plugin.otr;
 
-import java.security.*;
+import java.security.interfaces.DSAPublicKey;
 import java.util.*;
 
 import net.java.otr4j.api.InstanceTag;
@@ -46,8 +46,7 @@ public interface ScOtrEngine
      * @param question The question that is asked during the Smp negotiation
      * @param secret The secret answer for the question.
      */
-    public abstract void initSmp(
-        OtrContact contact, String question, String secret);
+    void initSmp(OtrContact contact, String question, String secret);
 
     /**
      * Responds to a question that is asked during the Smp negotiation process.
@@ -61,10 +60,8 @@ public interface ScOtrEngine
      * @param question The question that is asked during the Smp negotiation.
      * @param secret The secret answer for the question.
      */
-    public abstract void respondSmp(OtrContact contact,
-                                    InstanceTag receiverTag,
-                                    String question,
-                                    String secret);
+    void respondSmp(OtrContact contact, InstanceTag receiverTag,
+                    String question, String secret);
 
     /**
      * Aborts the Smp negotiation process.
@@ -74,7 +71,7 @@ public interface ScOtrEngine
      * @param contact The contact with whom we want to abort the
      * Smp negotiation process.
      */
-    public abstract void abortSmp(OtrContact contact);
+    void abortSmp(OtrContact contact);
 
     /**
      * Transforms an outgoing message.
@@ -83,7 +80,7 @@ public interface ScOtrEngine
      * @param content the original message content.
      * @return the transformed message content.
      */
-    public abstract String[] transformSending(OtrContact contact, String content);
+    String[] transformSending(OtrContact contact, String content);
 
     /**
      * Transforms an incoming message.
@@ -92,7 +89,7 @@ public interface ScOtrEngine
      * @param content the original message content.
      * @return the transformed message content.
      */
-    public abstract String transformReceiving(OtrContact contact, String content);
+    String transformReceiving(OtrContact contact, String content);
 
     /**
      * Starts the Off-the-Record session for the given {@link OtrContact}, if it's
@@ -101,7 +98,7 @@ public interface ScOtrEngine
      * @param contact the {@link OtrContact} with whom we want to start an OTR
      *            session.
      */
-    public abstract void startSession(OtrContact contact);
+    void startSession(OtrContact contact);
 
     /**
      * Ends the Off-the-Record session for the given {@link OtrContact}, if it is
@@ -110,7 +107,7 @@ public interface ScOtrEngine
      * @param contact the {@link OtrContact} with whom we want to end the OTR
      *            session.
      */
-    public abstract void endSession(OtrContact contact);
+    void endSession(OtrContact contact);
 
     /**
      * Refreshes the Off-the-Record session for the given {@link OtrContact}. If
@@ -119,7 +116,7 @@ public interface ScOtrEngine
      * @param contact the {@link OtrContact} with whom we want to refresh the OTR
      *            session.
      */
-    public abstract void refreshSession(OtrContact contact);
+    void refreshSession(OtrContact contact);
 
     /**
      * Get the outgoing OTRv3 <tt>Session</tt>. This could be the 'master'
@@ -133,7 +130,7 @@ public interface ScOtrEngine
      * @return the <tt>Session</tt> that is currently transforming outgoing all
      *            messages.
      */
-    public abstract Session getOutgoingSession(OtrContact contact);
+    Session getOutgoingSession(OtrContact contact);
 
     /**
      * Some IM networks always relay all messages to all sessions of a client
@@ -149,7 +146,7 @@ public interface ScOtrEngine
      * 
      * @return A list of all instances of the session for the specified contact.
      */
-    public abstract List<? extends Session> getSessionInstances(OtrContact contact);
+    List<? extends Session> getSessionInstances(OtrContact contact);
 
     /**
      * Some IM networks always relay all messages to all sessions of a client
@@ -169,7 +166,7 @@ public interface ScOtrEngine
      * @return true if an outgoing session with such {@link InstanceTag} exists
      *          . Otherwise false
      */
-    public abstract boolean setOutgoingSession(OtrContact contact, InstanceTag tag);
+    void setOutgoingSession(OtrContact contact, InstanceTag tag);
 
     /**
      * Gets the {@link ScSessionStatus} for the given {@link OtrContact}.
@@ -178,7 +175,7 @@ public interface ScOtrEngine
      *            interested in.
      * @return the {@link ScSessionStatus}.
      */
-    public abstract ScSessionStatus getSessionStatus(OtrContact contact);
+    ScSessionStatus getSessionStatus(OtrContact contact);
 
     // New Methods (Misc)
 
@@ -191,23 +188,23 @@ public interface ScOtrEngine
      * @return <tt>true</tt> if the passed in messageUID is injected by the
      * engine; <tt>false</tt>, otherwise
      */
-    public abstract boolean isMessageUIDInjected(String messageUID);
+    boolean isMessageUIDInjected(String messageUID);
 
     /**
      * Registers an {@link ScOtrEngineListener}.
      *
      * @param listener the {@link ScOtrEngineListener} to register.
      */
-    public abstract void addListener(ScOtrEngineListener listener);
+    void addListener(ScOtrEngineListener listener);
 
     /**
      * Unregisters an {@link ScOtrEngineListener}.
      *
      * @param listener the {@link ScOtrEngineListener} to unregister.
      */
-    public abstract void removeListener(ScOtrEngineListener listener);
+    void removeListener(ScOtrEngineListener listener);
 
-    public abstract PublicKey getRemotePublicKey(OtrContact otrContact) throws OtrException;
+    DSAPublicKey getRemotePublicKey(OtrContact otrContact) throws OtrException;
 
     // New Methods (Policy management)
     /**
@@ -215,7 +212,7 @@ public interface ScOtrEngine
      *
      * @return the global {@link OtrPolicy}
      */
-    public abstract OtrPolicy getGlobalPolicy();
+    OtrPolicy getGlobalPolicy();
 
     /**
      * Gets a {@link Contact} specific policy.
@@ -224,14 +221,14 @@ public interface ScOtrEngine
      * @return The {@link Contact} specific OTR policy. If the specified
      *         {@link Contact} has no policy, the global policy is returned.
      */
-    public abstract OtrPolicy getContactPolicy(Contact contact);
+    OtrPolicy getContactPolicy(Contact contact);
 
     /**
      * Sets the global policy.
      *
      * @param policy the global policy
      */
-    public abstract void setGlobalPolicy(OtrPolicy policy);
+    void setGlobalPolicy(OtrPolicy policy);
 
     /**
      * Sets the contact specific policy
@@ -239,10 +236,10 @@ public interface ScOtrEngine
      * @param contact the {@link Contact} whose policy we want to set
      * @param policy the {@link OtrPolicy}
      */
-    public abstract void setContactPolicy(Contact contact, OtrPolicy policy);
+    void setContactPolicy(Contact contact, OtrPolicy policy);
 
     /**
      * Launches the help page.
      */
-    public abstract void launchHelp();
+    void launchHelp();
 }

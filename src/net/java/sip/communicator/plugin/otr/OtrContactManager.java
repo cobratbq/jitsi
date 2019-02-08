@@ -38,9 +38,8 @@ import org.osgi.framework.*;
  * @author Marin Dzhigarov
  *
  */
-public class OtrContactManager implements ServiceListener
+public final class OtrContactManager implements ServiceListener
 {
-
     /**
      * The logger
      */
@@ -49,8 +48,7 @@ public class OtrContactManager implements ServiceListener
     /**
      * A map that caches OtrContacts to minimize memory usage.
      */
-    private static final Map<Contact, List<OtrContact>> contactsMap =
-        new ConcurrentHashMap<Contact, List<OtrContact>>();
+    private static final Map<Contact, List<OtrContact>> contactsMap = new ConcurrentHashMap<>();
 
     /**
      * The <tt>OtrContact</tt> class is just a wrapper of
@@ -87,9 +85,7 @@ public class OtrContactManager implements ServiceListener
             {
                 if (this.resource != null && resource.equals(other.resource))
                     return true;
-                if (this.resource == null && other.resource == null)
-                    return true;
-                return false;
+                return this.resource == null && other.resource == null;
             }
             return false;
         }
@@ -145,7 +141,7 @@ public class OtrContactManager implements ServiceListener
             {
                 while (!contactsMap.containsKey(contact))
                 {
-                    otrContactsList = new ArrayList<OtrContact>();
+                    otrContactsList = new ArrayList<>();
                     contactsMap.put(contact, otrContactsList);
                 }
             }
@@ -168,8 +164,7 @@ public class OtrContactManager implements ServiceListener
         {
             if (logger.isDebugEnabled())
             {
-                logger.debug(
-                        "Unregistering a ProtocolProviderService, cleaning"
+                logger.debug("Unregistering a ProtocolProviderService, cleaning"
                             + " OTR's Contact to OtrContact map");
             }
 

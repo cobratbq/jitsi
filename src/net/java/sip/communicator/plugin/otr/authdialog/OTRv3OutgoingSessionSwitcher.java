@@ -44,7 +44,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.security.PublicKey;
 import java.security.interfaces.DSAPublicKey;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,11 +55,8 @@ import java.util.Map;
  * @author Marin Dzhigarov
  *
  */
-public class OTRv3OutgoingSessionSwitcher
-    extends SIPCommMenuBar
-    implements PluginComponent,
-               ActionListener,
-               ScOtrEngineListener,
+public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
+    implements PluginComponent, ActionListener, ScOtrEngineListener,
                ScOtrKeyManagerListener
 {
 
@@ -147,7 +143,7 @@ public class OTRv3OutgoingSessionSwitcher
         /**
          * Creates a fade in and out effect for this {@link JMenu}
          */
-        public void fadeAnimation()
+        void fadeAnimation()
         {
             alphaChanger.stop();
             alpha = 0.85f;
@@ -363,7 +359,7 @@ public class OTRv3OutgoingSessionSwitcher
      * @param otrContact the contact which is logged in multiple locations
      */
     private void buildMenu(OtrContact otrContact) {
-        if (otrContact == null || !this.contact.equals(otrContact))
+        if (!this.contact.equals(otrContact))
         {
             return;
         }

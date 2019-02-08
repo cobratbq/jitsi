@@ -30,9 +30,9 @@ import net.java.sip.communicator.plugin.otr.authdialog.*;
  * @author Daniel Perren
  * @author Pawel Domas
  */
-public class SwingOtrActionHandler
-    implements OtrActionHandler
+final class SwingOtrActionHandler implements OtrActionHandler
 {
+    @Override
     public void onAuthenticateLinkClicked(UUID uuid)
     {
         OtrContact otrContact = ScOtrEngineImpl.getOtrContact(
@@ -41,7 +41,7 @@ public class SwingOtrActionHandler
         openAuthDialog(otrContact);
     }
 
-    public static void openAuthDialog(OtrContact contact)
+    static void openAuthDialog(OtrContact contact)
     {
         // Launch auth buddy dialog.
         OtrBuddyAuthenticationDialog authenticateBuddyDialog

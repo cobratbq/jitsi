@@ -25,5 +25,5 @@ import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
  */
 public interface ScOtrKeyManagerListener
 {
-    public void contactVerificationStatusChanged(OtrContact contact);
+    void contactVerificationStatusChanged(OtrContact contact);
 }

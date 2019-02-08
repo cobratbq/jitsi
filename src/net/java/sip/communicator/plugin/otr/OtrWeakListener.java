@@ -33,11 +33,8 @@ import net.java.sip.communicator.service.protocol.*;
  *
  * @author Lyubomir Marinov
  */
-public class OtrWeakListener
-    <T extends ScOtrEngineListener &
-               ScOtrKeyManagerListener>
-    implements ScOtrEngineListener,
-               ScOtrKeyManagerListener
+public class OtrWeakListener<T extends ScOtrEngineListener & ScOtrKeyManagerListener>
+    implements ScOtrEngineListener, ScOtrKeyManagerListener
 {
     /**
      * The <tt>ScOtrEngine</tt> the <tt>T</tt> associated with
@@ -70,9 +67,7 @@ public class OtrWeakListener
      * @param keyManager the <tt>ScOtrKeyManager</tt> which is to be
      * listened to by the specified <tt>T</tt>
      */
-    public OtrWeakListener(
-            T listener,
-            ScOtrEngine engine, ScOtrKeyManager keyManager)
+    public OtrWeakListener(T listener, ScOtrEngine engine, ScOtrKeyManager keyManager)
     {
         if (listener == null)
             throw new NullPointerException("listener");
@@ -91,6 +86,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void contactPolicyChanged(Contact contact)
     {
         ScOtrEngineListener l = getListener();
@@ -105,6 +101,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void contactVerificationStatusChanged(OtrContact contact)
     {
         ScOtrKeyManagerListener l = getListener();
@@ -143,6 +140,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void globalPolicyChanged()
     {
         ScOtrEngineListener l = getListener();
@@ -157,6 +155,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void sessionStatusChanged(OtrContact contact)
     {
         ScOtrEngineListener l = getListener();
@@ -169,6 +168,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void multipleInstancesDetected(OtrContact contact)
     {
         ScOtrEngineListener l = getListener();
@@ -181,6 +181,7 @@ public class OtrWeakListener
      * Forwards the event/notification to the associated
      * <tt>T</tt> if it is still needed by the application.
      */
+    @Override
     public void outgoingSessionChanged(OtrContact contact)
     {
         ScOtrEngineListener l = getListener();
