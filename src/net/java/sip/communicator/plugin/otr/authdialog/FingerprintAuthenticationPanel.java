@@ -120,7 +120,7 @@ public class FingerprintAuthenticationPanel
         cbAction.addItem(actionIHave);
         cbAction.addItem(actionIHaveNot);
 
-        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine().getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
         cbAction.setSelectedItem(OtrActivator.scOtrKeyManager
@@ -169,7 +169,7 @@ public class FingerprintAuthenticationPanel
 
         // Remote fingerprint.
         String user = otrContact.contact.getDisplayName();
-        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine().getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
         txtRemoteFingerprint.setText(OtrActivator.resourceService
@@ -200,7 +200,7 @@ public class FingerprintAuthenticationPanel
 
     private void compareFingerprints()
     {
-        DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(otrContact);
+        DSAPublicKey pubKey = OtrActivator.scOtrEngine().getRemotePublicKey(otrContact);
         String remoteFingerprint =
             OtrActivator.scOtrKeyManager.getFingerprintFromPublicKey(pubKey);
 

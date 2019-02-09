@@ -173,7 +173,7 @@ public class SmpAuthenticateBuddyDialog
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                OtrActivator.scOtrEngine.launchHelp();
+                OtrActivator.scOtrEngine().launchHelp();
             }
         });
 
@@ -191,7 +191,7 @@ public class SmpAuthenticateBuddyDialog
         {
             public void actionPerformed(ActionEvent e)
             {
-                OtrActivator.scOtrEngine.abortSmp(otrContact);
+                OtrActivator.scOtrEngine().abortSmp(otrContact);
                 SmpAuthenticateBuddyDialog.this.dispose();
             }
         });
@@ -208,7 +208,7 @@ public class SmpAuthenticateBuddyDialog
         {
             public void actionPerformed(ActionEvent e)
             {
-                OtrActivator.scOtrEngine.respondSmp(
+                OtrActivator.scOtrEngine().respondSmp(
                     otrContact, receiverTag, question, answerTextBox.getText());
                 SmpAuthenticateBuddyDialog.this.dispose();
             }

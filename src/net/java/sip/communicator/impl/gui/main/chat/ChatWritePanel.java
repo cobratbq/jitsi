@@ -1636,10 +1636,8 @@ public class ChatWritePanel
         {
             for (ServiceReference<PluginComponentFactory> serRef : serRefs)
             {
-                PluginComponentFactory factory
-                    = GuiActivator.bundleContext.getService(serRef);
-                PluginComponent component
-                    = factory.getPluginComponentInstance(this);
+                PluginComponentFactory factory = GuiActivator.bundleContext.getService(serRef);
+                PluginComponent component = factory.getPluginComponentInstance(this);
                 this.pluginComponents.add(component);
 
                 ChatSession chatSession = chatPanel.getChatSession();

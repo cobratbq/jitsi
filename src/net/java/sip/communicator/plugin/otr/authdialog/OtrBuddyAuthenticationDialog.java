@@ -17,18 +17,20 @@
  */
 package net.java.sip.communicator.plugin.otr.authdialog;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.security.*;
-import java.security.interfaces.DSAPublicKey;
-
-import javax.swing.*;
-
-import net.java.sip.communicator.plugin.desktoputil.*;
-import net.java.sip.communicator.plugin.otr.*;
+import net.java.sip.communicator.plugin.desktoputil.SIPCommDialog;
+import net.java.sip.communicator.plugin.desktoputil.TransparentPanel;
+import net.java.sip.communicator.plugin.otr.OtrActivator;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.plugin.otr.authdialog.FingerprintAuthenticationPanel.ActionComboBoxItem;
-import net.java.sip.communicator.service.protocol.*;
+import net.java.sip.communicator.service.protocol.Contact;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.security.interfaces.DSAPublicKey;
 
 /**
  * @author George Politis
@@ -138,7 +140,7 @@ public class OtrBuddyAuthenticationDialog
         {
             public void actionPerformed(ActionEvent arg0)
             {
-                OtrActivator.scOtrEngine.launchHelp();
+                OtrActivator.scOtrEngine().launchHelp();
             }
         });
 
@@ -176,7 +178,7 @@ public class OtrBuddyAuthenticationDialog
                     String secret = secretQuestionPanel.getSecret();
                     String question = secretQuestionPanel.getQuestion();
 
-                    OtrActivator.scOtrEngine.initSmp(contact, question, secret);
+                    OtrActivator.scOtrEngine().initSmp(contact, question, secret);
                     dispose();
                 }
                 else if (authenticationMethod.equals(am[1]))
@@ -184,7 +186,7 @@ public class OtrBuddyAuthenticationDialog
                     String secret = sharedSecretPanel.getSecret();
                     String question = null;
 
-                    OtrActivator.scOtrEngine.initSmp(contact, question, secret);
+                    OtrActivator.scOtrEngine().initSmp(contact, question, secret);
                     dispose();
                 }
                 else if (authenticationMethod.equals(am[2]))
@@ -192,7 +194,7 @@ public class OtrBuddyAuthenticationDialog
                     ActionComboBoxItem actionItem =
                         (ActionComboBoxItem) fingerprintPanel.
                             getCbAction().getSelectedItem();
-                    DSAPublicKey pubKey = OtrActivator.scOtrEngine.getRemotePublicKey(contact);
+                    DSAPublicKey pubKey = OtrActivator.scOtrEngine().getRemotePublicKey(contact);
                     String fingerprint =
                         OtrActivator.scOtrKeyManager.
                             getFingerprintFromPublicKey(pubKey);

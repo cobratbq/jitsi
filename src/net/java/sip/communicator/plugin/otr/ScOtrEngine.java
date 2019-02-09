@@ -204,7 +204,7 @@ public interface ScOtrEngine
      */
     void removeListener(ScOtrEngineListener listener);
 
-    DSAPublicKey getRemotePublicKey(OtrContact otrContact) throws OtrException;
+    DSAPublicKey getRemotePublicKey(OtrContact otrContact);
 
     // New Methods (Policy management)
     /**

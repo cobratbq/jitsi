@@ -254,8 +254,7 @@ public class OtrConfigurationPanel
          */
         void loadPolicy()
         {
-            OtrPolicy otrPolicy
-                = OtrActivator.scOtrEngine.getGlobalPolicy();
+            OtrPolicy otrPolicy = OtrActivator.scOtrEngine().getGlobalPolicy();
 
             boolean otrEnabled = otrPolicy.isEnableManual();
             cbEnable.setSelected(otrEnabled);
@@ -302,12 +301,12 @@ public class OtrConfigurationPanel
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
+                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine().getGlobalPolicy();
 
                     otrPolicy.setEnableManual(((JCheckBox) e.getSource())
                         .isSelected());
 
-                    OtrActivator.scOtrEngine.setGlobalPolicy(otrPolicy);
+                    OtrActivator.scOtrEngine().setGlobalPolicy(otrPolicy);
 
                     DefaultOtrPolicyPanel.this.loadPolicy();
                 }
@@ -321,14 +320,14 @@ public class OtrConfigurationPanel
             {
                 public void actionPerformed(ActionEvent e)
                 {
-                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine.getGlobalPolicy();
+                    OtrPolicy otrPolicy = OtrActivator.scOtrEngine().getGlobalPolicy();
 
                     boolean isAutoInit
                         = ((JCheckBox) e.getSource()).isSelected();
 
                     otrPolicy.setSendWhitespaceTag(isAutoInit);
 
-                    OtrActivator.scOtrEngine.setGlobalPolicy(otrPolicy);
+                    OtrActivator.scOtrEngine().setGlobalPolicy(otrPolicy);
 
                     DefaultOtrPolicyPanel.this.loadPolicy();
                 }
@@ -344,7 +343,7 @@ public class OtrConfigurationPanel
                 public void actionPerformed(ActionEvent e)
                 {
                     OtrPolicy otrPolicy =
-                        OtrActivator.scOtrEngine.getGlobalPolicy();
+                        OtrActivator.scOtrEngine().getGlobalPolicy();
 
                     boolean isRequired
                         = ((JCheckBox) e.getSource()).isSelected();
@@ -355,7 +354,7 @@ public class OtrConfigurationPanel
                         OtrActivator.OTR_MANDATORY_PROP,
                         Boolean.toString(isRequired));
 
-                    OtrActivator.scOtrEngine.setGlobalPolicy(otrPolicy);
+                    OtrActivator.scOtrEngine().setGlobalPolicy(otrPolicy);
 
                     DefaultOtrPolicyPanel.this.loadPolicy();
 

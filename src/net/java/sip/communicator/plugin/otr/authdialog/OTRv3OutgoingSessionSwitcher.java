@@ -84,8 +84,7 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
      * @author Marin Dzhigarov
      *
      */
-    private static class SelectorMenu
-        extends SIPCommMenu
+    private static class SelectorMenu extends SIPCommMenu
     {
         /**
          * Serial version UID.
@@ -99,34 +98,30 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
 
         private final Timer alphaChanger = new Timer(20, new ActionListener() {
 
-                private float incrementer = -.03f;
+            private float incrementer = -.03f;
 
-                private int fadeCycles = 0;
+            private int fadeCycles = 0;
 
-                @Override
-                public void actionPerformed(ActionEvent e)
-                {
-                    float newAlpha = alpha + incrementer;
-                    if (newAlpha < 0.2f)
-                    {
-                        newAlpha = 0.2f;
-                        incrementer = -incrementer;
-                    } else if (newAlpha > 0.85f)
-                    {
-                        newAlpha = 0.85f;
-                        incrementer = -incrementer;
-                        fadeCycles++;
-                    }
-                    alpha = newAlpha;
-                    if (fadeCycles >= 3)
-                    {
-                        alphaChanger.stop();
-                        fadeCycles = 0;
-                        alpha = 1f;
-                    }
-                    SelectorMenu.this.repaint();
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                float newAlpha = alpha + incrementer;
+                if (newAlpha < 0.2f) {
+                    newAlpha = 0.2f;
+                    incrementer = -incrementer;
+                } else if (newAlpha > 0.85f) {
+                    newAlpha = 0.85f;
+                    incrementer = -incrementer;
+                    fadeCycles++;
                 }
-            });
+                alpha = newAlpha;
+                if (fadeCycles >= 3) {
+                    alphaChanger.stop();
+                    fadeCycles = 0;
+                    alpha = 1f;
+                }
+                SelectorMenu.this.repaint();
+            }
+        });
 
         @Override
         public void paintComponent(Graphics g)
@@ -150,13 +145,12 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
             SelectorMenu.this.repaint();
             alphaChanger.start();
         }
-    };
+    }
 
     /**
      * The OTRv3OutgoingSessionSwitcher constructor
      */
-    public OTRv3OutgoingSessionSwitcher(Container container,
-        PluginComponentFactory parentFactory)
+    public OTRv3OutgoingSessionSwitcher(Container container, PluginComponentFactory parentFactory)
     {
         this.parentFactory = parentFactory;
 
@@ -187,28 +181,24 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
          * obsolete and OtrWeakListener will remove it as a listener of
          * scOtrEngine and scOtrKeyManager.
          */
-        new OtrWeakListener<>(this, OtrActivator.scOtrEngine, OtrActivator.scOtrKeyManager);
+        new OtrWeakListener<>(this, OtrActivator.scOtrEngine(), OtrActivator.scOtrKeyManager);
 
-        try
-        {
+        try {
             finishedPadlockImage = new ImageIcon(ImageIO.read(
                     OtrActivator.resourceService.getImageURL(
-                        "plugin.otr.FINISHED_ICON_BLACK_16x16")));
+                            "plugin.otr.FINISHED_ICON_BLACK_16x16")));
             verifiedLockedPadlockImage = new ImageIcon(ImageIO.read(
                     OtrActivator.resourceService.getImageURL(
-                        "plugin.otr.ENCRYPTED_ICON_BLACK_16x16")));
+                            "plugin.otr.ENCRYPTED_ICON_BLACK_16x16")));
             unverifiedLockedPadlockImage = new ImageIcon(ImageIO.read(
                     OtrActivator.resourceService.getImageURL(
-                        "plugin.otr.ENCRYPTED_UNVERIFIED_ICON_BLACK_16x16")));
+                            "plugin.otr.ENCRYPTED_UNVERIFIED_ICON_BLACK_16x16")));
             unlockedPadlockImage = new ImageIcon(ImageIO.read(
                     OtrActivator.resourceService.getImageURL(
-                        "plugin.otr.PLAINTEXT_ICON_16x16")));
-        } catch (IOException e)
-        {
+                            "plugin.otr.PLAINTEXT_ICON_16x16")));
+        } catch (final IOException e) {
             logger.debug("Failed to load padlock image");
         }
-
-        buildMenu(contact);
     }
 
     @Override
@@ -365,11 +355,11 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
         }
         menu.removeAll();
         java.util.List<? extends Session> multipleInstances =
-            OtrActivator.scOtrEngine.getSessionInstances(
+            OtrActivator.scOtrEngine().getSessionInstances(
                 otrContact);
 
         Session outgoingSession =
-            OtrActivator.scOtrEngine.getOutgoingSession(otrContact);
+            OtrActivator.scOtrEngine().getOutgoingSession(otrContact);
         int index = 0;
         for (Session session : multipleInstances)
         {
@@ -436,7 +426,7 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
             JMenuItem menuItem = (JRadioButtonMenuItem) e.getSource();
             if (menuItem.equals(entry.getValue()))
             {
-                OtrActivator.scOtrEngine.setOutgoingSession(
+                OtrActivator.scOtrEngine().setOutgoingSession(
                     contact, entry.getKey().getReceiverInstanceTag());
                 break;
             }

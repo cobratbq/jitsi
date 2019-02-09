@@ -21,6 +21,8 @@ import net.java.otr4j.api.SessionID;
 
 import java.util.UUID;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Class used to associate a random UUID to an OTR4J SessionID.
  *
@@ -37,21 +39,9 @@ public class ScSessionID
      *
      * @param sessionID the OTR4J SessionID that is being wrapped.
      */
-    ScSessionID(SessionID sessionID)
+    ScSessionID(final SessionID sessionID)
     {
-        this.sessionID = sessionID;
-    }
-
-    /**
-     * Overrides equals() for the ability to get the hashcode from sessionID.
-     *
-     * @param obj the object to compare
-     * @return true if the objects are considered equal.
-     */
-    @Override
-    public boolean equals(Object obj)
-    {
-        return sessionID.equals(obj);
+        this.sessionID = requireNonNull(sessionID);
     }
 
     /**
@@ -84,6 +74,18 @@ public class ScSessionID
     public int hashCode()
     {
         return sessionID.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final ScSessionID that = (ScSessionID) o;
+        return sessionID.equals(that.sessionID);
     }
 
     /**

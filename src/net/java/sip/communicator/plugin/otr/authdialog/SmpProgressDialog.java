@@ -35,8 +35,7 @@ import net.java.sip.communicator.service.protocol.*;
  * @author Marin Dzhigarov
  */
 @SuppressWarnings("serial")
-public class SmpProgressDialog
-    extends SIPCommDialog
+public class SmpProgressDialog extends SIPCommDialog
 {
     private final JProgressBar progressBar = new JProgressBar(0, 100);
 
@@ -53,22 +52,18 @@ public class SmpProgressDialog
      */
     public SmpProgressDialog(Contact contact)
     {
-        setTitle(
-            OtrActivator.resourceService.getI18NString(
+        setTitle(OtrActivator.resourceService.getI18NString(
                 "plugin.otr.smpprogressdialog.TITLE"));
 
-        JPanel mainPanel = new TransparentPanel();
+        final JPanel mainPanel = new TransparentPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(
             BorderFactory.createEmptyBorder(10, 10, 10, 10));
         mainPanel.setPreferredSize(new Dimension(300, 70));
 
-        String authFromText =
-            String.format(
-                OtrActivator.resourceService
-                    .getI18NString(
-                        "plugin.otr.authbuddydialog.AUTHENTICATION_FROM",
-                        new String[] {contact.getDisplayName()}));
+        final String authFromText = OtrActivator.resourceService.getI18NString(
+                "plugin.otr.authbuddydialog.AUTHENTICATION_FROM",
+                new String[]{contact.getDisplayName()});
 
         JPanel labelsPanel = new TransparentPanel();
         labelsPanel.setLayout(new BoxLayout(labelsPanel, BoxLayout.X_AXIS));
@@ -108,8 +103,7 @@ public class SmpProgressDialog
         progressBar.setValue(33);
         progressBar.setForeground(successColor);
         progressBar.setStringPainted(false);
-        iconLabel.setIcon(
-            OtrActivator.resourceService.getImage(
+        iconLabel.setIcon(OtrActivator.resourceService.getImage(
                 "plugin.otr.ENCRYPTED_UNVERIFIED_ICON_22x22"));
     }
 

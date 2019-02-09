@@ -89,7 +89,7 @@ public class OtrActivator
     /**
      * The {@link ScOtrEngine} of the {@link OtrActivator}.
      */
-    public static ScOtrEngineImpl scOtrEngine;
+    static ScOtrEngineImpl scOtrEngine;
 
     /**
      * The {@link ScOtrKeyManager} of the {@link OtrActivator}.
@@ -119,6 +119,10 @@ public class OtrActivator
     private static OtrContactManager otrContactManager;
 
     private OtrTransformLayer otrTransformLayer;
+
+    public static ScOtrEngine scOtrEngine() {
+        return scOtrEngine;
+    }
 
     /**
      * Gets an {@link AccountID} by its UID.
@@ -383,10 +387,7 @@ public class OtrActivator
                     @Override
                     protected PluginComponent getPluginInstance()
                     {
-                        return
-                            new OTRv3OutgoingSessionSwitcher(
-                                    getContainer(),
-                                    this);
+                        return new OTRv3OutgoingSessionSwitcher(getContainer(), this);
                     }
                 },
                 containerFilter);
