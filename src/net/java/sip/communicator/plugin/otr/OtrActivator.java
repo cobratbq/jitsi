@@ -70,7 +70,7 @@ public class OtrActivator
     /**
      * A property used in configuration to disable the OTR plugin.
      */
-    public static final String OTR_DISABLED_PROP =
+    private static final String OTR_DISABLED_PROP =
         "net.java.sip.communicator.plugin.otr.DISABLED";
 
     /**
@@ -94,7 +94,7 @@ public class OtrActivator
     /**
      * The {@link ScOtrKeyManager} of the {@link OtrActivator}.
      */
-    public static ScOtrKeyManager scOtrKeyManager = new ScOtrKeyManagerImpl();
+    public static final ScOtrKeyManager scOtrKeyManager = new ScOtrKeyManagerImpl();
 
     /**
      * The {@link UIService} of the {@link OtrActivator}. Can also be obtained
@@ -172,8 +172,7 @@ public class OtrActivator
         for (ProtocolProviderFactory providerFactory
                 : providerFactoriesMap.values())
         {
-            for (AccountID accountID : providerFactory.getRegisteredAccounts())
-                accountIDs.add(accountID);
+            accountIDs.addAll(providerFactory.getRegisteredAccounts());
         }
 
         return accountIDs;
@@ -417,7 +416,7 @@ public class OtrActivator
      * Implements BundleActivator#stop(BundleContext).
      */
     @Override
-    public void stop(BundleContext bc) throws Exception
+    public void stop(BundleContext bc)
     {
         // Unregister transformation layer.
         // start listening for newly register or removed protocol providers

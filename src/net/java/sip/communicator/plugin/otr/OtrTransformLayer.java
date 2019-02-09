@@ -19,7 +19,6 @@ package net.java.sip.communicator.plugin.otr;
 
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
 import net.java.sip.communicator.service.protocol.*;
-import net.java.sip.communicator.service.protocol.Message;
 import net.java.sip.communicator.service.protocol.event.*;
 
 /**

@@ -28,8 +28,7 @@ import net.java.sip.communicator.plugin.otr.*;
  * @author Marin Dzhigarov
  */
 @SuppressWarnings("serial")
-public class SecretQuestionAuthenticationPanel
-    extends TransparentPanel
+final class SecretQuestionAuthenticationPanel extends TransparentPanel
 {
     /**
      * The text field where the authentication initiator will type his question.

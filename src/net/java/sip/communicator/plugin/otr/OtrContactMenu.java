@@ -361,12 +361,9 @@ final class OtrContactMenu implements ActionListener,
         cbEnable.addActionListener(this);
 
         JCheckBoxMenuItem cbAlways = new JCheckBoxMenuItem();
-        cbAlways.setText(String.format(
-                OtrActivator.resourceService
-                    .getI18NString(
-                        "plugin.otr.menu.CB_AUTO",
-                        new String[]
-                            {contact.contact.getDisplayName()})));
+        cbAlways.setText(OtrActivator.resourceService
+            .getI18NString("plugin.otr.menu.CB_AUTO",
+                new String[] {contact.contact.getDisplayName()}));
         cbAlways.setEnabled(policy.isEnableManual());
 
         cbAlways.setSelected(policy.isEnableAlways());

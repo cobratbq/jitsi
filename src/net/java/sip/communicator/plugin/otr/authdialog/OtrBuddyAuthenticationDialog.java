@@ -77,15 +77,14 @@ public class OtrBuddyAuthenticationDialog
         mainPanel.add(Box.createVerticalStrut(10));
 
         // Add authentication method label and combo box.
-        final String am[] = new String[]{
+        final String[] am = new String[]{
             OtrActivator.resourceService.getI18NString(
                 "plugin.otr.authbuddydialog.AUTHENTICATION_METHOD_QUESTION"),
             OtrActivator.resourceService.getI18NString(
                 "plugin.otr.authbuddydialog.AUTHENTICATION_METHOD_SECRET"),
             OtrActivator.resourceService.getI18NString(
                 "plugin.otr.authbuddydialog.AUTHENTICATION_METHOD_FINGERPRINT")};
-        final JComboBox authenticationMethodComboBox =
-            new JComboBox(am);
+        final JComboBox<String> authenticationMethodComboBox = new JComboBox<>(am);
         JTextArea authMethodLabel = new CustomTextArea();
         authMethodLabel.setText(
                 OtrActivator.resourceService.getI18NString(

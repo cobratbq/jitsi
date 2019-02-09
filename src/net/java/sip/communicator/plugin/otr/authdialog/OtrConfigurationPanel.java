@@ -37,8 +37,7 @@ import java.util.List;
  */
 // FIXME is this class being used?
 @SuppressWarnings("serial")
-public class OtrConfigurationPanel
-    extends TransparentPanel
+public class OtrConfigurationPanel extends TransparentPanel
 {
     /**
      * Creates the <tt>OtrConfigurationPanel</tt>
@@ -237,8 +236,7 @@ public class OtrConfigurationPanel
      *
      * @author George Politis
      */
-    private static class DefaultOtrPolicyPanel
-        extends TransparentPanel
+    private static class DefaultOtrPolicyPanel extends TransparentPanel
     {
         // TODO We should listen for configuration value changes.
         DefaultOtrPolicyPanel()

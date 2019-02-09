@@ -59,10 +59,10 @@ public class FingerprintAuthenticationPanel
      */
     private JComboBox<ActionComboBoxItem> cbAction;
 
-    private ActionComboBoxItem actionIHave =
+    private final ActionComboBoxItem actionIHave =
         new ActionComboBoxItem(ActionComboBoxItemIndex.I_HAVE);
 
-    private ActionComboBoxItem actionIHaveNot =
+    private final ActionComboBoxItem actionIHaveNot =
         new ActionComboBoxItem(ActionComboBoxItemIndex.I_HAVE_NOT);
 
     private JTextArea txtAction;
@@ -237,7 +237,7 @@ public class FingerprintAuthenticationPanel
 
     static class ActionComboBoxItem
     {
-        public ActionComboBoxItemIndex action;
+        public final ActionComboBoxItemIndex action;
 
         private String text;
 

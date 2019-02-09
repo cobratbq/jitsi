@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @author Daniel Perren
  */
-public class ScSessionID
+class ScSessionID
 {
     private final UUID guid = UUID.randomUUID();
 

@@ -549,7 +549,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
                 case ENCRYPTED:
                     scSessionStatus = ScSessionStatus.ENCRYPTED;
                     scSessionStatusMap.put(sessionID, scSessionStatus);
-                    DSAPublicKey remotePubKey = null;
+                    DSAPublicKey remotePubKey;
                     try {
                         remotePubKey = session.getRemotePublicKey();
                     } catch (OtrException e) {
@@ -557,8 +557,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
                         break;
                     }
 
-                    String remoteFingerprint = null;
-                    remoteFingerprint = OtrCryptoEngine.getFingerprint(remotePubKey);
+                    String remoteFingerprint = OtrCryptoEngine.getFingerprint(remotePubKey);
 
                     List<String> allFingerprintsOfContact =
                         OtrActivator.scOtrKeyManager.
@@ -865,7 +864,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
             tasks.put(otrContact, task);
         }
 
-        public void cancel(final OtrContact otrContact)
+        void cancel(final OtrContact otrContact)
         {
             TimerTask task = tasks.get(otrContact);
             if (task != null)
@@ -873,7 +872,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
             tasks.remove(otrContact);
         }
 
-        public void serviceChanged(ServiceEvent ev)
+        void serviceChanged(ServiceEvent ev)
         {
             Object service
                 = OtrActivator.bundleContext.getService(
@@ -916,7 +915,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
     {
         SessionID sessionID = getSessionID(contact);
         SessionStatus sessionStatus = otrEngine.getSession(sessionID).getSessionStatus();
-        ScSessionStatus scSessionStatus = null;
+        final ScSessionStatus scSessionStatus;
         if (!scSessionStatusMap.containsKey(sessionID))
         {
             switch (sessionStatus)
@@ -947,8 +946,7 @@ final class ScOtrEngineImpl implements ScOtrEngine,
     @Override
     public void launchHelp()
     {
-        ServiceReference ref =
-            OtrActivator.bundleContext
+        ServiceReference<?> ref = OtrActivator.bundleContext
                 .getServiceReference(BrowserLauncherService.class.getName());
 
         if (ref == null)

@@ -45,27 +45,25 @@ public class KnownFingerprintsTableModel
      */
     private static final long serialVersionUID = 0L;
 
-    public static final int CONTACTNAME_INDEX = 0;
+    private static final int CONTACTNAME_INDEX = 0;
 
-    public static final int VERIFIED_INDEX = 1;
+    private static final int VERIFIED_INDEX = 1;
 
-    public static final int FINGERPRINT_INDEX = 2;
+    private static final int FINGERPRINT_INDEX = 2;
 
-    public final LinkedHashMap<Contact, List<String>> allContactsFingerprints =
-        new LinkedHashMap<Contact, List<String>>();
+    private final LinkedHashMap<Contact, List<String>> allContactsFingerprints =
+            new LinkedHashMap<>();
 
-    public KnownFingerprintsTableModel()
+    KnownFingerprintsTableModel()
     {
         // Get the protocolproviders
-        ServiceReference[] protocolProviderRefs = null;
+        final ServiceReference<?>[] protocolProviderRefs;
         try
         {
-            protocolProviderRefs =
-                OtrActivator.bundleContext
-                    .getServiceReferences(
-                        ProtocolProviderService.class.getName(), null);
+            protocolProviderRefs = OtrActivator.bundleContext.getServiceReferences(
+                    ProtocolProviderService.class.getName(), null);
         }
-        catch (InvalidSyntaxException ex)
+        catch (final InvalidSyntaxException ex)
         {
             return;
         }
@@ -75,27 +73,24 @@ public class KnownFingerprintsTableModel
             return;
 
         // Populate contacts.
-        for (int i = 0; i < protocolProviderRefs.length; i++)
-        {
+        for (final ServiceReference<?> protocolProviderRef : protocolProviderRefs) {
             ProtocolProviderService provider
-                = (ProtocolProviderService) OtrActivator
+                    = (ProtocolProviderService) OtrActivator
                     .bundleContext
-                        .getService(protocolProviderRefs[i]);
+                    .getService(protocolProviderRef);
 
             Iterator<MetaContact> metaContacts =
-                OtrActivator.getContactListService()
-                    .findAllMetaContactsForProvider(provider);
-            while (metaContacts.hasNext())
-            {
+                    OtrActivator.getContactListService()
+                            .findAllMetaContactsForProvider(provider);
+            while (metaContacts.hasNext()) {
                 MetaContact metaContact = metaContacts.next();
                 Iterator<Contact> contacts = metaContact.getContacts();
-                while (contacts.hasNext())
-                {
+                while (contacts.hasNext()) {
                     Contact contact = contacts.next();
                     allContactsFingerprints.put(
-                        contact,
-                        OtrActivator.scOtrKeyManager.getAllRemoteFingerprints(
-                            contact));
+                            contact,
+                            OtrActivator.scOtrKeyManager.getAllRemoteFingerprints(
+                                    contact));
                 }
             }
         }
@@ -166,7 +161,7 @@ public class KnownFingerprintsTableModel
             boolean found = false;
             contact = entry.getKey();
             List<String> fingerprints = entry.getValue();
-            for (String f : fingerprints)
+            for (final String ignored : fingerprints)
             {
                 index++;
                 if (index == row)

@@ -72,7 +72,7 @@ public class OtrWeakListener<T extends ScOtrEngineListener & ScOtrKeyManagerList
         if (listener == null)
             throw new NullPointerException("listener");
 
-        this.listener = new WeakReference<T>(listener);
+        this.listener = new WeakReference<>(listener);
         this.engine = engine;
         this.keyManager = keyManager;
 

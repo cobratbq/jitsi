@@ -29,8 +29,7 @@ import net.java.sip.communicator.plugin.otr.*;
  *
  */
 @SuppressWarnings("serial")
-public class SharedSecretAuthenticationPanel
-    extends TransparentPanel
+final class SharedSecretAuthenticationPanel extends TransparentPanel
 {
     /**
      * The text field where the authentication initiator will type his answer.

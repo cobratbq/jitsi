@@ -24,7 +24,7 @@ import java.util.*;
  *
  * @author Pawel Domas
  */
-public interface OtrActionHandler
+interface OtrActionHandler
 {
     /**
      * Method fired when authenticate chat link is clicked.

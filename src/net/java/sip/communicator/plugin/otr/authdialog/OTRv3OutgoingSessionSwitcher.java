@@ -69,7 +69,7 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
 
     private final SelectorMenu menu = new SelectorMenu();
 
-    private ButtonGroup buttonGroup = new ButtonGroup();
+    private final ButtonGroup buttonGroup = new ButtonGroup();
 
     private OtrContact contact;
 
@@ -91,7 +91,7 @@ public class OTRv3OutgoingSessionSwitcher extends SIPCommMenuBar
          */
         private static final long serialVersionUID = 0L;
 
-        Image image = OtrActivator.resourceService.getImage(
+        final Image image = OtrActivator.resourceService.getImage(
                             "service.gui.icons.DOWN_ARROW_ICON").getImage();
 
         private static float alpha = 0.95f;

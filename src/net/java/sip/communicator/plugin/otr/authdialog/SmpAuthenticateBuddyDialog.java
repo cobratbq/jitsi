@@ -79,14 +79,9 @@ public class SmpAuthenticateBuddyDialog
 
         String resourceName = otrContact.resource != null ?
             "/" + otrContact.resource.getResourceName() : "";
-        String authFromText =
-            String.format(
-                OtrActivator.resourceService
-                    .getI18NString(
-                        "plugin.otr.authbuddydialog.AUTHENTICATION_FROM",
-                        new String[]
-                            {otrContact.contact.getDisplayName() +
-                            resourceName}));
+        String authFromText = OtrActivator.resourceService
+                    .getI18NString("plugin.otr.authbuddydialog.AUTHENTICATION_FROM",
+                        new String[] {otrContact.contact.getDisplayName() + resourceName});
         authenticationFrom.setText(authFromText);
         mainPanel.add(authenticationFrom);
 

@@ -178,7 +178,9 @@ final class OtrConfigurator
         String listProperties =
            (String) OtrActivator.configService.getProperty(getID(id));
 
-        if (listProperties == null) return new ArrayList<String>();
+        if (listProperties == null) {
+            return new ArrayList<>();
+        }
 
         return Arrays.asList(listProperties.split(","));
     }

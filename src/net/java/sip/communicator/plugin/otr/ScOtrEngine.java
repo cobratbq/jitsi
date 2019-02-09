@@ -21,7 +21,6 @@ import java.security.interfaces.DSAPublicKey;
 import java.util.*;
 
 import net.java.otr4j.api.InstanceTag;
-import net.java.otr4j.api.OtrException;
 import net.java.otr4j.api.OtrPolicy;
 import net.java.otr4j.api.Session;
 import net.java.sip.communicator.plugin.otr.OtrContactManager.OtrContact;
