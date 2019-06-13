@@ -216,10 +216,10 @@ public class JabberServerChooserDialog
     {
         BundleContext bc = JabberAccRegWizzActivator.bundleContext;
 
-        ServiceReference faServiceReference = bc
-            .getServiceReference(FileAccessService.class.getName());
+        ServiceReference<FileAccessService> faServiceReference = bc
+                .getServiceReference(FileAccessService.class);
 
-        faService = (FileAccessService) bc.getService(faServiceReference);
+        faService = bc.getService(faServiceReference);
 
         File localServersListFile = null;
         try

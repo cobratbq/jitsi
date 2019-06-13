@@ -161,15 +161,13 @@ public class ProtocolIconAimImpl
     {
         if (resourcesService == null)
         {
-            ServiceReference serviceReference = IcqActivator.bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference = IcqActivator.bundleContext
+                .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourcesService
-                = (ResourceManagementService)IcqActivator.bundleContext
-                    .getService(serviceReference);
+            resourcesService = IcqActivator.bundleContext.getService(serviceReference);
         }
 
         return resourcesService;

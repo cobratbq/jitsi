@@ -217,16 +217,17 @@ public class ChatRoomConfigurationWindow
             else if(fieldType.equals(
                 ChatRoomConfigurationFormField.TYPE_LIST_SINGLE))
             {
-                field = new JComboBox();
+                JComboBox<String> local = new JComboBox<>();
+                field = local;
 
                 while(options.hasNext())
                 {
-                    ((JComboBox) field).addItem(options.next());
+                    local.addItem(options.next());
                 }
 
                 if(values.hasNext())
                 {
-                    ((JComboBox)field).setSelectedItem(values.next());
+                    local.setSelectedItem(values.next());
                 }
             }
             else if(fieldType.equals(

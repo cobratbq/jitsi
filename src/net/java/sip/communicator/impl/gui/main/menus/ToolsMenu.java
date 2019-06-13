@@ -171,7 +171,7 @@ public class ToolsMenu
     {
         // Search for plugin components registered through the OSGI bundle
         // context.
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<PluginComponentFactory>> serRefs = null;
 
         String osgiFilter = "("
             + Container.CONTAINER_ID
@@ -180,8 +180,7 @@ public class ToolsMenu
         try
         {
             serRefs = GuiActivator.bundleContext.getServiceReferences(
-                PluginComponentFactory.class.getName(),
-                osgiFilter);
+                PluginComponentFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException exc)
         {
@@ -190,9 +189,9 @@ public class ToolsMenu
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<PluginComponentFactory> serRef : serRefs)
             {
-                final PluginComponentFactory f = (PluginComponentFactory) GuiActivator
+                final PluginComponentFactory f = GuiActivator
                     .bundleContext.getService(serRef);
 
                 SwingUtilities.invokeLater(new Runnable()
@@ -927,7 +926,7 @@ public class ToolsMenu
      */
     public void serviceChanged(ServiceEvent event)
     {
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know

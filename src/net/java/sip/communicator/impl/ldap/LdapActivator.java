@@ -69,8 +69,7 @@ public class LdapActivator
     /**
      * List of contact source service registrations.
      */
-    private static Map<LdapContactSourceService, ServiceRegistration> cssList =
-        new HashMap<LdapContactSourceService, ServiceRegistration>();
+    private static Map<LdapContactSourceService, ServiceRegistration<?>> cssList = new HashMap<>();
 
     /**
      * The registered PhoneNumberI18nService.
@@ -136,7 +135,7 @@ public class LdapActivator
         if(ldapService != null)
             ldapService.stop(bundleContext);
 
-        for(Map.Entry<LdapContactSourceService, ServiceRegistration> entry :
+        for(Map.Entry<LdapContactSourceService, ServiceRegistration<?>> entry :
             cssList.entrySet())
         {
             if (entry.getValue() != null)
@@ -166,12 +165,9 @@ public class LdapActivator
     {
         if(resourceService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        ResourceManagementService.class.getName());
-            resourceService
-                = (ResourceManagementService) bundleContext.getService(
-                        confReference);
+            ServiceReference<ResourceManagementService> confReference
+                = bundleContext.getServiceReference(ResourceManagementService.class);
+            resourceService = bundleContext.getService(confReference);
         }
         return resourceService;
     }
@@ -187,15 +183,11 @@ public class LdapActivator
     {
         LdapContactSourceService css = new LdapContactSourceService(
                 ldapDir);
-        ServiceRegistration cssServiceRegistration = null;
+        ServiceRegistration<ContactSourceService> cssServiceRegistration = null;
 
         try
         {
-            cssServiceRegistration
-                = bundleContext.registerService(
-                        ContactSourceService.class.getName(),
-                        css,
-                        null);
+            cssServiceRegistration = bundleContext.registerService(ContactSourceService.class, css, null);
         }
         finally
         {
@@ -222,7 +214,7 @@ public class LdapActivator
     {
         LdapContactSourceService found = null;
 
-        for(Map.Entry<LdapContactSourceService, ServiceRegistration> entry :
+        for(Map.Entry<LdapContactSourceService, ServiceRegistration<?>> entry :
             cssList.entrySet())
         {
             String cssName =

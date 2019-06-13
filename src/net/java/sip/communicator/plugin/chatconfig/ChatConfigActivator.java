@@ -65,7 +65,7 @@ public class ChatConfigActivator
      * The Replacement sources map.
      */
     private static final Map<String, ReplacementService>
-    replacementSourcesMap = new Hashtable<String, ReplacementService>();
+    replacementSourcesMap = new Hashtable<>();
 
     /**
      * Indicates if the chat configuration form should be disabled, i.e.
@@ -89,7 +89,7 @@ public class ChatConfigActivator
         if (getConfigurationService().getBoolean(DISABLED_PROP, false))
             return;
 
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(ConfigurationForm.FORM_TYPE,
             ConfigurationForm.GENERAL_TYPE);
         bundleContext.registerService(ConfigurationForm.class.getName(),
@@ -154,13 +154,9 @@ public class ChatConfigActivator
     {
         if (configService == null)
         {
-            ServiceReference configReference =
-                bundleContext.getServiceReference(ConfigurationService.class
-                    .getName());
-
-            configService =
-                (ConfigurationService) bundleContext
-                    .getService(configReference);
+            ServiceReference<ConfigurationService> configReference
+                    = bundleContext.getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(configReference);
         }
 
         return configService;
@@ -175,14 +171,12 @@ public class ChatConfigActivator
      */
     public static Map<String, ReplacementService> getReplacementSources()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ReplacementService>> serRefs = null;
         try
         {
             // get all registered sources
             serRefs =
-                bundleContext.getServiceReferences(ReplacementService.class
-                    .getName(), null);
-
+                bundleContext.getServiceReferences(ReplacementService.class, null);
         }
         catch (InvalidSyntaxException e)
         {
@@ -191,12 +185,12 @@ public class ChatConfigActivator
 
         if (serRefs != null)
         {
-            for (int i = 0; i < serRefs.length; i++)
+            for (ServiceReference<ReplacementService> serRef : serRefs)
             {
                 ReplacementService replacementSources =
-                    (ReplacementService) bundleContext.getService(serRefs[i]);
+                        bundleContext.getService(serRef);
 
-                replacementSourcesMap.put((String)serRefs[i]
+                replacementSourcesMap.put((String)serRef
                     .getProperty(ReplacementService.SOURCE_NAME),
                     replacementSources);
             }

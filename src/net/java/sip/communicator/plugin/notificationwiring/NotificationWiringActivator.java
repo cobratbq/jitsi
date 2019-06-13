@@ -59,11 +59,10 @@ public class NotificationWiringActivator
 
 
             // Get the notification service implementation
-            ServiceReference notifReference = bundleContext
-                .getServiceReference(NotificationService.class.getName());
+            ServiceReference<NotificationService> notifReference = bundleContext
+                .getServiceReference(NotificationService.class);
 
-            notificationService = (NotificationService) bundleContext
-                .getService(notifReference);
+            notificationService = bundleContext.getService(notifReference);
 
             new NotificationManager().init();
 

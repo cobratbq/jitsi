@@ -28,6 +28,7 @@ import org.osgi.framework.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Collection;
 
 /**
  * The <tt>ViewMenu</tt> is a menu in the main application menu bar.
@@ -66,7 +67,7 @@ public class ViewMenu
     {
         // Search for plugin components registered through the OSGI bundle
         // context.
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<PluginComponentFactory>> serRefs = null;
 
         String osgiFilter = "("
             + Container.CONTAINER_ID
@@ -75,8 +76,7 @@ public class ViewMenu
         try
         {
             serRefs = GuiActivator.bundleContext.getServiceReferences(
-                PluginComponentFactory.class.getName(),
-                osgiFilter);
+                PluginComponentFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException exc)
         {
@@ -85,9 +85,9 @@ public class ViewMenu
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<PluginComponentFactory> serRef : serRefs)
             {
-                final PluginComponentFactory f = (PluginComponentFactory) GuiActivator
+                final PluginComponentFactory f = GuiActivator
                     .bundleContext.getService(serRef);
 
                 SwingUtilities.invokeLater(new Runnable()

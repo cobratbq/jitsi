@@ -327,10 +327,8 @@ public class FileMenu
             Class<?> clazz = Class.forName(
                 "net.java.sip.communicator.impl.gui.main.menus.MacOSX"
                 + menuItemText + "Registration");
-            Method method = clazz.getMethod("run", new Class[]
-            { Object.class });
-            Object result = method.invoke(null, new Object[]
-            { userData });
+            Method method = clazz.getMethod("run", Object.class);
+            Object result = method.invoke(null, userData);
 
             if (result instanceof Boolean)
                 return (Boolean) result;

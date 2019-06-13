@@ -1231,36 +1231,31 @@ public class MetaContactListSource
         getContactActionsServices()
     {
         List<CustomContactActionsService<Contact>> contactActionsServices
-            = new ArrayList<CustomContactActionsService<Contact>>();
+            = new ArrayList<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<CustomContactActionsService>> serRefs;
         try
         {
             // get all registered provider factories
             serRefs
                 = GuiActivator.bundleContext.getServiceReferences(
-                    CustomContactActionsService.class.getName(), null);
+                    CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("GuiActivator : " + e);
+            return contactActionsServices;
         }
 
-        if (serRefs != null)
+        for (ServiceReference<CustomContactActionsService> serRef : serRefs)
         {
-            for (ServiceReference serRef : serRefs)
-            {
-                CustomContactActionsService<?> customActionService
-                    = (CustomContactActionsService<?>)
-                            GuiActivator.bundleContext.getService(serRef);
+            CustomContactActionsService<Contact> customActionService
+                = GuiActivator.bundleContext.getService(serRef);
 
-                if (customActionService.getContactSourceClass()
-                        .equals(Contact.class))
-                {
-                    contactActionsServices.add(
-                        (CustomContactActionsService<Contact>)
-                            customActionService);
-                }
+            if (customActionService.getContactSourceClass()
+                    .equals(Contact.class))
+            {
+                contactActionsServices.add(customActionService);
             }
         }
         return contactActionsServices;

@@ -41,7 +41,7 @@ public class MetacafeActivator
     /**
      * The metacafe service registration.
      */
-    private ServiceRegistration metacafeServReg = null;
+    private ServiceRegistration<ReplacementService> metacafeServReg = null;
 
     /**
      * The source implementation reference.
@@ -57,13 +57,13 @@ public class MetacafeActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceMetacafeImpl.METACAFE_CONFIG_LABEL);
         metacafeSource = new ReplacementServiceMetacafeImpl();
 
         metacafeServReg =
-            context.registerService(ReplacementService.class.getName(),
+            context.registerService(ReplacementService.class,
                 metacafeSource, hashtable);
 
         logger.info("Metacafe source implementation [STARTED].");

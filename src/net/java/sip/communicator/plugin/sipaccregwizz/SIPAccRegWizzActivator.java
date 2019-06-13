@@ -115,7 +115,7 @@ public class SIPAccRegWizzActivator
      */
     public static ProtocolProviderFactory getSIPProtocolProviderFactory()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter
             = "("
                 + ProtocolProviderFactory.PROTOCOL
@@ -127,7 +127,7 @@ public class SIPAccRegWizzActivator
         {
             serRefs
                 = bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class.getName(),
+                        ProtocolProviderFactory.class,
                         osgiFilter);
         }
         catch (InvalidSyntaxException ex)
@@ -136,11 +136,7 @@ public class SIPAccRegWizzActivator
             return null;
         }
 
-        return
-            (serRefs == null)
-                ? null
-                : (ProtocolProviderFactory)
-                    bundleContext.getService(serRefs[0]);
+        return serRefs.isEmpty() ? null : bundleContext.getService(serRefs.iterator().next());
     }
 
     /**
@@ -161,11 +157,10 @@ public class SIPAccRegWizzActivator
      */
     public static BrowserLauncherService getBrowserLauncher() {
         if (browserLauncherService == null) {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
+            ServiceReference<BrowserLauncherService> serviceReference = bundleContext
+                .getServiceReference(BrowserLauncherService.class);
 
-            browserLauncherService = (BrowserLauncherService) bundleContext
-                .getService(serviceReference);
+            browserLauncherService = bundleContext.getService(serviceReference);
         }
 
         return browserLauncherService;
@@ -181,11 +176,10 @@ public class SIPAccRegWizzActivator
     {
         if (configService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
+            ServiceReference<ConfigurationService> serviceReference = bundleContext
+                .getServiceReference(ConfigurationService.class);
 
-            configService = (ConfigurationService)bundleContext
-                .getService(serviceReference);
+            configService = bundleContext.getService(serviceReference);
         }
 
         return configService;
@@ -201,11 +195,10 @@ public class SIPAccRegWizzActivator
     {
         if (certService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(CertificateService.class.getName());
+            ServiceReference<CertificateService> serviceReference = bundleContext
+                .getServiceReference(CertificateService.class);
 
-            certService = (CertificateService)bundleContext
-                .getService(serviceReference);
+            certService = bundleContext.getService(serviceReference);
         }
 
         return certService;

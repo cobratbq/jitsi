@@ -32,7 +32,7 @@ import net.java.sip.communicator.service.protocol.*;
  * @author Hristo Terezov
  */
 public class ChatConferenceCallsListModels
-    extends AbstractListModel
+    extends AbstractListModel<ConferenceDescription>
 {
 
     /**
@@ -40,7 +40,7 @@ public class ChatConferenceCallsListModels
      * <tt>ChatContact</tt>s.
      */
     private final List<ConferenceDescription> chatConferenceCalls
-        = new ArrayList<ConferenceDescription>();
+        = new ArrayList<>();
 
     private ChatSession chatSession;
     

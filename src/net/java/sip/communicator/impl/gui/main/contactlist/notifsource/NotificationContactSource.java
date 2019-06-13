@@ -52,7 +52,7 @@ public class NotificationContactSource
      * are received.
      */
     private final Hashtable<String, NotificationGroup> groups
-        = new Hashtable<String, NotificationGroup>();
+        = new Hashtable<>();
 
     /**
      * The list of action buttons for this meta contact.
@@ -176,7 +176,7 @@ public class NotificationContactSource
             = customActionButtons.keySet().iterator();
 
         Collection<SIPCommButton> availableCustomActionButtons
-            = new LinkedList<SIPCommButton>();
+            = new LinkedList<>();
 
         while (customActionsIter.hasNext())
         {
@@ -220,9 +220,7 @@ public class NotificationContactSource
      */
     private static void initCustomActionButtons()
     {
-        customActionButtons = new LinkedHashMap
-                                        <ContactAction<NotificationMessage>,
-                                         SIPCommButton>();
+        customActionButtons = new LinkedHashMap<>();
 
         for (CustomContactActionsService<NotificationMessage> ccas
                 : getNotificationActionsServices())
@@ -368,37 +366,31 @@ public class NotificationContactSource
     {
         List<CustomContactActionsService<NotificationMessage>>
             contactActionsServices
-                = new ArrayList<CustomContactActionsService
-                                    <NotificationMessage>>();
+                = new ArrayList<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<CustomContactActionsService>> serRefs;
         try
         {
             // get all registered provider factories
             serRefs
                 = GuiActivator.bundleContext.getServiceReferences(
-                    CustomContactActionsService.class.getName(), null);
+                    CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("NotificationContactSource : " + e);
+            return contactActionsServices;
         }
 
-        if (serRefs != null)
+        for (ServiceReference<CustomContactActionsService> serRef : serRefs)
         {
-            for (ServiceReference serRef : serRefs)
-            {
-                CustomContactActionsService<?> customActionService
-                    = (CustomContactActionsService<?>)
-                            GuiActivator.bundleContext.getService(serRef);
+            CustomContactActionsService<NotificationMessage> customActionService
+                = GuiActivator.bundleContext.getService(serRef);
 
-                if (customActionService.getContactSourceClass()
-                        .equals(NotificationMessage.class))
-                {
-                    contactActionsServices.add(
-                        (CustomContactActionsService<NotificationMessage>)
-                            customActionService);
-                }
+            if (customActionService.getContactSourceClass()
+                    .equals(NotificationMessage.class))
+            {
+                contactActionsServices.add(customActionService);
             }
         }
         return contactActionsServices;

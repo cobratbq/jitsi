@@ -403,11 +403,10 @@ public class JabberAccountRegistrationWizard
                 userName,
                 accountProperties);
 
-            ServiceReference serRef = providerFactory
+            ServiceReference<ProtocolProviderService> serRef = providerFactory
                 .getProviderForAccount(accountID);
 
-            protocolProvider = (ProtocolProviderService)
-                JabberAccRegWizzActivator.bundleContext
+            protocolProvider = JabberAccRegWizzActivator.bundleContext
                 .getService(serRef);
         }
         catch (IllegalArgumentException exc)

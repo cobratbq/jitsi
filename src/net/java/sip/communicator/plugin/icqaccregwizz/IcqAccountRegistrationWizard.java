@@ -228,12 +228,11 @@ public class IcqAccountRegistrationWizard
             AccountID accountID =
                 providerFactory.installAccount(user, accountProperties);
 
-            ServiceReference serRef =
+            ServiceReference<ProtocolProviderService> serRef =
                 providerFactory.getProviderForAccount(accountID);
 
-            protocolProvider =
-                (ProtocolProviderService) IcqAccRegWizzActivator.bundleContext
-                    .getService(serRef);
+            protocolProvider = IcqAccRegWizzActivator.bundleContext
+                        .getService(serRef);
         }
         catch (IllegalStateException exc)
         {

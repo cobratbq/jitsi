@@ -127,16 +127,13 @@ public class CleanShutdownActivator
     public static SystemActivityNotificationsService
             getSystemActivityNotificationsService(BundleContext context)
     {
-        ServiceReference ref =
-            context.getServiceReference(
-                SystemActivityNotificationsService.class.getName());
+        ServiceReference<SystemActivityNotificationsService> ref =
+            context.getServiceReference(SystemActivityNotificationsService.class);
 
         if(ref == null)
             return null;
         else
-            return
-                (SystemActivityNotificationsService)
-                    context.getService(ref);
+            return context.getService(ref);
     }
 
 
@@ -203,7 +200,7 @@ public class CleanShutdownActivator
      */
     public void serviceChanged(ServiceEvent serviceEvent)
     {
-        ServiceReference serviceRef = serviceEvent.getServiceReference();
+        ServiceReference<?> serviceRef = serviceEvent.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know we are shutting down
@@ -212,8 +209,7 @@ public class CleanShutdownActivator
             return;
         }
 
-        Object sService = context
-                .getService(serviceRef);
+        Object sService = context.getService(serviceRef);
 
         if(sService instanceof SystemActivityNotificationsService)
         {
@@ -228,8 +224,6 @@ public class CleanShutdownActivator
                     //    .removeSystemActivityChangeListener(this);
                     break;
             }
-
-            return;
         }
     }
 }

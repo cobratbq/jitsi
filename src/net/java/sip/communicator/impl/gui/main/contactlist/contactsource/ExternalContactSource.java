@@ -671,38 +671,37 @@ public class ExternalContactSource
     {
         List<CustomContactActionsService<SourceContact>>
             contactActionsServices
-                = new ArrayList<CustomContactActionsService<SourceContact>>();
+                = new ArrayList<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<CustomContactActionsService>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
                 = GuiActivator.bundleContext.getServiceReferences(
-                    CustomContactActionsService.class.getName(), null);
+                    CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
         {}
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
-                CustomContactActionsService<?> customActionService
-                    = (CustomContactActionsService<?>)
-                            GuiActivator.bundleContext.getService(serRef);
+                CustomContactActionsService<SourceContact> customActionService
+                    = GuiActivator.bundleContext.getService(serRef);
 
                 if (customActionService.getContactSourceClass()
                         .equals(SourceContact.class))
                 {
-                    contactActionsServices.add((CustomContactActionsService<SourceContact>)customActionService);
+                    contactActionsServices.add(customActionService);
                 }
             }
         }
 
         GuiActivator.bundleContext.addServiceListener(
-            new ContactActionsServiceListener<SourceContact>(
-                    SourceContact.class));
+                new ContactActionsServiceListener<>(
+                        SourceContact.class));
 
         return contactActionsServices;
     }
@@ -718,40 +717,37 @@ public class ExternalContactSource
     {
         List<CustomContactActionsService<ContactSourceService>>
             contactActionsServices
-                = new ArrayList<CustomContactActionsService<ContactSourceService>>();
+                = new ArrayList<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<CustomContactActionsService>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
                 = GuiActivator.bundleContext.getServiceReferences(
-                    CustomContactActionsService.class.getName(), null);
+                    CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
         {}
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
-                CustomContactActionsService<?> customActionService
-                    = (CustomContactActionsService<?>)
-                            GuiActivator.bundleContext.getService(serRef);
+                CustomContactActionsService<ContactSourceService> customActionService
+                    = GuiActivator.bundleContext.getService(serRef);
 
                 if (customActionService.getContactSourceClass()
                         .equals(ContactSourceService.class))
                 {
-                    contactActionsServices.add(
-                        (CustomContactActionsService<ContactSourceService>)
-                            customActionService);
+                    contactActionsServices.add(customActionService);
                 }
             }
         }
 
         GuiActivator.bundleContext.addServiceListener(
-            new ContactActionsServiceListener<SourceContact>(
-                    SourceContact.class));
+                new ContactActionsServiceListener<>(
+                        SourceContact.class));
 
         return contactActionsServices;
     }
@@ -767,28 +763,26 @@ public class ExternalContactSource
     {
         List<CustomContactActionsService<ContactSourceService>>
             contactActionsServices
-                = new ArrayList<CustomContactActionsService
-                                    <ContactSourceService>>();
+                = new ArrayList<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<CustomContactActionsService>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
                 = GuiActivator.bundleContext.getServiceReferences(
-                    CustomContactActionsService.class.getName(), null);
+                    CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
         {}
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
                 CustomContactActionsService<ContactSourceService>
                     customActionService
-                        = (CustomContactActionsService<ContactSourceService>)
-                            GuiActivator.bundleContext.getService(serRef);
+                        = GuiActivator.bundleContext.getService(serRef);
 
                 if (customActionService.getContactSourceClass()
                         .equals(ContactSourceService.class))
@@ -799,8 +793,8 @@ public class ExternalContactSource
         }
 
         GuiActivator.bundleContext.addServiceListener(
-            new ContactActionsServiceListener<ContactSourceService>(
-                    ContactSourceService.class));
+                new ContactActionsServiceListener<>(
+                        ContactSourceService.class));
 
         return contactActionsServices;
     }
@@ -1048,7 +1042,7 @@ public class ExternalContactSource
 
         public void serviceChanged(ServiceEvent event)
         {
-            ServiceReference serviceRef = event.getServiceReference();
+            ServiceReference<?> serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want to
             // know

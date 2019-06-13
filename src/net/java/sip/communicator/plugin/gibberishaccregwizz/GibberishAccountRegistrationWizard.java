@@ -189,8 +189,7 @@ public class GibberishAccountRegistrationWizard
         String user)
         throws OperationFailedException
     {
-        Hashtable<String, String> accountProperties
-            = new Hashtable<String, String>();
+        Hashtable<String, String> accountProperties = new Hashtable<>();
 
         accountProperties.put(ProtocolProviderFactory.ACCOUNT_ICON_PATH,
             "resources/images/protocol/gibberish/gibberish32x32.png");
@@ -213,11 +212,10 @@ public class GibberishAccountRegistrationWizard
             AccountID accountID = providerFactory.installAccount(
                 user, accountProperties);
 
-            ServiceReference serRef = providerFactory
+            ServiceReference<ProtocolProviderService> serRef = providerFactory
                 .getProviderForAccount(accountID);
 
-            protocolProvider = (ProtocolProviderService)
-                GibberishAccRegWizzActivator.bundleContext
+            protocolProvider = GibberishAccRegWizzActivator.bundleContext
                 .getService(serRef);
         }
         catch (IllegalStateException exc)

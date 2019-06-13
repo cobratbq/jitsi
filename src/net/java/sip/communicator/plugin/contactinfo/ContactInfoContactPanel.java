@@ -45,7 +45,7 @@ public class ContactInfoContactPanel
     /**
      * The list of all subcontacts related to the selected contact.
      */
-    private JList contactList = new JList();
+    private JList<Contact> contactList = new JList<>();
 
     /**
      * The scroll pane containing the list of all sub contacts of a selected
@@ -53,7 +53,7 @@ public class ContactInfoContactPanel
      */
     private JScrollPane contactScrollPane = new JScrollPane();
 
-    private DefaultListModel contactListModel = new DefaultListModel();
+    private DefaultListModel<Contact> contactListModel = new DefaultListModel<>();
 
     /**
      * The parent dialog that makes the connection between the contacts and
@@ -92,10 +92,9 @@ public class ContactInfoContactPanel
                 // selection, getValueIsAdjusting() becomes false
                 if (!e.getValueIsAdjusting())
                 {
-                    JList list = (JList) e.getSource();
+                    JList<Contact> list = (JList<Contact>) e.getSource();
 
-                    Contact selectedContact
-                        = (Contact) list.getSelectedValue();
+                    Contact selectedContact = list.getSelectedValue();
 
                     contactInfoDialog.loadContactDetails(selectedContact);
                 }

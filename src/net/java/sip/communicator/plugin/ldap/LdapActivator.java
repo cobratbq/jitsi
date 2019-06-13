@@ -122,12 +122,9 @@ public class LdapActivator implements BundleActivator
     {
         if(resourceService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        ResourceManagementService.class.getName());
-            resourceService
-                = (ResourceManagementService) bundleContext.getService(
-                        confReference);
+            ServiceReference<ResourceManagementService> confReference
+                = bundleContext.getServiceReference(ResourceManagementService.class);
+            resourceService = bundleContext.getService(confReference);
         }
         return resourceService;
     }

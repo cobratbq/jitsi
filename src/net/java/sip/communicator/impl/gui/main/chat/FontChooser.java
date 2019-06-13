@@ -403,9 +403,9 @@ public class FontChooser
 
         private JTextField textField = new JTextField();
 
-        private JList list;
+        private JList<String> list;
 
-        public InputList(String title, Object[] data)
+        public InputList(String title, String[] data)
         {
             this.setLayout(new BorderLayout());
 
@@ -418,7 +418,7 @@ public class FontChooser
             this.textField.addKeyListener(this);
             middlePanel.add(this.textField, BorderLayout.NORTH);
 
-            this.list = new JList(data);
+            this.list = new JList<>(data);
             this.list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             this.list.setVisibleRowCount(5);
             this.list.setSelectedIndex(0);
@@ -431,7 +431,7 @@ public class FontChooser
 
         public void setSelected(String value)
         {
-            ListModel l = this.list.getModel();
+            ListModel<String> l = this.list.getModel();
             boolean inList = false;
 
             for (int i=0; i<l.getSize() && !inList; i++)
@@ -474,7 +474,7 @@ public class FontChooser
 
         public void valueChanged(ListSelectionEvent e)
         {
-            String selectedValue = (String) this.list.getSelectedValue();
+            String selectedValue = this.list.getSelectedValue();
             String oldValue = this.textField.getText();
 
             this.textField.setText(selectedValue);
@@ -492,11 +492,11 @@ public class FontChooser
                 return;
 
             String elem, key = this.textField.getText().toLowerCase();
-            ListModel model = this.list.getModel();
+            ListModel<String> model = this.list.getModel();
 
             for (int i=0; i<model.getSize(); i++)
             {
-                elem = model.getElementAt(i).toString();
+                elem = model.getElementAt(i);
                 if (elem.toLowerCase().startsWith(key))
                 {
                     this.list.setSelectedValue(model.getElementAt(i), true);

@@ -381,7 +381,7 @@ public class ScServiceDiscoveryManager
      */
     public DiscoverInfo discoverInfoNonBlocking(Jid entityID)
     {
-        DiscoverInfo discoverInfo = capsManager.getDiscoverInfoByUser(entityID);
+        DiscoverInfo discoverInfo = EntityCapsManager.getDiscoverInfoByUser(entityID);
         EntityCapsManager.NodeVerHash caps
             = EntityCapsManager.getNodeVerHashByJid(entityID);
 

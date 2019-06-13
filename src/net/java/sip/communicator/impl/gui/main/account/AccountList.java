@@ -42,7 +42,7 @@ import org.osgi.framework.*;
  */
 @SuppressWarnings("serial")
 public class AccountList
-    extends JList
+    extends JList<Account>
     implements  ProviderPresenceStatusListener,
                 RegistrationStateChangeListener,
                 ServiceListener,
@@ -185,7 +185,7 @@ public class AccountList
      */
     public Account getSelectedAccount()
     {
-        return (Account) this.getSelectedValue();
+        return this.getSelectedValue();
     }
 
     /**
@@ -423,7 +423,7 @@ public class AccountList
         if (mouseIndex < 0)
             return;
 
-        Account account = (Account) getModel().getElementAt(mouseIndex);
+        Account account = getModel().getElementAt(mouseIndex);
 
         if (logger.isTraceEnabled())
             logger.trace("Account list: element at mouse index:"

@@ -114,15 +114,15 @@ public class ConnectionPanel
         JabberAccountID.getDefaultBool(
                 ProtocolProviderFactory.IS_CARBON_DISABLED));
 
-    private JComboBox dtmfMethodBox = new JComboBox(new Object []
-    {
-        Resources.getString(
-            "plugin.jabberaccregwizz.DTMF_AUTO"),
-        Resources.getString(
-            "plugin.sipaccregwizz.DTMF_RTP"),
-        Resources.getString(
-            "plugin.sipaccregwizz.DTMF_INBAND")
-    });
+    private JComboBox<String> dtmfMethodBox = new JComboBox<>(new String[]
+            {
+                    Resources.getString(
+                            "plugin.jabberaccregwizz.DTMF_AUTO"),
+                    Resources.getString(
+                            "plugin.sipaccregwizz.DTMF_RTP"),
+                    Resources.getString(
+                            "plugin.sipaccregwizz.DTMF_INBAND")
+            });
 
     /**
      * The text field used to change the DTMF minimal tone duration.
@@ -132,7 +132,7 @@ public class ConnectionPanel
     private final JLabel certificateLabel = new JLabel(
             Resources.getString("plugin.sipaccregwizz.CLIENT_CERTIFICATE"));
 
-    private final JComboBox certificate = new JComboBox();
+    private final JComboBox<String> certificate = new JComboBox<>();
 
     private final JabberAccountRegistrationForm parentForm;
 
@@ -690,7 +690,7 @@ public class ConnectionPanel
         for(CertificateConfigEntry e : JabberAccRegWizzActivator
                 .getCertificateService().getClientAuthCertificateConfigs())
         {
-            certificate.addItem(e);
+            certificate.addItem(e.toString());
             if(e.getId().equals(id))
                 certificate.setSelectedItem(e);
         }

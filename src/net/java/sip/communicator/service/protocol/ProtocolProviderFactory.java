@@ -557,8 +557,7 @@ public abstract class ProtocolProviderFactory
      * </p>
      */
     protected final Map<AccountID, ServiceRegistration<ProtocolProviderService>>
-        registeredAccounts
-            = new HashMap<AccountID, ServiceRegistration<ProtocolProviderService>>();
+        registeredAccounts = new HashMap<>();
 
     /**
      * The name of the property that indicates the AVP type.

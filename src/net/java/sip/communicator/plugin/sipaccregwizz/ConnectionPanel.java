@@ -65,20 +65,20 @@ public class ConnectionPanel
 
     private final JCheckBox proxyForceBypassCheckBox;
 
-    private final JComboBox certificate = new JComboBox();
+    private final JComboBox<String> certificate = new JComboBox<>();
 
-    private JComboBox transportCombo
-        = new JComboBox(new String[] { "UDP", "TCP", "TLS" });
+    private JComboBox<String> transportCombo
+        = new JComboBox<>(new String[] { "UDP", "TCP", "TLS" });
 
-    private JComboBox keepAliveMethodBox
-        = new JComboBox(new String[] { "NONE", "REGISTER", "OPTIONS", "CRLF" });
+    private JComboBox<String> keepAliveMethodBox
+        = new JComboBox<>(new String[] { "NONE", "REGISTER", "OPTIONS", "CRLF" });
 
     private JTextField keepAliveIntervalValue
             = new JTextField(SipAccountID.getDefaultStr(
                     ProtocolProviderFactory.KEEP_ALIVE_INTERVAL));
 
-    private JComboBox dtmfMethodBox
-        = new JComboBox(
+    private JComboBox<String> dtmfMethodBox
+        = new JComboBox<>(
                 new String[]
                         {
                             Resources.getString(
@@ -314,7 +314,7 @@ public class ConnectionPanel
                 : SIPAccRegWizzActivator.getCertificateService()
                         .getClientAuthCertificateConfigs())
         {
-            certificate.addItem(e);
+            certificate.addItem(e.toString());
             if(e.getId().equals(id))
                 certificate.setSelectedItem(e);
         }

@@ -48,19 +48,18 @@ public class JoinChatRoomWindow
     /**
      * The list of providers who support chat rooms.
      */
-    private Vector<ChatRoomProviderWrapper> chatRoomProviders
-        = new Vector<ChatRoomProviderWrapper>();
+    private Vector<ChatRoomProviderWrapper> chatRoomProviders = new Vector<>();
 
     /**
      * A JComboBox which will allow to select an account for joining a room.
      */
-    private JComboBox jcb_chatRoomProviders;
+    private JComboBox<String> jcb_chatRoomProviders;
 
     /**
      * An editable JComboBox which will allow to set a room name, and gives
      * suggestions regarding to its content.
      */
-    private JComboBox jcb_roomName = new JComboBox();
+    private JComboBox<String> jcb_roomName = new JComboBox<>();
 
     /**
      * Text editor for the room name combo box.
@@ -70,12 +69,12 @@ public class JoinChatRoomWindow
     /**
      * Stores the provider icons.
      */
-    private Vector<ImageIcon> providerIcons = new Vector<ImageIcon>();
+    private Vector<ImageIcon> providerIcons = new Vector<>();
 
     /**
      * Stores the provider names (plus AccountID).
      */
-    private Vector<String> providerNames = new Vector<String>();
+    private Vector<String> providerNames = new Vector<>();
 
     /**
      * Rooms of the currently selected provider.
@@ -150,7 +149,7 @@ public class JoinChatRoomWindow
         this.setLayout(new BorderLayout());
         this.setTitle(title);
 
-        jcb_chatRoomProviders = new JComboBox(providerNames);
+        jcb_chatRoomProviders = new JComboBox<>(providerNames);
         jcb_chatRoomProviders.setRenderer(new ComboBoxRenderer());
         jcb_roomName.setEditable(true);
         jcb_roomName.setPreferredSize(jcb_chatRoomProviders.getPreferredSize());
@@ -324,7 +323,7 @@ public class JoinChatRoomWindow
      * Cell renderer for the providers combo box: displays the protocol name
      * with its associated icon.
      */
-    class ComboBoxRenderer extends JLabel implements ListCellRenderer
+    class ComboBoxRenderer extends JLabel implements ListCellRenderer<String>
     {
         /**
          * The renderer.
@@ -342,17 +341,15 @@ public class JoinChatRoomWindow
          * <tt>value</tt>.
          *
          * @param list the parent list
-         * @param value the value to render
+         * @param label the value to render
          * @param index the index of the rendered cell in the list
          * @param isSelected indicates if the cell is currently selected
          * @param cellHasFocus indicates that the cell has the focus
          * @return the rendering component
          */
-        public Component getListCellRendererComponent(JList list, Object value,
+        public Component getListCellRendererComponent(JList<? extends String> list, String label,
             int index, boolean isSelected, boolean cellHasFocus)
         {
-            String label = (String)value;
-
             if (isSelected)
             {
                 setBackground(list.getSelectionBackground());

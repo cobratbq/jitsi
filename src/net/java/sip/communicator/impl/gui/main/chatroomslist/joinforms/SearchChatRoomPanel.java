@@ -58,7 +58,7 @@ public class SearchChatRoomPanel
     private final JPanel buttonPanel = new TransparentPanel(
         new FlowLayout(FlowLayout.CENTER));
 
-    private final JList chatRoomsList = new JList();
+    private final JList<String> chatRoomsList = new JList<>();
 
     private final JScrollPane chatRoomsScrollPane = new JScrollPane();
 
@@ -158,7 +158,7 @@ public class SearchChatRoomPanel
                     .getI18NString("service.gui.NO_AVAILABLE_ROOMS"));
             }
 
-            chatRoomsList.setListData(new Vector<String>(serverRooms));
+            chatRoomsList.setListData(new Vector<>(serverRooms));
             chatRoomsList.setBorder(
                     BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
@@ -266,7 +266,7 @@ public class SearchChatRoomPanel
     {
         if(namePanel.getChatRoomName().length() > 0)
         {
-            Vector<String> newCRL = new Vector<String>();
+            Vector<String> newCRL = new Vector<>();
 
             if(serverRooms != null)
                 for(String s : serverRooms)
@@ -275,7 +275,7 @@ public class SearchChatRoomPanel
             chatRoomsList.setListData(newCRL);
         }
         else
-            chatRoomsList.setListData(new Vector<String>(serverRooms));
+            chatRoomsList.setListData(new Vector<>(serverRooms));
     }
 
     public void changedUpdate(DocumentEvent e)

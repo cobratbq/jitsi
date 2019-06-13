@@ -819,7 +819,7 @@ public class ProtocolProviderServiceJabberImpl
     {
         String boshURL = accountID.getBoshUrl();
         boolean isBosh = !org.jitsi.utils.StringUtils.isNullOrEmpty(boshURL);
-        ConnectionConfiguration.Builder ccBuilder;
+        ConnectionConfiguration.Builder<?,?> ccBuilder;
         if (isBosh)
         {
             ccBuilder = BOSHConfiguration.builder();

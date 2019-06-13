@@ -61,7 +61,7 @@ public class ConnectionInfoPanel
     /**
      * Combo box that is used for switching between accounts.
      */
-    private final JComboBox accountsComboBox;
+    private final JComboBox<ConnectionDetailsPanel> accountsComboBox;
 
     /**
      * Instances of the <tt>AccountDetailsPanel</tt> are created for every
@@ -69,8 +69,7 @@ public class ConnectionInfoPanel
      * this map.
      */
     private final Map<AccountID, ConnectionDetailsPanel>
-        accountsTable =
-            new HashMap<AccountID, ConnectionDetailsPanel>();
+        accountsTable = new HashMap<>();
 
     /**
      * The parent dialog.
@@ -88,7 +87,7 @@ public class ConnectionInfoPanel
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        accountsComboBox = new JComboBox();
+        accountsComboBox = new JComboBox<>();
         accountsComboBox.setOpaque(false);
         accountsComboBox.addItemListener(new ItemListener()
         {
@@ -147,14 +146,14 @@ public class ConnectionInfoPanel
             ArrayList<AccountID> accountsList =
                 providerFactory.getRegisteredAccounts();
 
-            ServiceReference serRef;
+            ServiceReference<ProtocolProviderService> serRef;
             ProtocolProviderService protocolProvider;
 
             for (AccountID accountID : accountsList)
             {
                 serRef = providerFactory.getProviderForAccount(accountID);
 
-                protocolProvider = (ProtocolProviderService)ConnectionInfoActivator
+                protocolProvider = ConnectionInfoActivator
                     .bundleContext.getService(serRef);
 
                 currentDetailsPanel = new ConnectionDetailsPanel(
@@ -189,7 +188,7 @@ public class ConnectionInfoPanel
      * A custom renderer to display properly <tt>AccountDetailsPanel</tt>
      * in a combo box.
      */
-    private class ComboBoxRenderer extends DefaultListCellRenderer
+    private static class ComboBoxRenderer extends DefaultListCellRenderer
     {
         /**
          * Serial version UID.
@@ -198,7 +197,7 @@ public class ConnectionInfoPanel
 
         @Override
         public Component getListCellRendererComponent(
-            JList list, Object value, int index,
+            JList<?> list, Object value, int index,
                 boolean isSelected, boolean hasFocus)
         {
             JLabel renderer
@@ -345,7 +344,7 @@ public class ConnectionInfoPanel
      *
      * @return The combo box that switches between account detail panels.
      */
-    public JComboBox getAccountsComboBox()
+    public JComboBox<ConnectionDetailsPanel> getAccountsComboBox()
     {
         return accountsComboBox;
     }

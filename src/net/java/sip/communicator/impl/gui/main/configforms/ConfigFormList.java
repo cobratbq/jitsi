@@ -28,10 +28,10 @@ import net.java.sip.communicator.service.gui.*;
  * @author Yana Stamcheva
  */
 public class ConfigFormList
-    extends JList
+    extends JList<ConfigFormDescriptor>
     implements ListSelectionListener
 {
-    private final DefaultListModel listModel = new DefaultListModel();
+    private final DefaultListModel<ConfigFormDescriptor> listModel = new DefaultListModel<>();
 
     private final ConfigurationFrame configFrame;
 
@@ -66,8 +66,7 @@ public class ConfigFormList
         int configFormIndex = configForm.getIndex();
         for (; i < count; i++)
         {
-            ConfigFormDescriptor descriptor
-                = (ConfigFormDescriptor) listModel.get(i);
+            ConfigFormDescriptor descriptor = listModel.get(i);
 
             if (configFormIndex < descriptor.getConfigForm().getIndex())
                 break;
@@ -109,8 +108,7 @@ public class ConfigFormList
     {
         if(!e.getValueIsAdjusting())
         {
-            ConfigFormDescriptor configFormDescriptor
-                = (ConfigFormDescriptor) this.getSelectedValue();
+            ConfigFormDescriptor configFormDescriptor = this.getSelectedValue();
 
             if(configFormDescriptor != null)
                 configFrame.showFormContent(configFormDescriptor);
@@ -130,8 +128,7 @@ public class ConfigFormList
     {
         for(int i = 0; i < listModel.getSize(); i++)
         {
-            ConfigFormDescriptor descriptor
-                = (ConfigFormDescriptor) listModel.getElementAt(i);
+            ConfigFormDescriptor descriptor = listModel.getElementAt(i);
 
             if(descriptor.getConfigForm().equals(configForm))
             {

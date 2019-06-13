@@ -45,7 +45,7 @@ public class GlobalProxyConfigForm
     /**
      * Hold the available proxy types.
      */
-    private JComboBox typeCombo;
+    private JComboBox<ProxyInfo.ProxyType> typeCombo;
 
     /**
      * The proxy server address.
@@ -133,7 +133,7 @@ public class GlobalProxyConfigForm
         constraints.gridx = 1;
         constraints.gridy = 0;
         constraints.gridwidth = 3;
-        typeCombo = new JComboBox(ProxyInfo.ProxyType.values());
+        typeCombo = new JComboBox<>(ProxyInfo.ProxyType.values());
         typeCombo.setEditable(false);
         centerPanel.add(typeCombo, constraints);
 

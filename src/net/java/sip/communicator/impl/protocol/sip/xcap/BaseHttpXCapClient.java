@@ -111,13 +111,12 @@ public abstract class BaseHttpXCapClient implements HttpXCapClient
      */
     public BaseHttpXCapClient()
     {
-        ServiceReference guiVerifyReference
+        ServiceReference<CertificateService> guiVerifyReference
             = SipActivator.getBundleContext().getServiceReference(
-                CertificateService.class.getName());
+                CertificateService.class);
 
         if(guiVerifyReference != null)
-            certificateVerification
-                = (CertificateService)SipActivator.getBundleContext()
+            certificateVerification = SipActivator.getBundleContext()
                     .getService(guiVerifyReference);
     }
 

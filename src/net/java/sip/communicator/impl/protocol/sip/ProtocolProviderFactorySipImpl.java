@@ -187,7 +187,7 @@ public class ProtocolProviderFactorySipImpl
         if(!registeredAccounts.containsKey(accountID))
             return;
 
-        ServiceRegistration registration = registeredAccounts.get(accountID);
+        ServiceRegistration<ProtocolProviderService> registration = registeredAccounts.get(accountID);
 
         // kill the service
         if (registration != null)
@@ -232,7 +232,7 @@ public class ProtocolProviderFactorySipImpl
 
         String userIDStr = accountProperties.get(USER_ID);
 
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+        Hashtable<String, String> properties = new Hashtable<>();
         properties.put(PROTOCOL, ProtocolNames.SIP);
         properties.put(USER_ID, userIDStr);
 
@@ -257,7 +257,7 @@ public class ProtocolProviderFactorySipImpl
 
             registration
                 = context.registerService(
-                            ProtocolProviderService.class.getName(),
+                            ProtocolProviderService.class,
                             protocolProvider,
                             properties);
 

@@ -30,7 +30,7 @@ import net.java.sip.communicator.service.protocol.*;
  * @author Yana Stamcheva
  */
 public class AccountListModel
-    extends DefaultListModel
+    extends DefaultListModel<Account>
 {
     /**
      * Indicates that the data model content has changed.

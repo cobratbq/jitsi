@@ -435,11 +435,10 @@ public class HistoryServiceImpl
     private static ConfigurationService getConfigurationService(
         BundleContext bundleContext)
     {
-        ServiceReference serviceReference =
-            bundleContext.getServiceReference(ConfigurationService.class
-                .getName());
+        ServiceReference<ConfigurationService> serviceReference =
+            bundleContext.getServiceReference(ConfigurationService.class);
         return (serviceReference == null) ? null
-            : (ConfigurationService) bundleContext.getService(serviceReference);
+            : bundleContext.getService(serviceReference);
     }
 
     private static FileAccessService getFileAccessService(

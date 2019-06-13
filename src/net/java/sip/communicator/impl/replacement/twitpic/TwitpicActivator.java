@@ -41,7 +41,7 @@ public class TwitpicActivator
     /**
      * The twitpic service registration.
      */
-    private ServiceRegistration twitpicServReg = null;
+    private ServiceRegistration<ReplacementService> twitpicServReg = null;
 
     /**
      * The source implementation reference.
@@ -63,7 +63,7 @@ public class TwitpicActivator
         twitpicSource = new ReplacementServiceTwitpicImpl();
 
         twitpicServReg =
-            context.registerService(ReplacementService.class.getName(),
+            context.registerService(ReplacementService.class,
                 twitpicSource, hashtable);
 
         logger.info("Twitpic source implementation [STARTED].");

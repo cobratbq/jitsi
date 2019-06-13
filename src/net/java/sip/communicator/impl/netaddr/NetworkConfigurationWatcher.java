@@ -220,7 +220,7 @@ public class NetworkConfigurationWatcher
      */
     public void serviceChanged(ServiceEvent serviceEvent)
     {
-        ServiceReference serviceRef = serviceEvent.getServiceReference();
+        ServiceReference<?> serviceRef = serviceEvent.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know we are shutting down

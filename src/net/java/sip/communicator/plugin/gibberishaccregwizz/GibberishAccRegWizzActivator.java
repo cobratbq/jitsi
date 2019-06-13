@@ -58,10 +58,10 @@ public class GibberishAccRegWizzActivator
 
         bundleContext = bc;
 
-        ServiceReference uiServiceRef = bundleContext
-            .getServiceReference(UIService.class.getName());
+        ServiceReference<UIService> uiServiceRef = bundleContext
+            .getServiceReference(UIService.class);
 
-        uiService = (UIService) bundleContext.getService(uiServiceRef);
+        uiService = bundleContext.getService(uiServiceRef);
 
         wizardContainer = uiService.getAccountRegWizardContainer();
 
@@ -69,7 +69,7 @@ public class GibberishAccRegWizzActivator
             = new GibberishAccountRegistrationWizard(wizardContainer);
 
         Hashtable<String, String> containerFilter
-            = new Hashtable<String, String>();
+            = new Hashtable<>();
 
         containerFilter.put(
                 ProtocolProviderFactory.PROTOCOL,
@@ -100,8 +100,7 @@ public class GibberishAccRegWizzActivator
      */
     public static ProtocolProviderFactory getGibberishProtocolProviderFactory()
     {
-
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -110,14 +109,14 @@ public class GibberishAccRegWizzActivator
         try
         {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
-            logger.error(ex);
+            throw new IllegalStateException("BUG: expected to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**

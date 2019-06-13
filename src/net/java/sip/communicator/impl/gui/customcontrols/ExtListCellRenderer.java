@@ -29,7 +29,7 @@ import net.java.sip.communicator.plugin.desktoputil.*;
  */
 public class ExtListCellRenderer
     extends JPanel
-    implements ListCellRenderer
+    implements ListCellRenderer<String>
 {
 
     private static final long serialVersionUID = 1L;
@@ -46,10 +46,10 @@ public class ExtListCellRenderer
     /**
      * Implements the <tt>ListCellRenderer</tt> method.
      */
-    public Component getListCellRendererComponent(JList list, Object value,
+    public Component getListCellRendererComponent(JList<? extends String> list, String value,
             int index, boolean isSelect, boolean cellHasFocus)
     {
-        this.label.setText(value.toString());
+        this.label.setText(value);
         this.isSelected = isSelect;
 
         return this;

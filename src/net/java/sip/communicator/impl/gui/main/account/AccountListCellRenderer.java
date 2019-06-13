@@ -33,7 +33,7 @@ import net.java.sip.communicator.plugin.desktoputil.*;
  */
 public class AccountListCellRenderer
     extends TransparentPanel
-    implements ListCellRenderer
+    implements ListCellRenderer<Account>
 {
     /**
      * The background color of the odd rows.
@@ -116,10 +116,10 @@ public class AccountListCellRenderer
      * @param cellHasFocus indicates if the cell has the focus
      * @return the component rendering the cell
      */
-    public Component getListCellRendererComponent(JList list, Object value,
+    public Component getListCellRendererComponent(JList<? extends Account> list, Account value,
         int index, boolean isSelected, boolean cellHasFocus)
     {
-        this.account = (Account) value;
+        this.account = value;
 
         Icon accountIcon = account.getIcon();
 

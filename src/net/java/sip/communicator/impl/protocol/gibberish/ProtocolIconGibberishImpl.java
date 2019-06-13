@@ -163,14 +163,13 @@ public class ProtocolIconGibberishImpl
     {
         if (resourcesService == null)
         {
-            ServiceReference serviceReference = GibberishActivator.bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference = GibberishActivator.bundleContext
+                .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourcesService = (ResourceManagementService)GibberishActivator.bundleContext
-                .getService(serviceReference);
+            resourcesService = GibberishActivator.bundleContext.getService(serviceReference);
         }
 
         return resourcesService;

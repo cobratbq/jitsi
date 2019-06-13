@@ -35,7 +35,7 @@ import net.java.sip.communicator.util.*;
  */
 public class DatesListRenderer
     extends JPanel
-    implements ListCellRenderer
+    implements ListCellRenderer<Date>
 {
     private JLabel label = new JLabel();
     private boolean isSelected;
@@ -47,11 +47,9 @@ public class DatesListRenderer
         this.add(label);
     }
 
-    public Component getListCellRendererComponent(JList list, Object value,
+    public Component getListCellRendererComponent(JList<? extends Date> list, Date dateValue,
             int index, boolean isSelected, boolean cellHasFocus)
     {
-        Date dateValue = (Date) value;
-
         StringBuffer dateStrBuf = new StringBuffer();
 
         GuiUtils.formatDate(dateValue.getTime(), dateStrBuf);

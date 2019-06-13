@@ -35,7 +35,7 @@ import net.java.sip.communicator.plugin.desktoputil.*;
  */
 public class ConfigFormListCellRenderer
     extends TransparentPanel
-    implements ListCellRenderer
+    implements ListCellRenderer<ConfigFormDescriptor>
 {
 
     /**
@@ -75,11 +75,9 @@ public class ConfigFormListCellRenderer
      * Returns this panel that has been configured to display the meta contact
      * and meta contact group cells.
      */
-    public Component getListCellRendererComponent(JList list, Object value,
+    public Component getListCellRendererComponent(JList<? extends ConfigFormDescriptor> list, ConfigFormDescriptor cfDescriptor,
             int index, boolean isSelected, boolean cellHasFocus)
     {
-        ConfigFormDescriptor cfDescriptor = (ConfigFormDescriptor) value;
-
         ImageIcon icon = cfDescriptor.getConfigFormIcon();
         if(icon != null)
             iconLabel.setIcon(icon);

@@ -142,10 +142,9 @@ class KeybindingsServiceImpl
             File customFile;
             try
             {
-                ServiceReference faServiceReference =
-                    bc.getServiceReference(FileAccessService.class.getName());
-                FileAccessService faService =
-                    (FileAccessService) bc.getService(faServiceReference);
+                ServiceReference<FileAccessService> faServiceReference =
+                    bc.getServiceReference(FileAccessService.class);
+                FileAccessService faService = bc.getService(faServiceReference);
 
                 // Makes directory for custom bindings if it doesn't exist
                 File customDir =

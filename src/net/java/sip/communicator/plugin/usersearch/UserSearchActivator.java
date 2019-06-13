@@ -61,13 +61,12 @@ public class UserSearchActivator
      * A list of listeners that will be notified about adding and removing
      * providers that support user search.
      */
-    private static LinkedList<UserSearchSupportedProviderListener> listeners
-        = new LinkedList<UserSearchSupportedProviderListener>();
+    private static LinkedList<UserSearchSupportedProviderListener> listeners = new LinkedList<>();
 
     /**
      * The <tt>ServiceRegistration</tt> instance for the contact source.
      */
-    private static ServiceRegistration contactSourceRegistration = null;
+    private static ServiceRegistration<ContactSourceService> contactSourceRegistration = null;
 
     /**
      * The <tt>Logger</tt> used by the
@@ -94,18 +93,16 @@ public class UserSearchActivator
         if (userSearchProviders != null)
             return;
 
-        userSearchProviders = new LinkedList<ProtocolProviderService>();
+        userSearchProviders = new LinkedList<>();
 
         bundleContext.addServiceListener(new ProtocolProviderRegListener());
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
-                = bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class.getName(),
-                        null);
+                = bundleContext.getServiceReferences(ProtocolProviderFactory.class, null);
         }
         catch (InvalidSyntaxException e)
         {
@@ -114,29 +111,25 @@ public class UserSearchActivator
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
             {
                 ProtocolProviderFactory providerFactory
-                    = (ProtocolProviderFactory)
-                        bundleContext.getService(serRef);
+                    = bundleContext.getService(serRef);
 
                 ProtocolProviderService protocolProvider;
 
                 for (AccountID accountID
                         : providerFactory.getRegisteredAccounts())
                 {
-                    serRef = providerFactory.getProviderForAccount(accountID);
+                    ServiceReference<ProtocolProviderService> serviceSerRef
+                            = providerFactory.getProviderForAccount(accountID);
 
-                    protocolProvider
-                        = (ProtocolProviderService) bundleContext
-                            .getService(serRef);
+                    protocolProvider = bundleContext.getService(serviceSerRef);
 
                     handleProviderAdded(protocolProvider);
-
                 }
             }
         }
-        return;
     }
 
     /**
@@ -185,7 +178,7 @@ public class UserSearchActivator
     {
         public void serviceChanged(ServiceEvent event)
         {
-            ServiceReference serviceRef = event.getServiceReference();
+            ServiceReference<?> serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want to
             // know
@@ -292,9 +285,7 @@ public class UserSearchActivator
                     userSearchContactSource = new UserSearchContactSource();
                 //register contact source
                 contactSourceRegistration = bundleContext.registerService(
-                    ContactSourceService.class.getName(),
-                    userSearchContactSource ,
-                    null);
+                    ContactSourceService.class, userSearchContactSource, null);
             }
         }
 

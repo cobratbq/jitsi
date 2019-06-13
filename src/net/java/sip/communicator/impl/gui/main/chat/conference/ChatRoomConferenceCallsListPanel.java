@@ -44,7 +44,7 @@ public class ChatRoomConferenceCallsListPanel
     /**
      * The list of conferences.
      */
-    private final JList conferenceCallList;
+    private final JList<ConferenceDescription> conferenceCallList;
 
     /**
      * The model of the conferences list.
@@ -61,7 +61,7 @@ public class ChatRoomConferenceCallsListPanel
      */
     private class ChatConferenceCallsListRenderer
         extends JPanel
-        implements ListCellRenderer, Skinnable
+        implements ListCellRenderer<ConferenceDescription>, Skinnable
     {
         /**
          * The label that will display the name of the conference.
@@ -104,16 +104,15 @@ public class ChatRoomConferenceCallsListPanel
          * {@link Inherited}
          */
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus)
+        public Component getListCellRendererComponent(JList<? extends ConferenceDescription> list,
+            ConferenceDescription value, int index, boolean isSelected, boolean cellHasFocus)
         {
             this.isSelected = isSelected;
             if(contactForegroundColor != null)
                 setForeground(contactForegroundColor);
             
             setFont(this.getFont().deriveFont(Font.PLAIN));
-            conferenceLabel.setText(
-                ((ConferenceDescription)value).getDisplayName());
+            conferenceLabel.setText(value.getDisplayName());
             return this;
         }
         
@@ -189,7 +188,7 @@ public class ChatRoomConferenceCallsListPanel
         this.conferenceCallsListModel
             = new ChatConferenceCallsListModels(chatPanel.getChatSession());
         this.conferenceCallList 
-            = new JList(conferenceCallsListModel);
+            = new JList<>(conferenceCallsListModel);
         this.conferenceCallList.addKeyListener(
             new CListKeySearchListener(conferenceCallList));
         this.conferenceCallList.setCellRenderer(
@@ -238,7 +237,7 @@ public class ChatRoomConferenceCallsListPanel
      */
     public ConferenceDescription getSelectedValue()
     {
-        return (ConferenceDescription) conferenceCallList.getSelectedValue();
+        return conferenceCallList.getSelectedValue();
     }
     
     /**

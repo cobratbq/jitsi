@@ -249,7 +249,7 @@ public class InitialAccountRegistrationFrame
 
         StringTokenizer tokenizer = new StringTokenizer(simpleWizards, "|");
 
-        ServiceReference[] serviceRefs = null;
+        Collection<ServiceReference<AccountRegistrationWizard>> serviceRefs;
         while (tokenizer.hasMoreTokens())
         {
             String protocolToken = tokenizer.nextToken();
@@ -261,16 +261,13 @@ public class InitialAccountRegistrationFrame
             try
             {
                 serviceRefs = SimpleAccountRegistrationActivator.bundleContext
-                    .getServiceReferences(
-                        AccountRegistrationWizard.class.getName(), osgiFilter);
+                    .getServiceReferences(AccountRegistrationWizard.class, osgiFilter);
 
-                if (serviceRefs != null && serviceRefs.length > 0)
+                if (!serviceRefs.isEmpty())
                 {
                     AccountRegistrationWizard wizard
-                        = (AccountRegistrationWizard)
-
-                        SimpleAccountRegistrationActivator
-                        .bundleContext.getService(serviceRefs[0]);
+                        = SimpleAccountRegistrationActivator
+                        .bundleContext.getService(serviceRefs.iterator().next());
 
                     this.addAccountRegistrationForm(wizard);
                 }
@@ -689,13 +686,9 @@ public class InitialAccountRegistrationFrame
         {
             BundleContext bundleContext =
                 SimpleAccountRegistrationActivator.bundleContext;
-            ServiceReference configReference =
-                bundleContext.getServiceReference(ConfigurationService.class
-                    .getName());
-
-            configurationService =
-                (ConfigurationService) bundleContext
-                    .getService(configReference);
+            ServiceReference<ConfigurationService> configReference =
+                bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(configReference);
         }
         return configurationService;
     }

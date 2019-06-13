@@ -67,7 +67,7 @@ public class UriHandlerSipImpl
     /**
      * A reference to the OSGi registration we create with this handler.
      */
-    private ServiceRegistration ourServiceRegistration = null;
+    private ServiceRegistration<UriHandler> ourServiceRegistration = null;
 
     /**
      * The object that we are using to synchronize our service registration.
@@ -239,8 +239,7 @@ public class UriHandlerSipImpl
                 return;
             }
 
-            Hashtable<String, String> registrationProperties =
-                new Hashtable<String, String>();
+            Hashtable<String, String> registrationProperties = new Hashtable<>();
 
             for (String protocol : getProtocol())
             {
@@ -248,9 +247,8 @@ public class UriHandlerSipImpl
                     protocol);
             }
 
-            ourServiceRegistration =
-                SipActivator.bundleContext.registerService(UriHandler.class
-                    .getName(), this, registrationProperties);
+            ourServiceRegistration = SipActivator.bundleContext.registerService(UriHandler.class,
+                    this, registrationProperties);
         }
 
     }
@@ -655,27 +653,24 @@ public class UriHandlerSipImpl
         // if we only have one provider - select it
         if (registeredAccounts.size() == 1)
         {
-            ServiceReference providerReference =
+            ServiceReference<ProtocolProviderService> providerReference =
                 protoFactory.getProviderForAccount(registeredAccounts.get(0));
 
-            ProtocolProviderService provider =
-                (ProtocolProviderService) SipActivator.getBundleContext()
-                    .getService(providerReference);
+            ProtocolProviderService provider = SipActivator.getBundleContext()
+                        .getService(providerReference);
 
             return provider;
         }
 
         // otherwise - ask the user.
-        ArrayList<ProviderComboBoxEntry> providers =
-            new ArrayList<ProviderComboBoxEntry>();
+        ArrayList<ProviderComboBoxEntry> providers = new ArrayList<>();
         for (AccountID accountID : registeredAccounts)
         {
-            ServiceReference providerReference =
+            ServiceReference<ProtocolProviderService> providerReference =
                 protoFactory.getProviderForAccount(accountID);
 
-            ProtocolProviderService provider =
-                (ProtocolProviderService) SipActivator.getBundleContext()
-                    .getService(providerReference);
+            ProtocolProviderService provider = SipActivator.getBundleContext()
+                        .getService(providerReference);
 
             providers.add(new ProviderComboBoxEntry(provider));
         }

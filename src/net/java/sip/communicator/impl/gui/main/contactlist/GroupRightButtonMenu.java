@@ -19,6 +19,7 @@ package net.java.sip.communicator.impl.gui.main.contactlist;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Collection;
 
 import javax.swing.*;
 
@@ -119,7 +120,7 @@ public class GroupRightButtonMenu
     {
         // Search for plugin components registered through the OSGI bundle
         // context.
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<PluginComponentFactory>> serRefs = null;
 
         String osgiFilter =
             "(" + Container.CONTAINER_ID + "="
@@ -127,9 +128,8 @@ public class GroupRightButtonMenu
 
         try
         {
-            serRefs =
-                GuiActivator.bundleContext.getServiceReferences(
-                    PluginComponentFactory.class.getName(), osgiFilter);
+            serRefs = GuiActivator.bundleContext.getServiceReferences(
+                    PluginComponentFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException exc)
         {
@@ -138,11 +138,10 @@ public class GroupRightButtonMenu
 
         if (serRefs != null)
         {
-            for (int i = 0; i < serRefs.length; i++)
+            for (ServiceReference<PluginComponentFactory> serRef : serRefs)
             {
-                PluginComponentFactory factory =
-                    (PluginComponentFactory) GuiActivator.bundleContext
-                        .getService(serRefs[i]);
+                PluginComponentFactory factory = GuiActivator.bundleContext
+                            .getService(serRef);
                 PluginComponent component =
                     factory.getPluginComponentInstance(this);
 

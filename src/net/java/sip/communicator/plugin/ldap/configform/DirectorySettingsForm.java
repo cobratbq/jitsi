@@ -157,7 +157,7 @@ public class DirectorySettingsForm
     /**
      * Component holding the connection method
      */
-    private JComboBox authList = new JComboBox(authStrings);
+    private JComboBox<String> authList = new JComboBox<>(authStrings);
 
     /**
      * Strings of the connection method combobox
@@ -174,7 +174,7 @@ public class DirectorySettingsForm
     /**
      * Component holding the connection method
      */
-    private JComboBox scopeList = new JComboBox(scopeStrings);
+    private JComboBox<String> scopeList = new JComboBox<>(scopeStrings);
 
     /**
      * The prefix label.

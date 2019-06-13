@@ -63,7 +63,7 @@ public class PluginContainer
      * components added to this <code>PluginContainer</code>.
      */
     private final java.util.List<PluginComponent> pluginComponents
-        = new LinkedList<PluginComponent>();
+        = new LinkedList<>();
 
     /**
      * Initializes a new <code>PluginContainer</code> instance which is to
@@ -244,36 +244,30 @@ public class PluginContainer
         GuiActivator.getUIService().addPluginComponentListener(this);
 
         // Look for PluginComponents registered in the OSGi BundleContext.
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<PluginComponentFactory>> serRefs;
 
         try
         {
-            serRefs
-                = GuiActivator
+            serRefs = GuiActivator
                     .bundleContext
-                        .getServiceReferences(
-                            PluginComponentFactory.class.getName(),
+                    .getServiceReferences(
+                            PluginComponentFactory.class,
                             "("
-                                + Container.CONTAINER_ID
-                                + "="
-                                + containerId.getID()
-                                + ")");
+                                    + Container.CONTAINER_ID
+                                    + "="
+                                    + containerId.getID()
+                                    + ")");
         }
         catch (InvalidSyntaxException exc)
         {
-            logger.error("Could not obtain plugin reference.", exc);
+            throw new IllegalStateException("BUG: could not obtain plugin reference.", exc);
         }
 
-        if (serRefs != null)
+        for (ServiceReference<PluginComponentFactory> serRef : serRefs)
         {
-            for (ServiceReference serRef : serRefs)
-            {
-                PluginComponentFactory factory
-                    = (PluginComponentFactory)
-                        GuiActivator.bundleContext.getService(serRef);
-
-                addPluginComponent(factory);
-            }
+            PluginComponentFactory factory
+                = GuiActivator.bundleContext.getService(serRef);
+            addPluginComponent(factory);
         }
     }
 

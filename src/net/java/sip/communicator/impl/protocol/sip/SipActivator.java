@@ -43,7 +43,7 @@ public class SipActivator
 {
     private Logger logger = Logger.getLogger(SipActivator.class.getName());
 
-    private        ServiceRegistration  sipPpFactoryServReg   = null;
+    private ServiceRegistration<ProtocolProviderFactory> sipPpFactoryServReg = null;
             static BundleContext        bundleContext         = null;
     private static ConfigurationService configurationService  = null;
     private static NetworkAddressManagerService networkAddressManagerService
@@ -93,10 +93,10 @@ public class SipActivator
         uriHandlerSipImpl = new UriHandlerSipImpl(sipProviderFactory);
 
         //reg the sip account man.
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(ProtocolProviderFactory.PROTOCOL, ProtocolNames.SIP);
         sipPpFactoryServReg =  context.registerService(
-                    ProtocolProviderFactory.class.getName(),
+                    ProtocolProviderFactory.class,
                     sipProviderFactory,
                     properties);
 
@@ -121,12 +121,10 @@ public class SipActivator
     {
         if(certService == null)
         {
-            ServiceReference guiVerifyReference
-                = bundleContext.getServiceReference(
-                    CertificateService.class.getName());
+            ServiceReference<CertificateService> guiVerifyReference
+                = bundleContext.getServiceReference(CertificateService.class);
             if(guiVerifyReference != null)
-                certService = (CertificateService)
-                    bundleContext.getService(guiVerifyReference);
+                certService = bundleContext.getService(guiVerifyReference);
         }
 
         return certService;
@@ -143,11 +141,9 @@ public class SipActivator
     {
         if(configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService) bundleContext.getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }
@@ -164,11 +160,9 @@ public class SipActivator
     {
         if(networkAddressManagerService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    NetworkAddressManagerService.class.getName());
-            networkAddressManagerService = (NetworkAddressManagerService)
-                bundleContext.getService(confReference);
+            ServiceReference<NetworkAddressManagerService> confReference
+                = bundleContext.getServiceReference(NetworkAddressManagerService.class);
+            networkAddressManagerService = bundleContext.getService(confReference);
         }
         return networkAddressManagerService;
     }
@@ -184,14 +178,13 @@ public class SipActivator
     {
         if(hidService == null)
         {
-            ServiceReference hidReference =
-                bundleContext.getServiceReference(
-                        HIDService.class.getName());
+            ServiceReference<HIDService> hidReference =
+                bundleContext.getServiceReference(HIDService.class);
 
             if(hidReference == null)
                 return null;
 
-            hidService = (HIDService)bundleContext.getService(hidReference);
+            hidService = bundleContext.getService(hidReference);
         }
         return hidService;
     }
@@ -228,11 +221,9 @@ public class SipActivator
     {
         if(mediaService == null)
         {
-            ServiceReference mediaServiceReference
-                = bundleContext.getServiceReference(
-                    MediaService.class.getName());
-            mediaService = (MediaService)bundleContext
-                .getService(mediaServiceReference);
+            ServiceReference<MediaService> mediaServiceReference
+                = bundleContext.getServiceReference(MediaService.class);
+            mediaService = bundleContext.getService(mediaServiceReference);
         }
         return mediaService;
     }
@@ -248,11 +239,9 @@ public class SipActivator
     {
         if(versionService == null)
         {
-            ServiceReference versionServiceReference
-                = bundleContext.getServiceReference(
-                    VersionService.class.getName());
-            versionService = (VersionService)bundleContext
-                .getService(versionServiceReference);
+            ServiceReference<VersionService> versionServiceReference
+                = bundleContext.getServiceReference(VersionService.class);
+            versionService = bundleContext.getService(versionServiceReference);
         }
         return versionService;
     }
@@ -268,11 +257,9 @@ public class SipActivator
     {
         if(uiService == null)
         {
-            ServiceReference uiServiceReference
-                = bundleContext.getServiceReference(
-                    UIService.class.getName());
-            uiService = (UIService)bundleContext
-                .getService(uiServiceReference);
+            ServiceReference<UIService> uiServiceReference
+                = bundleContext.getServiceReference(UIService.class);
+            uiService = bundleContext.getService(uiServiceReference);
         }
         return uiService;
     }

@@ -84,8 +84,7 @@ public class PresencePanel
     private String[] contactlistOptions = new String[]
             { "Local", "XCAP", "XiVO" };
 
-    private JComboBox contactlistOptionsCombo = new JComboBox(
-            contactlistOptions);
+    private JComboBox<String> contactlistOptionsCombo = new JComboBox<>(contactlistOptions);
 
     /**
      * Creates an instance of <tt>PresencePanel</tt>.

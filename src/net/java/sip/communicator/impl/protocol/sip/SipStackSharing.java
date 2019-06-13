@@ -151,7 +151,7 @@ public class SipStackSharing
             };
             SSLServerSocketFactory ssf = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
             String[] defaultSuites = ssf.getDefaultCipherSuites();
-            List<String> offeredSuites = new ArrayList(enabledSuites.length);
+            List<String> offeredSuites = new ArrayList<>(enabledSuites.length);
             for (String enabledSuite : enabledSuites)
             {
                 if (Arrays.asList(defaultSuites).contains(enabledSuite))

@@ -36,13 +36,13 @@ public class DatesPanel
     extends SIPCommScrollPane
     implements ListSelectionListener
 {
-    private final JList datesList = new JList();
+    private final JList<Date> datesList = new JList<>();
 
     /**
      * The <tt>ListModel</tt> of {@link #datesList} explicitly stored in order
      * to have it as a <tt>DefaultListModel</tt> instance.
      */
-    private final DefaultListModel listModel = new DefaultListModel();
+    private final DefaultListModel<Date> listModel = new DefaultListModel<>();
 
     private final HistoryWindow historyWindow;
 
@@ -96,7 +96,7 @@ public class DatesPanel
     {
         synchronized (listModel)
         {
-            return (Date)listModel.get(index);
+            return listModel.get(index);
         }
     }
 
@@ -134,7 +134,7 @@ public class DatesPanel
             boolean dateAdded = false;
             if(listSize > 0) {
                 for(int i = 0; i < listSize; i ++) {
-                    Date dateFromList = (Date)listModel.get(i);
+                    Date dateFromList = listModel.get(i);
                     if(dateFromList.after(date)) {
                         listModel.add(i, date);
                         dateAdded = true;
@@ -190,7 +190,7 @@ public class DatesPanel
             if(selectedIndex != -1 && lastSelectedIndex != selectedIndex)
             {
                 this.setLastSelectedIndex(selectedIndex);
-                Date date = (Date)this.listModel.get(selectedIndex);
+                Date date = this.listModel.get(selectedIndex);
 
                 this.historyWindow.showHistoryByPeriod(
                         date,
@@ -212,7 +212,7 @@ public class DatesPanel
      * Returns the model of the contained list.
      * @return the model of the contained list
      */
-    public ListModel getModel()
+    public ListModel<Date> getModel()
     {
         return listModel;
     }

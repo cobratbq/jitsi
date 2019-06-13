@@ -1935,11 +1935,8 @@ public class ServerStoredContactListJabberImpl
     {
         try
         {
-            ServiceReference[] refs =  JabberActivator.bundleContext
-                .getServiceReferences(CustomAvatarService.class.getName(), null);
-
-            if(refs == null)
-                return null;
+            Collection<ServiceReference<CustomAvatarService>> refs =  JabberActivator.bundleContext
+                .getServiceReferences(CustomAvatarService.class, null);
 
             for(ServiceReference<?> r : refs)
             {

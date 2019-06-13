@@ -55,7 +55,7 @@ public class SpellCheckerConfigDialog
      */
     private JTextComponent currentWord;
 
-    private JList suggestionList;
+    private JList<String> suggestionList;
 
     private JScrollPane suggestionScroll;
 
@@ -178,20 +178,17 @@ public class SpellCheckerConfigDialog
                     if (word != null)
                     {
                         endIndex = index + currentWord.getText().length();
-                        newMessage.replace(index, endIndex,
-                            (String) suggestionList.getSelectedValue());
-                        word = (String) suggestionList.getSelectedValue();
+                        newMessage.replace(index, endIndex, suggestionList.getSelectedValue());
+                        word = suggestionList.getSelectedValue();
                     }
                     else
                     {
                         endIndex =
                             clickedWord.getStart()
                                 + clickedWord.getText().length();
-                        newMessage.replace(clickedWord.getStart(), endIndex,
-                            (String) suggestionList.getSelectedValue());
+                        newMessage.replace(clickedWord.getStart(), endIndex, suggestionList.getSelectedValue());
                     }
-                    currentWord.setText((String) suggestionList
-                        .getSelectedValue());
+                    currentWord.setText(suggestionList.getSelectedValue());
                     chat.setMessage(newMessage.toString());
 
                 }
@@ -297,8 +294,8 @@ public class SpellCheckerConfigDialog
         topPanel.add(checkPanel, BorderLayout.NORTH);
         topPanel.add(Box.createVerticalStrut(10));
 
-        DefaultListModel dataModel = new DefaultListModel();
-        suggestionList = new JList(dataModel);
+        DefaultListModel<String> dataModel = new DefaultListModel<>();
+        suggestionList = new JList<>(dataModel);
 
         suggestionScroll = new JScrollPane(suggestionList);
         suggestionScroll.setAlignmentX(LEFT_ALIGNMENT);
@@ -334,22 +331,18 @@ public class SpellCheckerConfigDialog
                     if (word != null)
                     {
                         endIndex = index + currentWord.getText().length();
-                        newMessage.replace(index, endIndex,
-                            (String) suggestionList.getSelectedValue());
-                        word = (String) suggestionList.getSelectedValue();
+                        newMessage.replace(index, endIndex, suggestionList.getSelectedValue());
+                        word = suggestionList.getSelectedValue();
                     }
                     else
                     {
                         endIndex =
                             clickedWord.getStart()
                                 + clickedWord.getText().length();
-                        newMessage.replace(clickedWord.getStart(), endIndex,
-                            (String) suggestionList.getSelectedValue());
+                        newMessage.replace(clickedWord.getStart(), endIndex, suggestionList.getSelectedValue());
                     }
-                    currentWord.setText((String) suggestionList
-                        .getSelectedValue());
+                    currentWord.setText(suggestionList.getSelectedValue());
                     chat.setMessage(newMessage.toString());
-
                 }
             }
         };
@@ -400,7 +393,7 @@ public class SpellCheckerConfigDialog
     private void setSuggestionModel(String clickedWord)
     {
 
-        DefaultListModel dataModel = new DefaultListModel();
+        DefaultListModel<String> dataModel = new DefaultListModel<>();
         List<String> corrections = this.dict.getSuggestions(clickedWord);
         for (String correction : corrections)
         {

@@ -57,7 +57,7 @@ public class NewAccountDialog
     private final TransparentPanel accountPanel
         = new TransparentPanel(new BorderLayout());
 
-    private final JComboBox networkComboBox = new JComboBox();
+    private final JComboBox<AccountRegistrationWizard> networkComboBox = new JComboBox<>();
 
     private final JButton advancedButton = new JButton(
         GuiActivator.getResources().getI18NString("service.gui.ADVANCED"));
@@ -303,7 +303,7 @@ public class NewAccountDialog
      */
     private static class NetworkListCellRenderer
         extends JLabel
-        implements ListCellRenderer
+        implements ListCellRenderer<AccountRegistrationWizard>
     {
         private static final long serialVersionUID = 0L;
 
@@ -313,12 +313,9 @@ public class NewAccountDialog
             setOpaque(true);
         }
 
-        public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus)
+        public Component getListCellRendererComponent(JList<? extends AccountRegistrationWizard> list,
+            AccountRegistrationWizard wizard, int index, boolean isSelected, boolean cellHasFocus)
         {
-            AccountRegistrationWizard wizard
-                = (AccountRegistrationWizard) value;
-
             if (isSelected)
             {
                 setBackground(list.getSelectionBackground());
@@ -334,10 +331,7 @@ public class NewAccountDialog
 
             byte[] icon = wizard.getIcon();
 
-            setIcon(
-                    ((icon != null) && (icon.length > 0))
-                        ? new ImageIcon(icon)
-                        : null);
+            setIcon(((icon != null) && (icon.length > 0)) ? new ImageIcon(icon) : null);
 
             return this;
         }

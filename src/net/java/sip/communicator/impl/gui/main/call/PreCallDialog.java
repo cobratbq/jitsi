@@ -118,7 +118,7 @@ public abstract class PreCallDialog
     /**
      * The combo box containing a list of accounts to choose from.
      */
-    private JComboBox accountsCombo;
+    private JComboBox<Account> accountsCombo;
 
     /**
      * The window handling received calls.
@@ -229,7 +229,7 @@ public abstract class PreCallDialog
             {
                 accountsCombo
                     = HudWidgetFactory.createHudComboBox(
-                            new DefaultComboBoxModel(accounts));
+                        new DefaultComboBoxModel<>(accounts));
             }
             else
                 callLabelAccount = HudWidgetFactory.createHudLabel("");
@@ -247,7 +247,7 @@ public abstract class PreCallDialog
             callLabelImage = new JLabel();
 
             if (accounts != null)
-                accountsCombo = new JComboBox(accounts);
+                accountsCombo = new JComboBox<>(accounts);
             else
                 callLabelAccount = new JLabel();
         }
@@ -472,7 +472,7 @@ public abstract class PreCallDialog
      *
      * @return the accounts combo box contained in this dialog
      */
-    public JComboBox getAccountsCombo()
+    public JComboBox<Account> getAccountsCombo()
     {
         return accountsCombo;
     }

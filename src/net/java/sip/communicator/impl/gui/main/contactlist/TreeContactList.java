@@ -2366,7 +2366,7 @@ public class TreeContactList
     {
         public void serviceChanged(ServiceEvent event)
         {
-            ServiceReference serviceRef = event.getServiceReference();
+            ServiceReference<?> serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want
             // to know
