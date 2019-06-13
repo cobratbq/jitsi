@@ -52,7 +52,7 @@ public class DnssecPanel
     private final static Logger logger = Logger.getLogger(DnssecPanel.class);
 
     //UI Controls
-    private JComboBox cboDefault;
+    private JComboBox<SecureResolveMode> cboDefault;
     private JCheckBox chkEnabled;
     private JCheckBox chkAbsolute;
     private JTable tblDomains;
@@ -163,7 +163,7 @@ public class DnssecPanel
             R.getI18NString("plugin.dnsconfig.dnssec.lblDefault"));
         lblDefault.setBorder(BorderFactory.createEmptyBorder(0, 22, 0, 0));
         pnlCommon.add(lblDefault, cl);
-        cboDefault = new JComboBox(SecureResolveMode.values());
+        cboDefault = new JComboBox<>(SecureResolveMode.values());
         cboDefault.setRenderer(getResolveModeRenderer());
         pnlCommon.add(cboDefault, cr);
 
@@ -193,7 +193,7 @@ public class DnssecPanel
                 }
             }
         );
-        JComboBox cboTblModeEditor = new JComboBox(SecureResolveMode.values());
+        JComboBox<SecureResolveMode> cboTblModeEditor = new JComboBox<>(SecureResolveMode.values());
         cboTblModeEditor.setRenderer(getResolveModeRenderer());
         tblDomains.getColumnModel().getColumn(1).setCellEditor(
             new DefaultCellEditor(cboTblModeEditor));

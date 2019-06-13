@@ -126,30 +126,31 @@ public class AccountInfoActivator
         getProtocolProviderFactories()
     {
         Map<Object, ProtocolProviderFactory> providerFactoriesMap =
-            new Hashtable<Object, ProtocolProviderFactory>();
+                new Hashtable<>();
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs =
                 bundleContext.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), null);
+                    ProtocolProviderFactory.class, null);
 
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("LoginManager : " + e);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", e);
         }
 
-        for (int i = 0; i < serRefs.length; i++)
+        for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
         {
 
             ProtocolProviderFactory providerFactory =
-                (ProtocolProviderFactory) bundleContext.getService(serRefs[i]);
+                    bundleContext.getService(serRef);
 
             providerFactoriesMap
-                .put(serRefs[i].getProperty(ProtocolProviderFactory.PROTOCOL),
+                .put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL),
                     providerFactory);
         }
 

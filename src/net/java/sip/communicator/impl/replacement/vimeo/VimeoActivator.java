@@ -40,7 +40,7 @@ public class VimeoActivator
     /**
      * The vimeo service registration.
      */
-    private ServiceRegistration vimeoServReg = null;
+    private ServiceRegistration<ReplacementService> vimeoServReg = null;
 
     /**
      * The source implementation reference.
@@ -56,13 +56,13 @@ public class VimeoActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceVimeoImpl.VIMEO_CONFIG_LABEL);
         vimeoSource = new ReplacementServiceVimeoImpl();
 
         vimeoServReg =
-            context.registerService(ReplacementService.class.getName(),
+            context.registerService(ReplacementService.class,
                 vimeoSource, hashtable);
 
         logger.info("Vimeo source implementation [STARTED].");

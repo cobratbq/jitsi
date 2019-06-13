@@ -107,12 +107,10 @@ public class KeybindingsActivator
     {
         if(configService == null)
         {
-            ServiceReference confReference
+            ServiceReference<ConfigurationService> confReference
                 = bundleContext.getServiceReference(
-                        ConfigurationService.class.getName());
-            configService
-                = (ConfigurationService) bundleContext.getService(
-                        confReference);
+                        ConfigurationService.class);
+            configService = bundleContext.getService(confReference);
         }
         return configService;
     }
@@ -128,13 +126,9 @@ public class KeybindingsActivator
     {
         if (resourceService == null)
         {
-            ServiceReference resourceReference
-                = bundleContext.getServiceReference(
-                    ResourceManagementService.class.getName());
-
-            resourceService =
-                (ResourceManagementService) bundleContext
-                    .getService(resourceReference);
+            ServiceReference<ResourceManagementService> resourceReference
+                = bundleContext.getServiceReference(ResourceManagementService.class);
+            resourceService = bundleContext.getService(resourceReference);
         }
 
         return resourceService;

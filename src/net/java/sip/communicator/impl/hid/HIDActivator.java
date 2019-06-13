@@ -39,7 +39,7 @@ public class HIDActivator
     /**
      * The OSGi <tt>ServiceRegistration</tt> of <tt>HIDServiceImpl</tt>.
      */
-    private ServiceRegistration serviceRegistration;
+    private ServiceRegistration<HIDService> serviceRegistration;
 
     /**
      * Starts the execution of the <tt>hid</tt> bundle in the specified context.
@@ -56,7 +56,7 @@ public class HIDActivator
             logger.debug("Started.");
 
         serviceRegistration =
-            bundleContext.registerService(HIDService.class.getName(),
+            bundleContext.registerService(HIDService.class,
                 new HIDServiceImpl(), null);
 
         if (logger.isDebugEnabled())

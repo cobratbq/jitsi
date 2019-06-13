@@ -81,8 +81,8 @@ public class OtrBuddyAuthenticationDialog
                 "plugin.otr.authbuddydialog.AUTHENTICATION_METHOD_SECRET"),
             OtrActivator.resourceService.getI18NString(
                 "plugin.otr.authbuddydialog.AUTHENTICATION_METHOD_FINGERPRINT")};
-        final JComboBox authenticationMethodComboBox =
-            new JComboBox(am);
+        final JComboBox<String> authenticationMethodComboBox =
+            new JComboBox<>(am);
         JTextArea authMethodLabel = new CustomTextArea();
         authMethodLabel.setText(
                 OtrActivator.resourceService.getI18NString(

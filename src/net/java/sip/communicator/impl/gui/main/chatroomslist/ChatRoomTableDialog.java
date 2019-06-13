@@ -69,7 +69,7 @@ public class ChatRoomTableDialog
     /**
      * A JComboBox which will allow to select an account for joining a room.
      */
-    private JComboBox providersCombo;
+    private JComboBox<ChatRoomProviderWrapper> providersCombo;
 
     /**
      * The ok button.
@@ -374,11 +374,11 @@ public class ChatRoomTableDialog
      * Creates the providers combobox and filling its content.
      * @return
      */
-    private JComboBox createProvidersCombobox()
+    private JComboBox<ChatRoomProviderWrapper> createProvidersCombobox()
     {
         Iterator<ChatRoomProviderWrapper> providers
             = GuiActivator.getMUCService().getChatRoomProviders();
-        JComboBox chatRoomProvidersCombobox = new JComboBox();
+        JComboBox<ChatRoomProviderWrapper> chatRoomProvidersCombobox = new JComboBox<>();
 
         while (providers.hasNext())
             chatRoomProvidersCombobox.addItem(providers.next());
@@ -573,7 +573,7 @@ public class ChatRoomTableDialog
      */
     class ChatRoomProviderRenderer
         extends JLabel
-        implements ListCellRenderer
+        implements ListCellRenderer<ChatRoomProviderWrapper>
     {
         /**
          * The renderer.
@@ -586,11 +586,9 @@ public class ChatRoomTableDialog
             this.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
         }
 
-        public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus)
+        public Component getListCellRendererComponent(JList<? extends ChatRoomProviderWrapper> list,
+            ChatRoomProviderWrapper provider, int index, boolean isSelected, boolean cellHasFocus)
         {
-            ChatRoomProviderWrapper provider = (ChatRoomProviderWrapper)value;
-
             if(provider == null)
                 return this;
 

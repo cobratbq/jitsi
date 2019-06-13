@@ -95,7 +95,7 @@ public class AddrBookActivator
      * <tt>BundleContext</tt> in which this <tt>AddrBookActivator</tt> has been
      * started.
      */
-    private static ServiceRegistration cssServiceRegistration;
+    private static ServiceRegistration<ContactSourceService> cssServiceRegistration;
 
     /**
      * The <tt>ResourceManagementService</tt> through which we access resources.
@@ -116,8 +116,7 @@ public class AddrBookActivator
     /**
      * List of the providers with registration listener.
      */
-    private static List<ProtocolProviderService> providers
-        = new ArrayList<ProtocolProviderService>();
+    private static final List<ProtocolProviderService> providers = new ArrayList<>();
 
     /**
      * The registered PhoneNumberI18nService.
@@ -381,10 +380,8 @@ public class AddrBookActivator
         try
         {
             cssServiceRegistration
-                = bundleContext.registerService(
-                        ContactSourceService.class.getName(),
-                        css,
-                        null);
+                = bundleContext.registerService(ContactSourceService.class,
+                        css, null);
         }
         finally
         {
@@ -517,26 +514,22 @@ public class AddrBookActivator
         List<ProtocolProviderService> result;
         synchronized(providers)
         {
-            ServiceReference[] ppsRefs;
+            Collection<ServiceReference<ProtocolProviderService>> ppsRefs;
             try
             {
-                ppsRefs
-                    = bundleContext.getServiceReferences(
-                            ProtocolProviderService.class.getName(),
-                            null);
+                ppsRefs = bundleContext.getServiceReferences(
+                            ProtocolProviderService.class, null);
             }
             catch (InvalidSyntaxException ise)
             {
                 ppsRefs = null;
             }
 
-            if ((ppsRefs != null) && (ppsRefs.length != 0))
+            if ((ppsRefs != null) && !ppsRefs.isEmpty())
             {
-                for (ServiceReference ppsRef : ppsRefs)
+                for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs)
                 {
-                    ProtocolProviderService pps
-                        = (ProtocolProviderService)
-                            bundleContext.getService(ppsRef);
+                    ProtocolProviderService pps = bundleContext.getService(ppsRef);
                     providers.add(pps);
                 }
             }
@@ -544,7 +537,7 @@ public class AddrBookActivator
 
         synchronized(providers)
         {
-            result = new ArrayList<ProtocolProviderService>(providers);
+            result = new ArrayList<>(providers);
         }
 
         return result;

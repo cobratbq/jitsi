@@ -217,7 +217,7 @@ public class ProtocolProviderFactoryIcqImpl
         if(!registeredAccounts.containsKey(accountID))
             return;
 
-        ServiceRegistration registration = registeredAccounts.get(accountID);
+        ServiceRegistration<ProtocolProviderService> registration = registeredAccounts.get(accountID);
 
         // kill the service
         if (registration != null)
@@ -249,7 +249,7 @@ public class ProtocolProviderFactoryIcqImpl
 
         registration
             = context.registerService(
-                        ProtocolProviderService.class.getName(),
+                        ProtocolProviderService.class,
                         protocolProvider,
                         properties);
 

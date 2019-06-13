@@ -130,12 +130,11 @@ public class MetaContactListServiceLick
 
         //clear the meta contact list
         //find a reference to the meta contaact list service.
-        ServiceReference ref = context.getServiceReference(
-            MetaContactListService.class.getName());
+        ServiceReference<MetaContactListService> ref = context.getServiceReference(
+            MetaContactListService.class);
         if(ref == null)
             return;
-        MetaContactListService metaClService
-            = (MetaContactListService)context.getService(ref);
+        MetaContactListService metaClService = context.getService(ref);
 
         if(metaClService != null)
         {
@@ -153,7 +152,7 @@ public class MetaContactListServiceLick
      * @return the ServiceRegistration reference returned when registering
      * the specified provider.
      */
-    public static ServiceRegistration registerMockProviderService(
+    public static ServiceRegistration<ProtocolProviderService> registerMockProviderService(
                                                         MockProvider provider)
     {
         //in order to make sure that only our mock provider will be taken into
@@ -162,13 +161,13 @@ public class MetaContactListServiceLick
         //properties of the newly registered provider.
         System.setProperty(MetaContactListService.PROVIDER_MASK_PROPERTY, "1");
 
-        Hashtable<String, String> mockProvProperties = new Hashtable<String, String>();
+        Hashtable<String, String> mockProvProperties = new Hashtable<>();
         mockProvProperties.put(MetaContactListService.PROVIDER_MASK_PROPERTY,
                                "1");
 
-        ServiceRegistration osgiRegistration
+        ServiceRegistration<ProtocolProviderService> osgiRegistration
                     = MclSlickFixture.bundleContext.registerService(
-                            ProtocolProviderService.class.getName(),
+                            ProtocolProviderService.class,
                             provider,
                             mockProvProperties);
 

@@ -42,7 +42,7 @@ public class AnonymousLoginStrategy
      * <tt>UserCredentials</tt> used by accompanying services.
      */
     private final UserCredentials credentials;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?,?> ccBuilder;
 
     /**
      * Creates new anonymous login strategy instance.
@@ -52,7 +52,7 @@ public class AnonymousLoginStrategy
      * @param ccBuilder
      */
     public AnonymousLoginStrategy(String login,
-                                  ConnectionConfiguration.Builder ccBuilder)
+                                  ConnectionConfiguration.Builder<?,?> ccBuilder)
     {
         this.ccBuilder = ccBuilder;
         this.credentials = new UserCredentials();
@@ -100,7 +100,7 @@ public class AnonymousLoginStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?,?> getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

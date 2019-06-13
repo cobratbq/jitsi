@@ -1140,7 +1140,7 @@ public class ProtocolProviderServiceJabberImpl
         throws XMPPException, InterruptedException, IOException, SmackException
     {
         // BOSH or TCP ?
-        ConnectionConfiguration.Builder confConn =
+        ConnectionConfiguration.Builder<?,?> confConn =
             loginStrategy.getConnectionConfigurationBuilder();
         String boshURL = accountID.getBoshUrl();
         boolean isBosh = !org.jitsi.utils.StringUtils.isNullOrEmpty(boshURL);
@@ -1203,7 +1203,7 @@ public class ProtocolProviderServiceJabberImpl
                 ? required
                 : ifpossible);
 
-        TLSUtils.setTLSOnly(confConn);
+        TLSUtils.setTLSOnly((ConnectionConfiguration.Builder) confConn);
 
         if(connection != null)
         {

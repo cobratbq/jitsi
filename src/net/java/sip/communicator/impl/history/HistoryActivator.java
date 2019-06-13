@@ -33,7 +33,7 @@ public class HistoryActivator
     /**
      * The service registration.
      */
-    private ServiceRegistration serviceRegistration;
+    private ServiceRegistration<HistoryService> serviceRegistration;
 
     /**
      * Initialize and start history service
@@ -44,7 +44,7 @@ public class HistoryActivator
     public void start(BundleContext bundleContext) throws Exception
     {
         serviceRegistration =
-            bundleContext.registerService(HistoryService.class.getName(),
+            bundleContext.registerService(HistoryService.class,
                 new HistoryServiceImpl(bundleContext), null);
     }
 

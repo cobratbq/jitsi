@@ -38,7 +38,7 @@ public class LoginByPasswordStrategy
 {
     private final AbstractProtocolProviderService protocolProvider;
     private final AccountID accountID;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?,?> ccBuilder;
 
     private String password;
 
@@ -52,7 +52,7 @@ public class LoginByPasswordStrategy
      */
     public LoginByPasswordStrategy(
         AbstractProtocolProviderService protocolProvider,
-        AccountID accountID, ConnectionConfiguration.Builder ccBuilder)
+        AccountID accountID, ConnectionConfiguration.Builder<?,?> ccBuilder)
     {
         this.protocolProvider = protocolProvider;
         this.accountID = accountID;
@@ -198,7 +198,7 @@ public class LoginByPasswordStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?,?> getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

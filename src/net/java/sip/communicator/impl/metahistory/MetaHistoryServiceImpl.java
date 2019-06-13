@@ -59,10 +59,10 @@ public class MetaHistoryServiceImpl
     /**
      * Caching of the used services
      */
-    private Hashtable<String, Object> services = new Hashtable<String, Object>();
+    private Hashtable<String, Object> services = new Hashtable<>();
 
     private final List<HistorySearchProgressListener> progressListeners
-        = new ArrayList<HistorySearchProgressListener>();
+        = new ArrayList<>();
 
     /**
      * Returns all the records for the descriptor after the given date.
@@ -786,7 +786,7 @@ public class MetaHistoryServiceImpl
 
        if(serv == null)
        {
-            ServiceReference refHistory = bundleContext.getServiceReference(name);
+            ServiceReference<?> refHistory = bundleContext.getServiceReference(name);
 
             serv = bundleContext.getService(refHistory);
        }

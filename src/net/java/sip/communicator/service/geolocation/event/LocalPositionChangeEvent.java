@@ -48,7 +48,7 @@ public class LocalPositionChangeEvent extends PropertyChangeEvent
      *            the Geolocation the source provider is currently in.
      */
     public LocalPositionChangeEvent(ProtocolProviderService source,
-            Map oldValue, Map newValue)
+            Map<?,?> oldValue, Map<?,?> newValue)
     {
         super(source, LocalPositionChangeEvent.class.getName(), oldValue,
                 newValue);
@@ -70,9 +70,9 @@ public class LocalPositionChangeEvent extends PropertyChangeEvent
      * @return a Geolocation instance indicating the event the source provider
      *         was in before it entered its new state.
      */
-    public Map getOldGeolocation()
+    public Map<?,?> getOldGeolocation()
     {
-        return (Map) super.getOldValue();
+        return (Map<?,?>) super.getOldValue();
     }
 
     /**
@@ -82,9 +82,9 @@ public class LocalPositionChangeEvent extends PropertyChangeEvent
      * @return a Geolocation instance indicating the event the source provider
      *         is in after the Geolocation change occurred.
      */
-    public Map getNewGeolocation()
+    public Map<?,?> getNewGeolocation()
     {
-        return (Map) super.getNewValue();
+        return (Map<?,?>) super.getNewValue();
     }
 
     /**

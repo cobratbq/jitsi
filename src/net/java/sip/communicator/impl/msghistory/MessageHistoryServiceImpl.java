@@ -116,7 +116,7 @@ public class MessageHistoryServiceImpl
     /**
      * The message source service registration.
      */
-    private ServiceRegistration messageSourceServiceReg = null;
+    private ServiceRegistration<ContactSourceService> messageSourceServiceReg = null;
 
     /**
      * Returns the history service.
@@ -1053,11 +1053,10 @@ public class MessageHistoryServiceImpl
     {
         this.bundleContext = bc;
 
-        ServiceReference refConfig = bundleContext.getServiceReference(
-            ConfigurationService.class.getName());
+        ServiceReference<ConfigurationService> refConfig = bundleContext.getServiceReference(
+            ConfigurationService.class);
 
-        configService = (ConfigurationService)
-            bundleContext.getService(refConfig);
+        configService = bundleContext.getService(refConfig);
 
         // Check if the message history is enabled in the configuration
         // service, and if not do not register the service.
@@ -1100,8 +1099,7 @@ public class MessageHistoryServiceImpl
     {
         this.messageSourceService = new MessageSourceService(this);
         messageSourceServiceReg = bundleContext.registerService(
-            ContactSourceService.class.getName(),
-            messageSourceService, null);
+            ContactSourceService.class, messageSourceService, null);
         MessageHistoryActivator.getContactListService()
             .addMetaContactListListener(this.messageSourceService);
     }
@@ -2823,15 +2821,13 @@ public class MessageHistoryServiceImpl
      */
     List<ProtocolProviderService> getCurrentlyAvailableProviders()
     {
-        List<ProtocolProviderService> res
-            = new ArrayList<ProtocolProviderService>();
+        List<ProtocolProviderService> res = new ArrayList<>();
 
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = bundleContext.getServiceReferences(
-                ProtocolProviderService.class.getName(),
-                null);
+                ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -2847,14 +2843,11 @@ public class MessageHistoryServiceImpl
         {
             if (logger.isDebugEnabled())
                 logger.debug("Found "
-                         + protocolProviderRefs.length
+                         + protocolProviderRefs.size()
                          + " already installed providers.");
-            for (int i = 0; i < protocolProviderRefs.length; i++)
+            for (ServiceReference<ProtocolProviderService> serRef : protocolProviderRefs)
             {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService) bundleContext
-                    .getService(protocolProviderRefs[i]);
-
+                ProtocolProviderService provider = bundleContext.getService(serRef);
                 res.add(provider);
             }
         }
@@ -2870,12 +2863,11 @@ public class MessageHistoryServiceImpl
         // start listening for newly register or removed protocol providers
         bundleContext.removeServiceListener(this);
 
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = bundleContext.getServiceReferences(
-                ProtocolProviderService.class.getName(),
-                null);
+                ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -2887,15 +2879,12 @@ public class MessageHistoryServiceImpl
         }
 
         // in case we found any
-        if (protocolProviderRefs != null)
-        {
-            for (int i = 0; i < protocolProviderRefs.length; i++)
-            {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService) bundleContext
-                        .getService(protocolProviderRefs[i]);
-
-                this.handleProviderRemoved(provider);
+        if (protocolProviderRefs != null) {
+            for (ServiceReference<ProtocolProviderService> serRef : protocolProviderRefs) {
+                {
+                    ProtocolProviderService provider = bundleContext.getService(serRef);
+                    this.handleProviderRemoved(provider);
+                }
             }
         }
     }

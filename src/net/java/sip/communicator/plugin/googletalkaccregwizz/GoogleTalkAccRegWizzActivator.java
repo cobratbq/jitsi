@@ -112,7 +112,7 @@ public class GoogleTalkAccRegWizzActivator
      */
     public static ProtocolProviderFactory getGoogleTalkProtocolProviderFactory()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -121,14 +121,15 @@ public class GoogleTalkAccRegWizzActivator
         try
         {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             logger.error("GoogleTalkAccRegWizzActivator : " + ex);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**

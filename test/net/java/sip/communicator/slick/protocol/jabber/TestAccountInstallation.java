@@ -70,12 +70,12 @@ public class TestAccountInstallation
     public void testInstallAccount()
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.JABBER+")";
         try{
             serRefs = JabberSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+                    ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -85,23 +85,18 @@ public class TestAccountInstallation
 
         assertTrue(
             "Failed to find a provider factory service for protocol Jabber",
-            serRefs != null && serRefs.length >  0);
+            serRefs != null && serRefs.size() >  0);
 
         // Enable always trust mode for testing tls jabber connections
-        ServiceReference confReference
-            = JabberSlickFixture.bc.getServiceReference(
-                ConfigurationService.class.getName());
+        ServiceReference<ConfigurationService> confReference
+            = JabberSlickFixture.bc.getServiceReference(ConfigurationService.class);
         ConfigurationService configurationService
-            = (ConfigurationService) JabberSlickFixture.
-                bc.getService(confReference);
+            = JabberSlickFixture.bc.getService(confReference);
 
-        configurationService.setProperty(
-            CertificateService.PNAME_ALWAYS_TRUST,
-            Boolean.TRUE);
+        configurationService.setProperty(CertificateService.PNAME_ALWAYS_TRUST, Boolean.TRUE);
 
         //Keep the reference for later usage.
-        ProtocolProviderFactory jabberProviderFactory = (ProtocolProviderFactory)
-            JabberSlickFixture.bc.getService(serRefs[0]);
+        ProtocolProviderFactory jabberProviderFactory = JabberSlickFixture.bc.getService(serRefs.iterator().next());
 
         //make sure the account is empty
         assertTrue("There was an account registered with the account mananger "
@@ -175,24 +170,25 @@ public class TestAccountInstallation
                             ProtocolProviderFactory.USER_ID)
              + "))";
 
+        Collection<ServiceReference<ProtocolProviderService>> serRefsService;
         try
         {
-            serRefs = JabberSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderService.class.getName(),
-                    osgiFilter);
+            serRefsService = JabberSlickFixture.bc.getServiceReferences(
+                    ProtocolProviderService.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + "is not a valid osgi filter");
+            return;
         }
 
         assertTrue("An protocol provider was apparently not installed as "
                 + "requested."
-                , serRefs != null && serRefs.length > 0);
+                , serRefsService != null && serRefsService.size() > 0);
 
         Object jabberProtocolProvider
-            = JabberSlickFixture.bc.getService(serRefs[0]);
+            = JabberSlickFixture.bc.getService(serRefsService.iterator().next());
 
         assertTrue("The installed protocol provider does not implement "
                   + "the protocol provider service."
@@ -209,7 +205,7 @@ public class TestAccountInstallation
      */
     private Hashtable<String, String> getAccountProperties(String accountPrefix)
     {
-        Hashtable<String, String> table = new Hashtable<String, String>();
+        Hashtable<String, String> table = new Hashtable<>();
 
         String userID = System.getProperty(
             accountPrefix + ProtocolProviderFactory.USER_ID, null);

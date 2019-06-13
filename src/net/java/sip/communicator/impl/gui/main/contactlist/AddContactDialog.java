@@ -62,7 +62,7 @@ public class AddContactDialog
 
     private JLabel groupLabel;
 
-    private JComboBox groupCombo;
+    private JComboBox<MetaContactGroup> groupCombo;
 
     private JLabel contactAddressLabel;
 
@@ -440,9 +440,9 @@ public class AddContactDialog
     /**
      * Initializes groups combo box.
      */
-    public static JComboBox createGroupCombo(final Dialog parentDialog)
+    public static JComboBox<MetaContactGroup> createGroupCombo(final Dialog parentDialog)
     {
-        final JComboBox groupCombo = new JComboBox();
+        final JComboBox<MetaContactGroup> groupCombo = new JComboBox<>();
 
         groupCombo.setRenderer(new GroupComboRenderer());
 

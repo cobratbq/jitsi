@@ -43,7 +43,7 @@ class LoginByClientCertificateStrategy
     private final static Logger logger
         = Logger.getLogger(LoginByClientCertificateStrategy.class);
     private AccountID accountID;
-    private ConnectionConfiguration.Builder ccBuilder;
+    private ConnectionConfiguration.Builder<?,?> ccBuilder;
 
     /**
      * Creates a new instance of this class.
@@ -52,7 +52,7 @@ class LoginByClientCertificateStrategy
      * @param ccBuilder
      */
     public LoginByClientCertificateStrategy(AccountID accountID,
-        ConnectionConfiguration.Builder ccBuilder)
+        ConnectionConfiguration.Builder<?,?> ccBuilder)
     {
         this.accountID = accountID;
         this.ccBuilder = ccBuilder;
@@ -151,7 +151,7 @@ class LoginByClientCertificateStrategy
     }
 
     @Override
-    public ConnectionConfiguration.Builder getConnectionConfigurationBuilder()
+    public ConnectionConfiguration.Builder<?,?> getConnectionConfigurationBuilder()
     {
         return ccBuilder;
     }

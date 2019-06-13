@@ -168,7 +168,7 @@ public class SimpleAccountRegistrationActivator
 
             try
             {
-                ServiceReference[] refs = bundleContext.getAllServiceReferences(
+                ServiceReference<?>[] refs = bundleContext.getAllServiceReferences(
                     AccountRegistrationWizard.class.getName(), protocolFilter);
                 if (refs != null)
                 {
@@ -222,13 +222,13 @@ public class SimpleAccountRegistrationActivator
      */
     private static boolean hasRegisteredAccounts()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
 
         try
         {
             //get all registered provider factories
             serRefs = bundleContext.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), null);
+                    ProtocolProviderFactory.class, null);
         }
         catch (InvalidSyntaxException e)
         {
@@ -239,21 +239,13 @@ public class SimpleAccountRegistrationActivator
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
             {
                 ProtocolProviderFactory providerFactory
-                    = (ProtocolProviderFactory)
-                        bundleContext.getService(serRef);
+                    = bundleContext.getService(serRef);
 
-                for (Iterator<AccountID> registeredAccountIter
-                            = providerFactory.getRegisteredAccounts()
-                                    .iterator();
-                        registeredAccountIter.hasNext();)
-                {
-                    AccountID accountID = registeredAccountIter.next();
-
-                    if (!accountID.isHidden())
-                    {
+                for (AccountID accountID : providerFactory.getRegisteredAccounts()) {
+                    if (!accountID.isHidden()) {
                         hasRegisteredAccounts = true;
                         break;
                     }
@@ -269,15 +261,13 @@ public class SimpleAccountRegistrationActivator
 
     private static boolean hasStoredAccounts()
     {
-        ServiceReference accountManagerReference =
-            bundleContext.getServiceReference(AccountManager.class.getName());
+        ServiceReference<AccountManager> accountManagerReference =
+            bundleContext.getServiceReference(AccountManager.class);
         boolean hasStoredAccounts = false;
 
         if (accountManagerReference != null)
         {
-            AccountManager accountManager =
-                (AccountManager) bundleContext
-                    .getService(accountManagerReference);
+            AccountManager accountManager = bundleContext.getService(accountManagerReference);
 
             if (accountManager != null)
             {
@@ -303,12 +293,9 @@ public class SimpleAccountRegistrationActivator
      */
     public static MetaContactListService getContactList()
     {
-        ServiceReference serviceReference =
-            bundleContext.getServiceReference(MetaContactListService.class
-                .getName());
-
-        return (MetaContactListService) bundleContext
-            .getService(serviceReference);
+        ServiceReference<MetaContactListService> serviceReference =
+            bundleContext.getServiceReference(MetaContactListService.class);
+        return bundleContext.getService(serviceReference);
     }
 
     /**
@@ -326,11 +313,9 @@ public class SimpleAccountRegistrationActivator
      */
     public static UIService getUIService()
     {
-        ServiceReference serviceReference
-            = bundleContext.getServiceReference(UIService.class.getName());
-
-        return (UIService) bundleContext
-            .getService(serviceReference);
+        ServiceReference<UIService> serviceReference
+            = bundleContext.getServiceReference(UIService.class);
+        return bundleContext.getService(serviceReference);
     }
 
     /**

@@ -155,7 +155,7 @@ public class ContactInfoContactPanel
          * cell
          */
         @Override
-        public Component getListCellRendererComponent(  JList list,
+        public Component getListCellRendererComponent(  JList<? extends Object> list,
                                                         Object value,
                                                         int index,
                                                         boolean isSelected,

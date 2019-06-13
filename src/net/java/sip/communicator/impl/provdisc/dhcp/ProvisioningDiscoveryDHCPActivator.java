@@ -106,11 +106,9 @@ public class ProvisioningDiscoveryDHCPActivator
     {
         if(networkAddressManagerService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    NetworkAddressManagerService.class.getName());
-            networkAddressManagerService = (NetworkAddressManagerService)
-                bundleContext.getService(confReference);
+            ServiceReference<NetworkAddressManagerService> confReference
+                = bundleContext.getServiceReference(NetworkAddressManagerService.class);
+            networkAddressManagerService = bundleContext.getService(confReference);
         }
         return networkAddressManagerService;
     }

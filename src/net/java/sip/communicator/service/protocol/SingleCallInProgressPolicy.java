@@ -787,14 +787,10 @@ public class SingleCallInProgressPolicy
                 return;
             }
 
-            ServiceReference[] ppsRefs;
-
+            Collection<ServiceReference<ProtocolProviderService>> ppsRefs;
             try
             {
-                ppsRefs
-                    = bundleContext.getServiceReferences(
-                            ProtocolProviderService.class.getName(),
-                            null);
+                ppsRefs = bundleContext.getServiceReferences(ProtocolProviderService.class, null);
             }
             catch (InvalidSyntaxException ise)
             {
@@ -804,7 +800,7 @@ public class SingleCallInProgressPolicy
                 }
                 ppsRefs = null;
             }
-            if ((ppsRefs == null) || (ppsRefs.length == 0))
+            if ((ppsRefs == null) || ppsRefs.isEmpty())
             {
                 forgetPresenceStatuses();
             }
@@ -826,11 +822,9 @@ public class SingleCallInProgressPolicy
                     return;
                 }
 
-                for (ServiceReference ppsRef : ppsRefs)
+                for (ServiceReference<ProtocolProviderService> ppsRef : ppsRefs)
                 {
-                    ProtocolProviderService pps
-                        = (ProtocolProviderService)
-                            bundleContext.getService(ppsRef);
+                    ProtocolProviderService pps = bundleContext.getService(ppsRef);
 
                     if (pps == null)
                     {

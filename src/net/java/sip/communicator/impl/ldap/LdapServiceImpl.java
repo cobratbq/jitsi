@@ -108,12 +108,9 @@ public class LdapServiceImpl
     {
         if(configService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        ConfigurationService.class.getName());
-            configService
-                = (ConfigurationService) bundleContext.getService(
-                        confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(confReference);
         }
         return configService;
     }
@@ -130,12 +127,9 @@ public class LdapServiceImpl
     {
         if(credentialsService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        CredentialsStorageService.class.getName());
-            credentialsService
-                = (CredentialsStorageService) bundleContext.getService(
-                        confReference);
+            ServiceReference<CredentialsStorageService> confReference
+                = bundleContext.getServiceReference(CredentialsStorageService.class);
+            credentialsService = bundleContext.getService(confReference);
         }
         return credentialsService;
     }

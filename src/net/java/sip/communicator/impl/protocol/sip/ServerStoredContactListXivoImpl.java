@@ -736,15 +736,14 @@ public class ServerStoredContactListXivoImpl
              * FIXME The following contains two very inefficient Map-iterating
              * loops.
              */
-            Iterator iter = payload.keySet().iterator();
-            List<JSONObject> phoneList = new ArrayList<JSONObject>();
+            Iterator<?> iter = payload.keySet().iterator();
+            List<JSONObject> phoneList = new ArrayList<>();
             while(iter.hasNext())
             {
                 JSONObject obj = (JSONObject)payload.get(iter.next());
-                Iterator phonesIter = obj.keySet().iterator();
-                while(phonesIter.hasNext())
+                for (Object o : obj.keySet())
                     phoneList.add(
-                        (JSONObject)obj.get(phonesIter.next()));
+                            (JSONObject) obj.get(o));
             }
 
             for(JSONObject phone : phoneList)

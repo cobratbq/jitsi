@@ -780,12 +780,10 @@ public class OperationSetPersistentPresenceGibberishImpl
                 + "=" + gibberishUserID + ")"
                 + ")";
 
-        ServiceReference[] refs = null;
+        Collection<ServiceReference<ProtocolProviderService>> refs = null;
         try
         {
-            refs = bc.getServiceReferences(
-                ProtocolProviderService.class.getName()
-                ,osgiQuery);
+            refs = bc.getServiceReferences(ProtocolProviderService.class, osgiQuery);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -794,9 +792,9 @@ public class OperationSetPersistentPresenceGibberishImpl
                          , ex);
         }
 
-        if(refs != null && refs.length > 0)
+        if(refs != null && !refs.isEmpty())
         {
-            return (ProtocolProviderServiceGibberishImpl)bc.getService(refs[0]);
+            return (ProtocolProviderServiceGibberishImpl)bc.getService(refs.iterator().next());
         }
 
         return null;
@@ -812,19 +810,17 @@ public class OperationSetPersistentPresenceGibberishImpl
      */
     public List<Contact> findContactsPointingToUs()
     {
-        List<Contact> contacts = new LinkedList<Contact>();
+        List<Contact> contacts = new LinkedList<>();
         BundleContext bc = GibberishActivator.getBundleContext();
 
         String osgiQuery =
                 "(" + ProtocolProviderFactory.PROTOCOL
                 + "=Gibberish)";
 
-        ServiceReference[] refs = null;
+        Collection<ServiceReference<ProtocolProviderService>> refs = null;
         try
         {
-            refs = bc.getServiceReferences(
-                ProtocolProviderService.class.getName()
-                ,osgiQuery);
+            refs = bc.getServiceReferences(ProtocolProviderService.class, osgiQuery);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -833,20 +829,21 @@ public class OperationSetPersistentPresenceGibberishImpl
                          , ex);
         }
 
-        for (int i =0; refs != null && i < refs.length; i++)
-        {
-            ProtocolProviderServiceGibberishImpl gibProvider
-               = (ProtocolProviderServiceGibberishImpl)bc.getService(refs[i]);
+        if (refs != null) {
+            for (ServiceReference<ProtocolProviderService> ref : refs) {
+                ProtocolProviderServiceGibberishImpl gibProvider
+                        = (ProtocolProviderServiceGibberishImpl) bc.getService(ref);
 
-           OperationSetPersistentPresenceGibberishImpl opSetPersPresence
-               = (OperationSetPersistentPresenceGibberishImpl)gibProvider
-                    .getOperationSet(OperationSetPersistentPresence.class);
+                OperationSetPersistentPresenceGibberishImpl opSetPersPresence
+                        = (OperationSetPersistentPresenceGibberishImpl) gibProvider
+                        .getOperationSet(OperationSetPersistentPresence.class);
 
-            Contact contact = opSetPersPresence.findContactByID(
-                parentProvider.getAccountID().getUserID());
+                Contact contact = opSetPersPresence.findContactByID(
+                        parentProvider.getAccountID().getUserID());
 
-            if (contact != null)
-                contacts.add(contact);
+                if (contact != null)
+                    contacts.add(contact);
+            }
         }
 
         return contacts;

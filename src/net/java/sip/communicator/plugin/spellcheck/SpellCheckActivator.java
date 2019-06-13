@@ -172,10 +172,10 @@ public class SpellCheckActivator
             return uiService;
 
         // retrieves needed services
-        ServiceReference uiServiceRef =
-            bundleContext.getServiceReference(UIService.class.getName());
+        ServiceReference<UIService> uiServiceRef =
+            bundleContext.getServiceReference(UIService.class);
 
-        uiService = (UIService) bundleContext.getService(uiServiceRef);
+        uiService = bundleContext.getService(uiServiceRef);
 
         return uiService;
     }
@@ -190,11 +190,9 @@ public class SpellCheckActivator
         if (faService != null)
             return faService;
 
-        ServiceReference faServiceReference =
-            bundleContext
-                .getServiceReference(FileAccessService.class.getName());
-        faService =
-            (FileAccessService) bundleContext.getService(faServiceReference);
+        ServiceReference<FileAccessService> faServiceReference =
+            bundleContext.getServiceReference(FileAccessService.class);
+        faService = bundleContext.getService(faServiceReference);
 
         return faService;
     }
@@ -209,12 +207,9 @@ public class SpellCheckActivator
         if (configService != null)
             return configService;
 
-        ServiceReference configServiceRef =
-            bundleContext.getServiceReference(ConfigurationService.class
-                .getName());
-
-        configService =
-            (ConfigurationService) bundleContext.getService(configServiceRef);
+        ServiceReference<ConfigurationService> configServiceRef =
+            bundleContext.getServiceReference(ConfigurationService.class);
+        configService = bundleContext.getService(configServiceRef);
 
         return configService;
     }

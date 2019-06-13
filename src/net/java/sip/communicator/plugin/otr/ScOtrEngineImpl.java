@@ -1022,15 +1022,15 @@ public class ScOtrEngineImpl
     @Override
     public void launchHelp()
     {
-        ServiceReference ref =
+        ServiceReference<BrowserLauncherService> ref =
             OtrActivator.bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
+                .getServiceReference(BrowserLauncherService.class);
 
         if (ref == null)
             return;
 
         BrowserLauncherService service =
-            (BrowserLauncherService) OtrActivator.bundleContext.getService(ref);
+                OtrActivator.bundleContext.getService(ref);
 
         service.openURL(OtrActivator.resourceService
             .getI18NString("plugin.otr.authbuddydialog.HELP_URI"));

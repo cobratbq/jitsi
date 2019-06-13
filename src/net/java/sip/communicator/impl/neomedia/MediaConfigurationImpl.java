@@ -91,7 +91,7 @@ public class MediaConfigurationImpl
         /**
          * The combo box used to select the device the user wants to use.
          */
-        private JComboBox comboBox;
+        private JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> comboBox;
 
         /**
          * The current capture device.
@@ -198,7 +198,7 @@ public class MediaConfigurationImpl
          */
         public AudioLevelListenerThread(
                 AudioSystem audioSystem,
-                JComboBox comboBox,
+                JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> comboBox,
                 SoundLevelIndicator soundLevelIndicator)
         {
             init(audioSystem, comboBox, soundLevelIndicator);
@@ -327,7 +327,7 @@ public class MediaConfigurationImpl
          */
         public void init(
                 AudioSystem audioSystem,
-                JComboBox comboBox,
+                JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> comboBox,
                 SoundLevelIndicator soundLevelIndicator)
         {
             this.audioSystem = audioSystem;
@@ -436,7 +436,7 @@ public class MediaConfigurationImpl
          */
         @Override
         public Component getListCellRendererComponent(
-            JList list,
+            JList<?> list,
             Object value,
             int index,
             boolean isSelected,
@@ -710,7 +710,7 @@ public class MediaConfigurationImpl
         System.arraycopy(DeviceConfiguration.SUPPORTED_RESOLUTIONS, 0,
                         resolutionValues, 1,
                         DeviceConfiguration.SUPPORTED_RESOLUTIONS.length);
-        final JComboBox sizeCombo = new JComboBox(resolutionValues);
+        final JComboBox<Object> sizeCombo = new JComboBox<>(resolutionValues);
         sizeCombo.setRenderer(new ResolutionCellRenderer());
         sizeCombo.setEditable(false);
         centerPanel.add(sizeCombo, constraints);
@@ -976,12 +976,12 @@ public class MediaConfigurationImpl
     /**
      * The combo box used to selected the notification device.
      */
-    private JComboBox notifyCombo;
+    private JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> notifyCombo;
 
     /**
      * The combo box used to selected the playback device.
      */
-    private JComboBox playbackCombo;
+    private JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> playbackCombo;
 
     /**
      * The button used to play a sound in order to test playback device.
@@ -1092,11 +1092,11 @@ public class MediaConfigurationImpl
         cnstrnts.insets = new Insets(3, 3, 3, 0);
         cnstrnts.weightx = 1;
 
-        JComboBox captureCombo = null;
+        JComboBox<DeviceConfigurationComboBoxModel.CaptureDevice> captureCombo = null;
 
         if (featureNotifyAndPlaybackDevices)
         {
-            captureCombo = new JComboBox();
+            captureCombo = new JComboBox<>();
             captureCombo.setEditable(false);
             captureCombo.setModel(
                     new DeviceConfigurationComboBoxModel(
@@ -1121,7 +1121,7 @@ public class MediaConfigurationImpl
 
         if (featureNotifyAndPlaybackDevices)
         {
-            playbackCombo = new JComboBox();
+            playbackCombo = new JComboBox<>();
             playbackCombo.setEditable(false);
             playbackCombo.setModel(
                     new DeviceConfigurationComboBoxModel(
@@ -1130,7 +1130,7 @@ public class MediaConfigurationImpl
             playbackCombo.addActionListener(this);
             container.add(playbackCombo, cnstrnts);
 
-            notifyCombo = new JComboBox();
+            notifyCombo = new JComboBox<>();
             notifyCombo.setEditable(false);
             notifyCombo.setModel(
                     new DeviceConfigurationComboBoxModel(

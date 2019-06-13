@@ -58,10 +58,10 @@ public class LanguageMenuBar
 
     // parallel maps containing cached instances of country flags
     private static final HashMap<Parameters.Locale, ImageIcon>
-        AVAILABLE_FLAGS = new HashMap<Parameters.Locale, ImageIcon>();
+        AVAILABLE_FLAGS = new HashMap<>();
 
     private static final HashMap<Parameters.Locale, ImageIcon>
-        UNAVAILABLE_FLAGS = new HashMap<Parameters.Locale, ImageIcon>();
+        UNAVAILABLE_FLAGS = new HashMap<>();
 
     private static final Logger logger = Logger
         .getLogger(LanguageMenuBar.class);
@@ -69,22 +69,20 @@ public class LanguageMenuBar
     private static final ImageIcon BLANK_FLAG_ICON = Resources
         .getImage("plugin.spellcheck.BLANK_FLAG");
 
-    private final ListCellRenderer languageSelectionRenderer;
+    private final ListCellRenderer<Object> languageSelectionRenderer;
 
-    private final HashMap<Parameters.Locale, Boolean> localeAvailabilityCache =
-        new HashMap<Parameters.Locale, Boolean>();
+    private final HashMap<Parameters.Locale, Boolean> localeAvailabilityCache = new HashMap<>();
 
     private final SpellChecker spellChecker;
 
     private final SIPCommMenu menu = new SelectorMenu();
 
-    private final List<Parameters.Locale> localeList
-        = new ArrayList<Parameters.Locale>();
+    private final List<Parameters.Locale> localeList = new ArrayList<>();
 
     private final SIPCommTextButton removeItem = new SIPCommTextButton(
         Resources.getString("plugin.spellcheck.UNINSTALL_DICTIONARY"));
 
-    public final JList list;
+    public final JList<Object> list;
 
     /**
      * The parent factory.
@@ -115,8 +113,8 @@ public class LanguageMenuBar
         this.menu.setOpaque(false);
         this.setOpaque(false);
 
-        final DefaultListModel model = new DefaultListModel();
-        list = new JList(model);
+        final DefaultListModel<Object> model = new DefaultListModel<>();
+        list = new JList<>(model);
 
         this.languageSelectionRenderer = new LanguageListRenderer();
 
@@ -453,7 +451,7 @@ public class LanguageMenuBar
      *
      * @param model the model whose elements are to be set
      */
-    private void setModelElements(DefaultListModel model)
+    private void setModelElements(DefaultListModel<Object> model)
     {
         synchronized (model)
         {
@@ -506,11 +504,11 @@ public class LanguageMenuBar
     {
         private final Parameters.Locale locale;
 
-        private final JList sourceList;
+        private final JList<Object> sourceList;
 
         private boolean skipFiring = false;
 
-        public SetSpellChecker(Parameters.Locale locale, JList sourceList)
+        public SetSpellChecker(Parameters.Locale locale, JList<Object> sourceList)
         {
             this.locale = locale;
             this.sourceList = sourceList;
@@ -563,7 +561,7 @@ public class LanguageMenuBar
 
             sourceList.removeListSelectionListener(sourceList
                 .getListSelectionListeners()[0]);
-            setModelElements((DefaultListModel) sourceList.getModel());
+            setModelElements((DefaultListModel<Object>) sourceList.getModel());
             sourceList.setSelectedValue(locale, true);
             removeItem.setEnabled(!spellChecker.getLocale().getIsoCode()
                 .equals(Parameters.getDefault(Parameters.Default.LOCALE))
@@ -637,7 +635,7 @@ public class LanguageMenuBar
         private static final long serialVersionUID = 0L;
 
         @Override
-        public Component getListCellRendererComponent(JList list,
+        public Component getListCellRendererComponent(JList<?> list,
             Object value, int index, boolean isSelected,
             boolean cellHasFocus)
         {
@@ -673,7 +671,7 @@ public class LanguageMenuBar
         {
             if (!e.getValueIsAdjusting())
             {
-                JList source = (JList) e.getSource();
+                JList<Object> source = (JList<Object>) e.getSource();
                 Parameters.Locale locale
                     = (Parameters.Locale) source.getSelectedValue();
 

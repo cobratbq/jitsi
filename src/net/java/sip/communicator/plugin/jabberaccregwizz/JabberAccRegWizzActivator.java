@@ -119,7 +119,7 @@ public class JabberAccRegWizzActivator
     public static ProtocolProviderFactory getJabberProtocolProviderFactory()
     {
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -128,14 +128,15 @@ public class JabberAccRegWizzActivator
         try
         {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             logger.error("JabberAccRegWizzActivator : " + ex);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**
@@ -158,11 +159,9 @@ public class JabberAccRegWizzActivator
     {
         if (browserLauncherService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
-
-            browserLauncherService = (BrowserLauncherService) bundleContext
-                .getService(serviceReference);
+            ServiceReference<BrowserLauncherService> serviceReference = bundleContext
+                .getServiceReference(BrowserLauncherService.class);
+            browserLauncherService = bundleContext.getService(serviceReference);
         }
 
         return browserLauncherService;
@@ -178,11 +177,9 @@ public class JabberAccRegWizzActivator
     {
         if (credentialsService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(CredentialsStorageService.class.getName());
-
-            credentialsService = (CredentialsStorageService)bundleContext
-                .getService(serviceReference);
+            ServiceReference<CredentialsStorageService> serviceReference = bundleContext
+                .getServiceReference(CredentialsStorageService.class);
+            credentialsService = bundleContext.getService(serviceReference);
         }
 
         return credentialsService;
@@ -198,11 +195,9 @@ public class JabberAccRegWizzActivator
     {
         if (configService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
-
-            configService = (ConfigurationService)bundleContext
-                .getService(serviceReference);
+            ServiceReference<ConfigurationService> serviceReference = bundleContext
+                .getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(serviceReference);
         }
 
         return configService;
@@ -218,11 +213,9 @@ public class JabberAccRegWizzActivator
     {
         if (certService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                    .getServiceReference(CertificateService.class.getName());
-
-            certService = (CertificateService)bundleContext
-                    .getService(serviceReference);
+            ServiceReference<CertificateService> serviceReference = bundleContext
+                    .getServiceReference(CertificateService.class);
+            certService = bundleContext.getService(serviceReference);
         }
 
         return certService;

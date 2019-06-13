@@ -107,7 +107,7 @@ public class IptelAccRegWizzActivator
      */
     public static ProtocolProviderFactory getIptelProtocolProviderFactory()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -116,14 +116,15 @@ public class IptelAccRegWizzActivator
         try
         {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             logger.error("IptelAccRegWizzActivator : " + ex);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**

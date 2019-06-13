@@ -55,7 +55,7 @@ public class JabberActivator
     /**
      * Service reference for the currently valid Jabber provider factory.
      */
-    private ServiceRegistration jabberPpFactoryServReg = null;
+    private ServiceRegistration<ProtocolProviderFactory> jabberPpFactoryServReg = null;
 
     /**
      * Bundle context from OSGi.
@@ -171,10 +171,8 @@ public class JabberActivator
         uriHandlerImpl = new UriHandlerJabberImpl(jabberProviderFactory);
 
         //register the jabber account man.
-        jabberPpFactoryServReg =  context.registerService(
-                    ProtocolProviderFactory.class.getName(),
-                    jabberProviderFactory,
-                    hashtable);
+        jabberPpFactoryServReg =  context.registerService(ProtocolProviderFactory.class,
+                    jabberProviderFactory, hashtable);
 
         Version ver = JabberActivator.getVersionService().getCurrentVersion();
         String appName = ver.getApplicationName();
@@ -287,11 +285,9 @@ public class JabberActivator
     {
         if(uiService == null)
         {
-            ServiceReference uiServiceReference
-                = bundleContext.getServiceReference(
-                    UIService.class.getName());
-            uiService = (UIService)bundleContext
-                .getService(uiServiceReference);
+            ServiceReference<UIService> uiServiceReference
+                = bundleContext.getServiceReference(UIService.class);
+            uiService = bundleContext.getService(uiServiceReference);
         }
         return uiService;
     }
@@ -326,11 +322,9 @@ public class JabberActivator
     {
         if(mediaService == null)
         {
-            ServiceReference mediaServiceReference
-                = bundleContext.getServiceReference(
-                    MediaService.class.getName());
-            mediaService = (MediaService)bundleContext
-                .getService(mediaServiceReference);
+            ServiceReference<MediaService> mediaServiceReference
+                = bundleContext.getServiceReference(MediaService.class);
+            mediaService = bundleContext.getService(mediaServiceReference);
         }
         return mediaService;
     }
@@ -347,11 +341,9 @@ public class JabberActivator
     {
         if(networkAddressManagerService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    NetworkAddressManagerService.class.getName());
-            networkAddressManagerService = (NetworkAddressManagerService)
-                bundleContext.getService(confReference);
+            ServiceReference<NetworkAddressManagerService> confReference
+                = bundleContext.getServiceReference(NetworkAddressManagerService.class);
+            networkAddressManagerService = bundleContext.getService(confReference);
         }
         return networkAddressManagerService;
     }
@@ -368,11 +360,9 @@ public class JabberActivator
     {
         if(credentialsService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    CredentialsStorageService.class.getName());
-            credentialsService = (CredentialsStorageService)
-                bundleContext.getService(confReference);
+            ServiceReference<CredentialsStorageService> confReference
+                = bundleContext.getServiceReference(CredentialsStorageService.class);
+            credentialsService = bundleContext.getService(confReference);
         }
         return credentialsService;
     }
@@ -388,14 +378,13 @@ public class JabberActivator
     {
         if(hidService == null)
         {
-            ServiceReference hidReference =
-                bundleContext.getServiceReference(
-                        HIDService.class.getName());
+            ServiceReference<HIDService> hidReference
+                    = bundleContext.getServiceReference(HIDService.class);
 
             if(hidReference == null)
                 return null;
 
-            hidService = (HIDService)bundleContext.getService(hidReference);
+            hidService = bundleContext.getService(hidReference);
         }
         return hidService;
     }
@@ -453,11 +442,9 @@ public class JabberActivator
     {
         if(versionService == null)
         {
-            ServiceReference versionServiceReference
-                = bundleContext.getServiceReference(
-                    VersionService.class.getName());
-            versionService = (VersionService)bundleContext
-                .getService(versionServiceReference);
+            ServiceReference<VersionService> versionServiceReference
+                = bundleContext.getServiceReference(VersionService.class);
+            versionService = bundleContext.getService(versionServiceReference);
         }
         return versionService;
     }

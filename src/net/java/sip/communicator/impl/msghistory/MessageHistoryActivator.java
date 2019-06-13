@@ -81,11 +81,10 @@ public class MessageHistoryActivator
         {
             logger.logEntry();
 
-            ServiceReference refHistory = bundleContext.getServiceReference(
-                HistoryService.class.getName());
+            ServiceReference<HistoryService> refHistory = bundleContext.getServiceReference(
+                HistoryService.class);
 
-            HistoryService historyService = (HistoryService)
-                bundleContext.getService(refHistory);
+            HistoryService historyService = bundleContext.getService(refHistory);
 
             //Create and start the message history service.
             msgHistoryService =

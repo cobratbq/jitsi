@@ -42,7 +42,7 @@ public class ViddlerActivator
     /**
      * The Viddler source service registration.
      */
-    private ServiceRegistration viddlerServReg = null;
+    private ServiceRegistration<ReplacementService> viddlerServReg = null;
 
     /**
      * The source implementation reference.
@@ -57,13 +57,12 @@ public class ViddlerActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceViddlerImpl.VIDDLER_CONFIG_LABEL);
         viddlerSource = new ReplacementServiceViddlerImpl();
 
-        viddlerServReg =
-            context.registerService(ReplacementService.class.getName(),
+        viddlerServReg = context.registerService(ReplacementService.class,
                 viddlerSource, hashtable);
 
         logger.info("Viddler source implementation [STARTED].");

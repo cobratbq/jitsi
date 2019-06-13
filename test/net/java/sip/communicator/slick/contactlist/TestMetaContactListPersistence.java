@@ -366,7 +366,7 @@ public class TestMetaContactListPersistence extends TestCase
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
                 = bundles[i].getRegisteredServices();
 
             if(registeredServices == null)

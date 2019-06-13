@@ -40,7 +40,7 @@ public class DailymotionActivator
     /**
      * The daily motion source service registration.
      */
-    private ServiceRegistration dailymotionSourceServReg = null;
+    private ServiceRegistration<ReplacementService> dailymotionSourceServReg = null;
 
     /**
      * The source implementation reference.
@@ -56,13 +56,13 @@ public class DailymotionActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceDailymotionImpl.DAILYMOTION_CONFIG_LABEL);
         dailymotionSource = new ReplacementServiceDailymotionImpl();
 
         dailymotionSourceServReg =
-            context.registerService(ReplacementService.class.getName(),
+            context.registerService(ReplacementService.class,
                 dailymotionSource, hashtable);
         logger.info("Dailymotion source implementation [STARTED].");
     }

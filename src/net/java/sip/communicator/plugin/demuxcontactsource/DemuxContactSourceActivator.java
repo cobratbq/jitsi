@@ -29,7 +29,7 @@ import org.osgi.framework.*;
 public class DemuxContactSourceActivator
     implements BundleActivator
 {
-    private ServiceRegistration demuxServiceRegistration;
+    private ServiceRegistration<DemuxContactSourceService> demuxServiceRegistration;
 
     /**
      * Starts the demux contact source plug-in.
@@ -44,7 +44,7 @@ public class DemuxContactSourceActivator
     {
         // Registers the service implementation provided by this plugin.
         demuxServiceRegistration = bundleContext.registerService(
-            DemuxContactSourceService.class.getName(),
+            DemuxContactSourceService.class,
             new DemuxContactSourceServiceImpl(),
             null);
     }

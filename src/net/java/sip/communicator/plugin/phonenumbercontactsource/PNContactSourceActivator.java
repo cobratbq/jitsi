@@ -124,7 +124,7 @@ public class PNContactSourceActivator
         if (phoneProviders != null)
             return phoneProviders;
 
-        phoneProviders = new LinkedList<ProtocolProviderService>();
+        phoneProviders = new LinkedList<>();
 
         ppRegListener = new ProtocolProviderRegistrationListener();
 

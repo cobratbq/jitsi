@@ -540,14 +540,14 @@ public class GeneralConfigurationPanel
         sendMessageLabel.setText(
             Resources.getString("plugin.generalconfig.SEND_MESSAGES_WITH"));
 
-        ComboBoxModel sendMessageComboBoxModel
-            = new DefaultComboBoxModel(
-                    new String[]
-                            {
-                                ConfigurationUtils.ENTER_COMMAND,
-                                ConfigurationUtils.CTRL_ENTER_COMMAND
-                            });
-        final JComboBox sendMessageComboBox = new JComboBox();
+        ComboBoxModel<String> sendMessageComboBoxModel
+            = new DefaultComboBoxModel<>(
+                new String[]
+                    {
+                        ConfigurationUtils.ENTER_COMMAND,
+                        ConfigurationUtils.CTRL_ENTER_COMMAND
+                    });
+        final JComboBox<String> sendMessageComboBox = new JComboBox<>();
         sendMessagePanel.add(sendMessageComboBox);
         sendMessageComboBox.setModel(sendMessageComboBoxModel);
         sendMessageComboBox.setSelectedItem(
@@ -631,13 +631,11 @@ public class GeneralConfigurationPanel
      */
     private Component createNotificationConfigPanel()
     {
-        ServiceReference[] handlerRefs = null;
+        Collection<ServiceReference<PopupMessageHandler>> handlerRefs = null;
         BundleContext bc = GeneralConfigPluginActivator.bundleContext;
         try
         {
-            handlerRefs = bc.getServiceReferences(
-                PopupMessageHandler.class.getName(),
-                null);
+            handlerRefs = bc.getServiceReferences(PopupMessageHandler.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -652,15 +650,14 @@ public class GeneralConfigurationPanel
                 Resources.getString(
                     "plugin.notificationconfig.POPUP_NOTIF_HANDLER"));
 
-        final JComboBox notifConfigComboBox = new JComboBox();
+        final JComboBox<Object> notifConfigComboBox = new JComboBox<>();
 
         String configuredHandler = (String) GeneralConfigPluginActivator
             .getConfigurationService().getProperty("systray.POPUP_HANDLER");
 
-        for (ServiceReference ref : handlerRefs)
+        for (ServiceReference<PopupMessageHandler> ref : handlerRefs)
         {
-            PopupMessageHandler handler =
-                (PopupMessageHandler) bc.getService(ref);
+            PopupMessageHandler handler = bc.getService(ref);
 
             notifConfigComboBox.addItem(handler);
 
@@ -743,7 +740,7 @@ public class GeneralConfigurationPanel
     @SuppressWarnings("serial")
     private static class LanguageDropDownRenderer
         extends JPanel
-        implements ListCellRenderer
+        implements ListCellRenderer<LocaleItem>
     {
         JLabel[] labels = new JLabel[3];
 
@@ -759,11 +756,10 @@ public class GeneralConfigurationPanel
             labels[2].setHorizontalAlignment(JLabel.RIGHT);
         }
 
-        public Component getListCellRendererComponent(JList list, Object value,
+        public Component getListCellRendererComponent(JList<? extends LocaleItem> list, LocaleItem lm,
             int index, boolean isSelected, boolean cellHasFocus)
         {
-            LocaleItem lm = (LocaleItem)value;
-            if (value != null)
+            if (lm != null)
             {
                 labels[0].setText(lm.locale.getDisplayName());
                 labels[1].setText(lm.locale.getDisplayName(lm.locale));
@@ -833,7 +829,7 @@ public class GeneralConfigurationPanel
         }
 
         Collections.sort(languages);
-        final JComboBox localesConfigComboBox = new JComboBox();
+        final JComboBox<LocaleItem> localesConfigComboBox = new JComboBox<>();
         localesConfigComboBox.setRenderer(new LanguageDropDownRenderer());
         for (LocaleItem li : languages)
         {

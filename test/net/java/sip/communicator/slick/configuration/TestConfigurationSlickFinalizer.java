@@ -49,10 +49,9 @@ public class TestConfigurationSlickFinalizer
     public void testPurgeConfiguration()
     {
         BundleContext context = ConfigurationServiceLick.bc;
-        ServiceReference ref = context.getServiceReference(
-            ConfigurationService.class.getName());
-        ConfigurationService configurationService
-            = (ConfigurationService)context.getService(ref);
+        ServiceReference<ConfigurationService> ref = context.getServiceReference(
+            ConfigurationService.class);
+        ConfigurationService configurationService = context.getService(ref);
 
         configurationService.purgeStoredConfiguration();
 

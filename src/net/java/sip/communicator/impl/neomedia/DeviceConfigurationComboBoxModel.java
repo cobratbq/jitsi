@@ -80,8 +80,7 @@ public class DeviceConfigurationComboBoxModel
     /**
      * The <tt>ListDataListener</tt>s registered with this instance.
      */
-    private final List<ListDataListener> listeners
-        = new ArrayList<ListDataListener>();
+    private final List<ListDataListener> listeners = new ArrayList<>();
 
     /**
      * The type of the media for this combo.
@@ -90,7 +89,6 @@ public class DeviceConfigurationComboBoxModel
 
     /**
      * Creates device combobox model
-     * @param parent the parent component
      * @param deviceConfiguration the current device configuration
      * @param type the device - audio/video
      */

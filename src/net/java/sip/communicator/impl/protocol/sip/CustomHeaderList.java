@@ -27,7 +27,7 @@ import java.util.*;
  * @author Damian Minkov
  */
 public class CustomHeaderList
-    extends SIPHeaderList
+    extends SIPHeaderList<CustomHeader>
 {
     /**
      * Constructs header.
@@ -45,7 +45,7 @@ public class CustomHeaderList
      * @param hName the name of the header.
      */
     public CustomHeaderList(String hName) {
-        super( CustomHeader.class, hName);
+        super(CustomHeader.class, hName);
     }
 
     /**
@@ -74,7 +74,7 @@ public class CustomHeaderList
     @Override
     public StringBuilder encode(StringBuilder buffer)
     {
-        ListIterator<SIPHeader> li = hlist.listIterator();
+        ListIterator<CustomHeader> li = hlist.listIterator();
         while (li.hasNext())
         {
             li.next().encode(buffer);

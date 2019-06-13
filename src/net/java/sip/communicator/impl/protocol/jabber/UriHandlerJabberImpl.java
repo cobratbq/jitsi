@@ -53,7 +53,7 @@ public class UriHandlerJabberImpl
     /**
      * A reference to the OSGi registration we create with this handler.
      */
-    private ServiceRegistration ourServiceRegistration = null;
+    private ServiceRegistration<UriHandler> ourServiceRegistration = null;
 
     /**
      * The object that we are using to synchronize our service registration.
@@ -230,8 +230,7 @@ public class UriHandlerJabberImpl
                 return;
             }
 
-            Hashtable<String, String> registrationProperties =
-                new Hashtable<String, String>();
+            Hashtable<String, String> registrationProperties = new Hashtable<>();
 
             for (String protocol : getProtocol())
             {
@@ -240,8 +239,7 @@ public class UriHandlerJabberImpl
             }
 
             ourServiceRegistration =
-                JabberActivator.bundleContext.registerService(UriHandler.class
-                    .getName(), this, registrationProperties);
+                JabberActivator.bundleContext.registerService(UriHandler.class, this, registrationProperties);
         }
 
     }

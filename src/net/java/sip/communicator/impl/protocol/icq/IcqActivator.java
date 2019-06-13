@@ -34,8 +34,8 @@ import org.osgi.framework.*;
 public class IcqActivator
     implements BundleActivator
 {
-    private        ServiceRegistration  icqPpFactoryServReg   = null;
-    private        ServiceRegistration  aimPpFactoryServReg   = null;
+    private        ServiceRegistration<ProtocolProviderFactory>  icqPpFactoryServReg   = null;
+    private        ServiceRegistration<ProtocolProviderFactory>  aimPpFactoryServReg   = null;
             static BundleContext        bundleContext         = null;
     private static ConfigurationService configurationService  = null;
 
@@ -69,12 +69,12 @@ public class IcqActivator
 
         //reg the icq account man.
         icqPpFactoryServReg =  context.registerService(
-                    ProtocolProviderFactory.class.getName(),
+                    ProtocolProviderFactory.class,
                     icqProviderFactory,
                     icqHashtable);
 
         aimPpFactoryServReg =  context.registerService(
-                    ProtocolProviderFactory.class.getName(),
+                    ProtocolProviderFactory.class,
                     aimProviderFactory,
                     aimHashtable);
     }
@@ -91,11 +91,9 @@ public class IcqActivator
     {
         if(configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService) bundleContext.getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }
@@ -159,14 +157,13 @@ public class IcqActivator
     {
         if (resourceService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference = bundleContext
+                .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourceService = (ResourceManagementService) bundleContext
-                .getService(serviceReference);
+            resourceService = bundleContext.getService(serviceReference);
         }
 
         return resourceService;

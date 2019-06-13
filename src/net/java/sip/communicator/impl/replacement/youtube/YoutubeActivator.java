@@ -41,7 +41,7 @@ public class YoutubeActivator
     /**
      * The youtube source service registration.
      */
-    private ServiceRegistration youtubeSourceServReg = null;
+    private ServiceRegistration<ReplacementService> youtubeSourceServReg = null;
 
     /**
      * The source implementation reference.
@@ -57,13 +57,13 @@ public class YoutubeActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceYoutubeImpl.YOUTUBE_CONFIG_LABEL);
         youtubeSource = new ReplacementServiceYoutubeImpl();
 
         youtubeSourceServReg =
-            context.registerService(ReplacementService.class.getName(),
+            context.registerService(ReplacementService.class,
                 youtubeSource, hashtable);
         logger.info("Youtube source implementation [STARTED].");
     }
