@@ -63,15 +63,14 @@ public class Resources
     {
         if (resourcesService == null)
         {
-            ServiceReference serviceReference = GlobalProxyPluginActivator.bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference
+                    = GlobalProxyPluginActivator.bundleContext
+                    .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourcesService =
-                (ResourceManagementService)GlobalProxyPluginActivator.bundleContext
-                    .getService(serviceReference);
+            resourcesService = GlobalProxyPluginActivator.bundleContext.getService(serviceReference);
         }
 
         return resourcesService;

@@ -71,8 +71,7 @@ public class AccountDetailsPanel
      * the details.
      */
     private final Map<Class<? extends GenericDetail>, JTextField>
-        detailToTextField
-            = new HashMap<Class<? extends GenericDetail>, JTextField>();
+        detailToTextField = new HashMap<>();
 
     /**
      * The <tt>ProtocolProviderService</tt> that this panel is associated with.
@@ -704,9 +703,7 @@ public class AccountDetailsPanel
     {
 
         @Override
-        protected Object construct()
-            throws
-            Exception
+        protected Object construct() throws Exception
         {
             return accountInfoOpSet.getAllAvailableDetails();
         }
@@ -718,7 +715,8 @@ public class AccountDetailsPanel
         @Override
         protected void finished()
         {
-            Iterator<GenericDetail> allDetails = (Iterator<GenericDetail>)get();
+            @SuppressWarnings("unchecked")
+            Iterator<GenericDetail> allDetails = (Iterator<GenericDetail>) get();
 
             if(allDetails == null)
                 return;

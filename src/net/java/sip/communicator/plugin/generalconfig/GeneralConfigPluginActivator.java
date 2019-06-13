@@ -206,9 +206,9 @@ public class GeneralConfigPluginActivator
              * Wait for the first ProtocolProviderService to register in order to
              * start the auto-away functionality i.e. to call #startThread().
              */
-            ServiceReference[] protocolRefs = bundleContext.getServiceReferences(
-                    ProtocolProviderService.class.getName(), null);
-            if(protocolRefs != null && protocolRefs.length > 0)
+            Collection<ServiceReference<ProtocolProviderService>> protocolRefs
+                    = bundleContext.getServiceReferences(ProtocolProviderService.class, null);
+            if(protocolRefs != null && protocolRefs.size() > 0)
             {
                 synchronized (GeneralConfigPluginActivator.class)
                 {
@@ -269,12 +269,11 @@ public class GeneralConfigPluginActivator
      * context
      */
     public static ConfigurationService getConfigurationService() {
-        if(configService == null) {
-            ServiceReference configReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
 
-            configService = (ConfigurationService) bundleContext
-                .getService(configReference);
+        if(configService == null) {
+            ServiceReference<ConfigurationService> configReference = bundleContext
+                .getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(configReference);
         }
 
         return configService;
@@ -289,11 +288,9 @@ public class GeneralConfigPluginActivator
     static SystrayService getSystrayService()
     {
         if(systrayService == null) {
-            ServiceReference configReference = bundleContext
-                .getServiceReference(SystrayService.class.getName());
-
-            systrayService = (SystrayService) bundleContext
-                .getService(configReference);
+            ServiceReference<SystrayService> configReference = bundleContext
+                .getServiceReference(SystrayService.class);
+            systrayService = bundleContext.getService(configReference);
         }
 
         return systrayService;
@@ -373,7 +370,7 @@ public class GeneralConfigPluginActivator
         // get the protocol provider factory
         BundleContext bundleContext = GeneralConfigPluginActivator.bundleContext;
 
-        ServiceReference[] serRefs = null;
+        ServiceReference<?>[] serRefs = null;
         // String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL + "="
         // + ProtocolNames.SIP + ")";
 
@@ -394,9 +391,9 @@ public class GeneralConfigPluginActivator
             return new ProtocolProviderService[0];
         }
 
-        Set<ProtocolProviderService> pps = new HashSet<ProtocolProviderService>();
+        Set<ProtocolProviderService> pps = new HashSet<>();
 
-        for (ServiceReference serviceReference : serRefs)
+        for (ServiceReference<?> serviceReference : serRefs)
         {
             ProtocolProviderService protocolProvider
                 = (ProtocolProviderService)

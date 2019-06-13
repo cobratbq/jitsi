@@ -57,9 +57,9 @@ public class TestFileAccessService extends TestCase {
     {
         super(name);
         BundleContext context = FileAccessServiceLick.bc;
-        ServiceReference ref = context
-                .getServiceReference(FileAccessService.class.getName());
-        this.fileAccessService = (FileAccessService) context.getService(ref);
+        ServiceReference<FileAccessService> ref = context
+                .getServiceReference(FileAccessService.class);
+        this.fileAccessService = context.getService(ref);
     }
 
     /*

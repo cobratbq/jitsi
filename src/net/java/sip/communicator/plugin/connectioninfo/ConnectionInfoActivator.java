@@ -130,31 +130,24 @@ public class ConnectionInfoActivator
     public static Map<Object, ProtocolProviderFactory>
         getProtocolProviderFactories()
     {
-        Map<Object, ProtocolProviderFactory> providerFactoriesMap =
-            new Hashtable<Object, ProtocolProviderFactory>();
-
-        ServiceReference[] serRefs = null;
+        Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         try
         {
             // get all registered provider factories
-            serRefs =
-                bundleContext.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), null);
-
+            serRefs = bundleContext.getServiceReferences(
+                    ProtocolProviderFactory.class, null);
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("LoginManager : " + e);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", e);
         }
 
-        for (int i = 0; i < serRefs.length; i++)
+        for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
         {
-
-            ProtocolProviderFactory providerFactory =
-                (ProtocolProviderFactory) bundleContext.getService(serRefs[i]);
-
-            providerFactoriesMap
-                .put(serRefs[i].getProperty(ProtocolProviderFactory.PROTOCOL),
+            ProtocolProviderFactory providerFactory = bundleContext.getService(serRef);
+            providerFactoriesMap.put(serRef.getProperty(ProtocolProviderFactory.PROTOCOL),
                     providerFactory);
         }
 

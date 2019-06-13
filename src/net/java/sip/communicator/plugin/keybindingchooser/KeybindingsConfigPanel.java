@@ -44,17 +44,15 @@ public class KeybindingsConfigPanel
     {
         BundleContext bundleContext =
             KeybindingChooserActivator.getBundleContext();
-        ServiceReference keybindingRef =
-            bundleContext.getServiceReference(KeybindingsService.class
-                .getName());
+        ServiceReference<KeybindingsService> keybindingRef =
+            bundleContext.getServiceReference(KeybindingsService.class);
 
-        return (KeybindingsService) bundleContext.getService(keybindingRef);
+        return bundleContext.getService(keybindingRef);
     }
 
     private static final long serialVersionUID = 0;
 
-    private final HashMap<KeybindingSet, SIPChooser> choosers =
-        new HashMap<KeybindingSet, SIPChooser>();
+    private final HashMap<KeybindingSet, SIPChooser> choosers = new HashMap<>();
 
     /**
      * Constructor.

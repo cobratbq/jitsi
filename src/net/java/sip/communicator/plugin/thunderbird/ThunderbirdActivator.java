@@ -40,8 +40,7 @@ public class ThunderbirdActivator
     private static BundleContext bundleContext;
 
     /** Active address book registrations. */
-    private static Map<ThunderbirdContactSourceService, ServiceRegistration>
-        registrations;
+    private static Map<ThunderbirdContactSourceService, ServiceRegistration<?>> registrations;
 
     /**
      * The registered PhoneNumberI18nService.
@@ -124,8 +123,7 @@ public class ThunderbirdActivator
                 ThunderbirdContactSourceService.PNAME_BASE_THUNDERBIRD_CONFIG,
                 false);
 
-        registrations = new HashMap
-            <ThunderbirdContactSourceService, ServiceRegistration>();
+        registrations = new HashMap<>();
         for (String cfg : configs)
         {
             String value = config.getString(cfg);
@@ -136,8 +134,7 @@ public class ThunderbirdActivator
         }
 
         /* registers the configuration form */
-        Dictionary<String, String> properties
-            = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(
             ConfigurationForm.FORM_TYPE,
             ConfigurationForm.CONTACT_SOURCE_TYPE);
@@ -158,7 +155,7 @@ public class ThunderbirdActivator
      */
     public void stop(BundleContext bundleContext) throws Exception
     {
-        for (ServiceRegistration sr : registrations.values())
+        for (ServiceRegistration<?> sr : registrations.values())
         {
             sr.unregister();
         }

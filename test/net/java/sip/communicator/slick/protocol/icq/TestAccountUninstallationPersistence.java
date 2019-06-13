@@ -23,6 +23,8 @@ import net.java.sip.communicator.service.protocol.*;
 import org.jitsi.service.configuration.*;
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Contains tests verifying persistence of account uninstallation. In other
  * words we try to make sure that once uninstalled an account remains
@@ -82,32 +84,33 @@ public class TestAccountUninstallationPersistence
 
 
         //verify that the provider is not reinstalled
-        ServiceReference[] icqProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> icqProviderRefs;
         try
         {
             icqProviderRefs = IcqSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                     + "=" +ProtocolNames.ICQ + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't retrieve a service
         assertTrue("A Protocol Provider Service was still regged as an osgi service "
                       +"for ICQ UIN:" + IcqSlickFixture.icqAccountID
                       + "After it was explicitly uninstalled"
-                      ,icqProviderRefs == null || icqProviderRefs.length == 0);
+                      ,icqProviderRefs == null || icqProviderRefs.size() == 0);
 
         //and a nasty hack at the end - delete the configuration file so that
         //we get a fresh start on next run.
-        ServiceReference confReference
+        ServiceReference<ConfigurationService> confReference
             = IcqSlickFixture.bc.getServiceReference(
-                ConfigurationService.class.getName());
+                ConfigurationService.class);
         ConfigurationService configurationService
-            = (ConfigurationService) IcqSlickFixture.bc.getService(confReference);
+            = IcqSlickFixture.bc.getService(confReference);
 
         configurationService.purgeStoredConfiguration();
 

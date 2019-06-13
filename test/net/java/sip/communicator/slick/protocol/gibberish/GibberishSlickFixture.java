@@ -41,7 +41,7 @@ public class GibberishSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * first testing account.
      */
-    public ServiceReference provider1ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider1ServiceRef = null;
 
     /**
       * The protocol provider corresponding to our first testing account.
@@ -57,7 +57,7 @@ public class GibberishSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * second testing account.
      */
-    public ServiceReference provider2ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider2ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our first testing account.
@@ -111,24 +111,24 @@ public class GibberishSlickFixture
         throws Exception
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "=Gibberish)";
         try{
-            serRefs = bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+            serRefs = bc.getServiceReferences(ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol Gibberish",
-            (serRefs != null) && (serRefs.length > 0));
+            (serRefs != null) && !serRefs.isEmpty());
 
         //Keep the reference for later usage.
-        providerFactory = (ProtocolProviderFactory)bc.getService(serRefs[0]);
+        providerFactory = bc.getService(serRefs.iterator().next());
 
         userID1 =
             System.getProperty(
@@ -141,9 +141,8 @@ public class GibberishSlickFixture
                 + ProtocolProviderFactory.USER_ID);
 
         //find the protocol providers exported for the two accounts
-        ServiceReference[] gibberishProvider1Refs
-            = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+        Collection<ServiceReference<ProtocolProviderService>> gibberishProvider1Refs
+            = bc.getServiceReferences(ProtocolProviderService.class,
                 "(&"
                 +"("+ProtocolProviderFactory.PROTOCOL+"=Gibberish)"
                 +"("+ProtocolProviderFactory.USER_ID+"="
@@ -156,11 +155,10 @@ public class GibberishSlickFixture
                       , gibberishProvider1Refs);
         assertTrue("No Protocol Provider was found for Gibberish account1:"
                    + userID1
-                   , gibberishProvider1Refs.length > 0);
+                   , gibberishProvider1Refs.size() > 0);
 
-        ServiceReference[] gibberishProvider2Refs
-        = bc.getServiceReferences(
-            ProtocolProviderService.class.getName(),
+        Collection<ServiceReference<ProtocolProviderService>> gibberishProvider2Refs
+        = bc.getServiceReferences(ProtocolProviderService.class,
             "(&"
             +"("+ProtocolProviderFactory.PROTOCOL+"=Gibberish)"
             +"("+ProtocolProviderFactory.USER_ID+"="
@@ -173,13 +171,13 @@ public class GibberishSlickFixture
                       , gibberishProvider2Refs);
         assertTrue("No Protocol Provider was found for Gibberish account2:"
                    + userID2
-                   , gibberishProvider2Refs.length > 0);
+                   , gibberishProvider2Refs.size() > 0);
 
         //save the service for other tests to use.
-        provider1ServiceRef = gibberishProvider1Refs[0];
-        provider1 = (ProtocolProviderService)bc.getService(provider1ServiceRef);
-        provider2ServiceRef = gibberishProvider2Refs[0];
-        provider2 = (ProtocolProviderService)bc.getService(provider2ServiceRef);
+        provider1ServiceRef = gibberishProvider1Refs.iterator().next();
+        provider1 = bc.getService(provider1ServiceRef);
+        provider2ServiceRef = gibberishProvider2Refs.iterator().next();
+        provider2 = bc.getService(provider2ServiceRef);
     }
 
     /**
@@ -209,7 +207,7 @@ public class GibberishSlickFixture
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
                 = bundles[i].getRegisteredServices();
 
             if (registeredServices == null)

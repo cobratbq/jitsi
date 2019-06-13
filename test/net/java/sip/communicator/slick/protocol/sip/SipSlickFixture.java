@@ -39,12 +39,12 @@ public class SipSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * first testing account.
      */
-    public ServiceReference provider1ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider1ServiceRef = null;
 
     /**
       * The protocol provider corresponding to our first testing account.
       */
-    public ProtocolProviderService provider1        = null;
+    public ProtocolProviderService provider1 = null;
 
     /**
      * The user ID associated with testing account 1.
@@ -55,7 +55,7 @@ public class SipSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * second testing account.
      */
-    public ServiceReference provider2ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider2ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our first testing account.
@@ -108,12 +108,11 @@ public class SipSlickFixture
         throws Exception
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.SIP+")";
         try{
-            serRefs = bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+            serRefs = bc.getServiceReferences(ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             //this really shouldhn't occur as the filter expression is static.
@@ -122,10 +121,10 @@ public class SipSlickFixture
 
         assertTrue(
             "Failed to find a provider factory service for protocol SIP",
-            (serRefs != null) && (serRefs.length >  0));
+            (serRefs != null) && (serRefs.size() >  0));
 
         //Keep the reference for later usage.
-        providerFactory = (ProtocolProviderFactory)bc.getService(serRefs[0]);
+        providerFactory = bc.getService(serRefs.iterator().next());
 
         userID1 =
             System.getProperty(
@@ -138,9 +137,9 @@ public class SipSlickFixture
                 + ProtocolProviderFactory.USER_ID);
 
         //find the protocol providers exported for the two accounts
-        ServiceReference[] sipProvider1Refs
+        Collection<ServiceReference<ProtocolProviderService>> sipProvider1Refs
             = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.SIP+")"
                 +"("+ProtocolProviderFactory.USER_ID+"="
@@ -152,11 +151,11 @@ public class SipSlickFixture
                       + userID1
                       , sipProvider1Refs);
         assertTrue("No Protocol Provider was found for SIP account1:"+ userID1,
-                     sipProvider1Refs.length > 0);
+                     sipProvider1Refs.size() > 0);
 
-        ServiceReference[] sipProvider2Refs
+        Collection<ServiceReference<ProtocolProviderService>> sipProvider2Refs
         = bc.getServiceReferences(
-            ProtocolProviderService.class.getName(),
+            ProtocolProviderService.class,
             "(&"
             +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.SIP+")"
             +"("+ProtocolProviderFactory.USER_ID+"="
@@ -168,13 +167,13 @@ public class SipSlickFixture
                       + userID2
                       , sipProvider2Refs);
         assertTrue("No Protocol Provider was found for SIP account2:"+ userID2,
-                     sipProvider2Refs.length > 0);
+                     sipProvider2Refs.size() > 0);
 
         //save the service for other tests to use.
-        provider1ServiceRef = sipProvider1Refs[0];
-        provider1 = (ProtocolProviderService)bc.getService(provider1ServiceRef);
-        provider2ServiceRef = sipProvider2Refs[0];
-        provider2 = (ProtocolProviderService)bc.getService(provider2ServiceRef);
+        provider1ServiceRef = sipProvider1Refs.iterator().next();
+        provider1 = bc.getService(provider1ServiceRef);
+        provider2ServiceRef = sipProvider2Refs.iterator().next();
+        provider2 = bc.getService(provider2ServiceRef);
     }
 
     /**
@@ -204,7 +203,7 @@ public class SipSlickFixture
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
                 = bundles[i].getRegisteredServices();
 
             if (registeredServices == null)

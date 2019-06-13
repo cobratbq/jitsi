@@ -36,7 +36,7 @@ public class NotificationServiceActivator
 
     protected static BundleContext bundleContext;
     private static ConfigurationService configService;
-    private ServiceRegistration notificationService;
+    private ServiceRegistration<NotificationService> notificationService;
 
     public void start(BundleContext bc) throws Exception
     {
@@ -48,7 +48,7 @@ public class NotificationServiceActivator
             logger.info("Notification Service...[  STARTED ]");
 
             notificationService = bundleContext.registerService(
-                NotificationService.class.getName(),
+                NotificationService.class,
                 new NotificationServiceImpl(),
                 null);
 
@@ -76,11 +76,9 @@ public class NotificationServiceActivator
     {
         if(configService == null)
         {
-            ServiceReference configReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
-
-            configService = (ConfigurationService) bundleContext
-                .getService(configReference);
+            ServiceReference<ConfigurationService> configReference = bundleContext
+                .getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(configReference);
         }
 
         return configService;

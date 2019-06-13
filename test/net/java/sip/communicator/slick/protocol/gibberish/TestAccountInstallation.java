@@ -69,26 +69,27 @@ public class TestAccountInstallation
     public void testInstallAccount()
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "=Gibberish)";
         try{
             serRefs = GibberishSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+                    ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol Gibberish",
-            serRefs != null && serRefs.length >  0);
+            serRefs != null && serRefs.size() >  0);
 
         //Keep the reference for later usage.
-        ProtocolProviderFactory gibberishProviderFactory = (ProtocolProviderFactory)
-            GibberishSlickFixture.bc.getService(serRefs[0]);
+        ProtocolProviderFactory gibberishProviderFactory =
+                GibberishSlickFixture.bc.getService(serRefs.iterator().next());
 
         //make sure the account is empty
         assertTrue("There was an account registered with the account mananger "
@@ -154,28 +155,29 @@ public class TestAccountInstallation
                             ProtocolProviderFactory.USER_ID)
              + "))";
 
+        Collection<ServiceReference<ProtocolProviderService>> serRefsService;
         try
         {
-            serRefs = GibberishSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderService.class.getName(),
-                    osgiFilter);
+            serRefsService = GibberishSlickFixture.bc.getServiceReferences(
+                    ProtocolProviderService.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + "is not a valid osgi filter");
+            return;
         }
 
         assertTrue("An protocol provider was apparently not installed as "
                 + "requested."
-                , serRefs != null && serRefs.length > 0);
+                , serRefsService != null && serRefsService.size() > 0);
 
         Object gibberishProtocolProvider
-            = GibberishSlickFixture.bc.getService(serRefs[0]);
+            = GibberishSlickFixture.bc.getService(serRefsService.iterator().next());
 
         assertTrue("The installed protocol provider does not implement "
                   + "the protocol provider service."
-                  ,gibberishProtocolProvider instanceof ProtocolProviderService);
+                  , gibberishProtocolProvider != null);
     }
 
     /**

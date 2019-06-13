@@ -18,6 +18,7 @@
 package net.java.sip.communicator.plugin.advancedconfig;
 
 import java.awt.*;
+import java.util.Collection;
 
 import javax.swing.*;
 import javax.swing.event.*;
@@ -55,7 +56,7 @@ public class AdvancedConfigurationPanel
     /**
      * The configuration list.
      */
-    private final JList configList = new JList();
+    private final JList<ConfigurationForm> configList = new JList<>();
 
     /**
      * The center panel.
@@ -81,7 +82,7 @@ public class AdvancedConfigurationPanel
      */
     private void initList()
     {
-        configList.setModel(new DefaultListModel());
+        configList.setModel(new DefaultListModel<>());
         configList.setCellRenderer(new ConfigListCellRenderer());
         configList.addListSelectionListener(this);
         configList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -97,23 +98,22 @@ public class AdvancedConfigurationPanel
         String osgiFilter = "("
             + ConfigurationForm.FORM_TYPE
             + "="+ConfigurationForm.ADVANCED_TYPE+")";
-        ServiceReference[] confFormsRefs = null;
+        Collection<ServiceReference<ConfigurationForm>> confFormsRefs = null;
         try
         {
             confFormsRefs = AdvancedConfigActivator.bundleContext
-                .getServiceReferences(  ConfigurationForm.class.getName(),
-                                        osgiFilter);
+                .getServiceReferences(ConfigurationForm.class,
+                                      osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {}
 
         if(confFormsRefs != null)
         {
-            for (int i = 0; i < confFormsRefs.length; i++)
+            for (ServiceReference<ConfigurationForm> serRef : confFormsRefs)
             {
-                ConfigurationForm form
-                    = (ConfigurationForm) AdvancedConfigActivator.bundleContext
-                        .getService(confFormsRefs[i]);
+                ConfigurationForm form = AdvancedConfigActivator.bundleContext
+                        .getService(serRef);
 
                 if (form.isAdvanced())
                     this.addConfigForm(form);
@@ -201,19 +201,19 @@ public class AdvancedConfigurationPanel
         if (configForm == null)
             throw new IllegalArgumentException("configForm");
 
-        DefaultListModel listModel = (DefaultListModel) configList.getModel();
+        ListModel<ConfigurationForm> listModel = configList.getModel();
 
         int i = 0;
         int count = listModel.getSize();
         int configFormIndex = configForm.getIndex();
         for (; i < count; i++)
         {
-            ConfigurationForm form = (ConfigurationForm) listModel.get(i);
+            ConfigurationForm form = listModel.getElementAt(i);
 
             if (configFormIndex < form.getIndex())
                 break;
         }
-        listModel.add(i, configForm);
+        ((DefaultListModel<ConfigurationForm>)listModel).add(i, configForm);
     }
 
     /**
@@ -249,16 +249,15 @@ public class AdvancedConfigurationPanel
             return;
         }
 
-        DefaultListModel listModel = (DefaultListModel) configList.getModel();
+        ListModel<ConfigurationForm> listModel = configList.getModel();
 
         for(int count = listModel.getSize(), i = count - 1; i >= 0; i--)
         {
-            ConfigurationForm form
-                = (ConfigurationForm) listModel.get(i);
+            ConfigurationForm form = listModel.getElementAt(i);
 
             if(form.equals(configForm))
             {
-                listModel.remove(i);
+                ((DefaultListModel<ConfigurationForm>) listModel).remove(i);
                 /*
                  * TODO We may just consider not allowing duplicates on addition
                  * and then break here.
@@ -303,7 +302,7 @@ public class AdvancedConfigurationPanel
          * @return the component representing the cell
          */
         @Override
-        public Component getListCellRendererComponent(  JList list,
+        public Component getListCellRendererComponent(  JList<?> list,
                                                         Object value,
                                                         int index,
                                                         boolean isSelected,
@@ -364,9 +363,7 @@ public class AdvancedConfigurationPanel
     {
         if(!e.getValueIsAdjusting())
         {
-            ConfigurationForm configForm
-                = (ConfigurationForm) configList.getSelectedValue();
-
+            ConfigurationForm configForm = configList.getSelectedValue();
             if(configForm != null)
                 showFormContent(configForm);
         }

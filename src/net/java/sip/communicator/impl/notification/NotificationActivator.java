@@ -71,11 +71,10 @@ public class NotificationActivator
 
 
             // Get the notification service implementation
-            ServiceReference notifReference = bundleContext
-                .getServiceReference(NotificationService.class.getName());
+            ServiceReference<NotificationService> notifReference = bundleContext
+                .getServiceReference(NotificationService.class);
 
-            notificationService = (NotificationService) bundleContext
-                .getService(notifReference);
+            notificationService = bundleContext.getService(notifReference);
 
             commandHandler = new CommandNotificationHandlerImpl();
             logMessageHandler = new LogMessageNotificationHandlerImpl();
@@ -119,14 +118,11 @@ public class NotificationActivator
     {
         if (audioNotifierService == null)
         {
-            ServiceReference serviceReference
-                = bundleContext
-                    .getServiceReference(AudioNotifierService.class.getName());
+            ServiceReference<AudioNotifierService> serviceReference
+                = bundleContext.getServiceReference(AudioNotifierService.class);
 
             if (serviceReference != null)
-                audioNotifierService
-                    = (AudioNotifierService)
-                        bundleContext.getService(serviceReference);
+                audioNotifierService = bundleContext.getService(serviceReference);
         }
 
         return audioNotifierService;

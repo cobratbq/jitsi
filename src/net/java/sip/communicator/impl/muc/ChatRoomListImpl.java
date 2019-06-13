@@ -76,20 +76,19 @@ public class ChatRoomListImpl
     {
         try
         {
-            ServiceReference[] serRefs
+            Collection<ServiceReference<ProtocolProviderService>> serRefs
                 = MUCActivator.bundleContext.getServiceReferences(
-                                        ProtocolProviderService.class.getName(),
+                                        ProtocolProviderService.class,
                                         null);
 
             // If we don't have providers at this stage we just return.
             if (serRefs == null)
                 return;
 
-            for (ServiceReference serRef : serRefs)
+            for (final ServiceReference<ProtocolProviderService> serRef : serRefs)
             {
                 ProtocolProviderService protocolProvider
-                    = (ProtocolProviderService)
-                        MUCActivator.bundleContext.getService(serRef);
+                    = MUCActivator.bundleContext.getService(serRef);
 
                 Object multiUserChatOpSet
                     = protocolProvider

@@ -130,13 +130,9 @@ public class LoggingUtilsActivator
     {
         if (resourceService == null)
         {
-            ServiceReference resourceReference
-                = bundleContext.getServiceReference(
-                    ResourceManagementService.class.getName());
-
-            resourceService =
-                (ResourceManagementService) bundleContext
-                    .getService(resourceReference);
+            ServiceReference<ResourceManagementService> resourceReference
+                = bundleContext.getServiceReference(ResourceManagementService.class);
+            resourceService = bundleContext.getService(resourceReference);
         }
 
         return resourceService;
@@ -153,11 +149,9 @@ public class LoggingUtilsActivator
     {
         if (configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService) bundleContext.getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }
@@ -173,11 +167,9 @@ public class LoggingUtilsActivator
     {
         if (packetLoggingService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    PacketLoggingService.class.getName());
-            packetLoggingService
-                = (PacketLoggingService) bundleContext.getService(confReference);
+            ServiceReference<PacketLoggingService> confReference
+                = bundleContext.getServiceReference(PacketLoggingService.class);
+            packetLoggingService = bundleContext.getService(confReference);
         }
         return packetLoggingService;
     }

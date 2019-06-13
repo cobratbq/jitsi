@@ -20,6 +20,8 @@ package net.java.sip.communicator.plugin.desktoputil;
 import net.java.sip.communicator.service.gui.*;
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Utils to query for config forms.
  * @author Damian Minkov
@@ -36,31 +38,26 @@ public class ConfigFormUtils
      *
      * @return the first available configuration form found
      */
-    public static ConfigurationForm getConfigForm(
-        String formType, String className)
+    public static ConfigurationForm getConfigForm(String formType, String className)
     {
         BundleContext bundleContext = DesktopUtilActivator.bundleContext;
         String osgiFilter = "("
             + ConfigurationForm.FORM_TYPE + "=" + formType + ")";
 
-        ServiceReference[] confFormsRefs = null;
+        Collection<ServiceReference<ConfigurationForm>> confFormsRefs = null;
         try
         {
             confFormsRefs = bundleContext
-                .getServiceReferences(
-                    ConfigurationForm.class.getName(),
-                    osgiFilter);
+                .getServiceReferences(ConfigurationForm.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {}
 
         if(confFormsRefs != null)
         {
-            for (int i = 0; i < confFormsRefs.length; i++)
+            for (ServiceReference<ConfigurationForm> serRef : confFormsRefs)
             {
-                ConfigurationForm form
-                    = (ConfigurationForm) bundleContext
-                        .getService(confFormsRefs[i]);
+                ConfigurationForm form = bundleContext.getService(serRef);
 
                 if (form instanceof LazyConfigurationForm)
                 {

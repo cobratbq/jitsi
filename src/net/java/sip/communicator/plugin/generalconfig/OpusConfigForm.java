@@ -90,7 +90,7 @@ public class OpusConfigForm
     /**
      * The "audio bandwidth" combobox
      */
-    private final JComboBox bandwidthCombobox = new JComboBox();
+    private final JComboBox<String> bandwidthCombobox = new JComboBox<>();
 
     /**
      * The "bitrate" field
@@ -115,7 +115,7 @@ public class OpusConfigForm
     /**
      * The "complexity" combobox
      */
-    private final JComboBox complexityCombobox = new JComboBox();
+    private final JComboBox<String> complexityCombobox = new JComboBox<>();
 
 
     /**

@@ -52,7 +52,7 @@ public class ConferenceInviteDialog
     /**
      * The account selector box.
      */
-    private final JComboBox accountSelectorBox = new JComboBox();
+    private final JComboBox<ProtocolProviderService> accountSelectorBox = new JComboBox<>();
 
     /**
      * The last selected account.
@@ -277,7 +277,7 @@ public class ConferenceInviteDialog
             private static final long serialVersionUID = 0L;
 
             @Override
-            public Component getListCellRendererComponent(JList list,
+            public Component getListCellRendererComponent(JList<?> list,
                 Object value, int index, boolean isSelected,
                 boolean cellHasFocus)
             {

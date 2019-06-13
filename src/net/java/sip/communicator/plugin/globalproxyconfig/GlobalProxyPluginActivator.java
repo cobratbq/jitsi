@@ -109,11 +109,9 @@ public class GlobalProxyPluginActivator implements BundleActivator
     {
         if(configService == null)
         {
-            ServiceReference configReference = bundleContext
-                .getServiceReference(ConfigurationService.class.getName());
-
-            configService = (ConfigurationService) bundleContext
-                .getService(configReference);
+            ServiceReference<ConfigurationService> configReference = bundleContext
+                .getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(configReference);
         }
 
         return configService;

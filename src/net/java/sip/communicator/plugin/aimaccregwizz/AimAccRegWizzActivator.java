@@ -100,7 +100,7 @@ public class AimAccRegWizzActivator
      */
     public static ProtocolProviderFactory getAimProtocolProviderFactory() {
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -108,13 +108,14 @@ public class AimAccRegWizzActivator
 
         try {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             logger.error("AimAccRegWizzActivator : " + ex);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**
@@ -125,11 +126,9 @@ public class AimAccRegWizzActivator
      */
     public static BrowserLauncherService getBrowserLauncher() {
         if (browserLauncherService == null) {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
-
-            browserLauncherService = (BrowserLauncherService) bundleContext
-                .getService(serviceReference);
+            ServiceReference<BrowserLauncherService> serviceReference = bundleContext
+                .getServiceReference(BrowserLauncherService.class);
+            browserLauncherService = bundleContext.getService(serviceReference);
         }
 
         return browserLauncherService;

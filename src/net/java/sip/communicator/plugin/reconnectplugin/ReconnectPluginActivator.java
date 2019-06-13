@@ -227,11 +227,11 @@ public class ReconnectPluginActivator
         this.networkAddressManagerService
             .addNetworkConfigurationChangeListener(this);
 
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = bundleContext.getServiceReferences(
-                ProtocolProviderService.class.getName(), null);
+                ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -247,14 +247,11 @@ public class ReconnectPluginActivator
         {
             if (logger.isDebugEnabled())
                 logger.debug("Found "
-                         + protocolProviderRefs.length
+                         + protocolProviderRefs.size()
                          + " already installed providers.");
-            for (int i = 0; i < protocolProviderRefs.length; i++)
+            for (ServiceReference<ProtocolProviderService> ref : protocolProviderRefs)
             {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService) bundleContext
-                        .getService(protocolProviderRefs[i]);
-
+                ProtocolProviderService provider = bundleContext.getService(ref);
                 this.handleProviderAdded(provider);
             }
         }
@@ -286,12 +283,9 @@ public class ReconnectPluginActivator
     {
         if (uiService == null)
         {
-            ServiceReference uiReference =
-                bundleContext.getServiceReference(UIService.class.getName());
-
-            uiService =
-                (UIService) bundleContext
-                    .getService(uiReference);
+            ServiceReference<UIService> uiReference =
+                bundleContext.getServiceReference(UIService.class);
+            uiService = bundleContext.getService(uiReference);
         }
 
         return uiService;
@@ -305,14 +299,13 @@ public class ReconnectPluginActivator
     {
         if (resourcesService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference = bundleContext
+                .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourcesService = (ResourceManagementService) bundleContext
-                .getService(serviceReference);
+            resourcesService = bundleContext.getService(serviceReference);
         }
 
         return resourcesService;
@@ -329,12 +322,9 @@ public class ReconnectPluginActivator
     {
         if (configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService) bundleContext
-                                        .getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }
@@ -348,11 +338,10 @@ public class ReconnectPluginActivator
     {
         if (notificationService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(NotificationService.class.getName());
+            ServiceReference<NotificationService> serviceReference = bundleContext
+                .getServiceReference(NotificationService.class);
 
-            notificationService = (NotificationService) bundleContext
-                .getService(serviceReference);
+            notificationService = bundleContext.getService(serviceReference);
 
             notificationService.registerDefaultNotificationForEvent(
                 NETWORK_NOTIFICATIONS,
@@ -371,7 +360,7 @@ public class ReconnectPluginActivator
      */
     public void serviceChanged(ServiceEvent serviceEvent)
     {
-        ServiceReference serviceRef = serviceEvent.getServiceReference();
+        ServiceReference<?> serviceRef = serviceEvent.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know we are shutting down

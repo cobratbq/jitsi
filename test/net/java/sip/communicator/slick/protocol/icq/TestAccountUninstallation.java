@@ -24,6 +24,8 @@ import net.java.sip.communicator.util.*;
 
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Tests whether accaounts are uninstalled properly. It is important that
  * tests from this class be called last since they will install the accounts
@@ -187,11 +189,11 @@ public class TestAccountUninstallation
                      , Bundle.UNINSTALLED, providerBundle.getState());
 
         //verify that the provider is no longer available
-        ServiceReference[] icqProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> icqProviderRefs;
         try
         {
             icqProviderRefs = IcqSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.ICQ + ")"
@@ -202,13 +204,14 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong: " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was still regged as an osgi service "
                       +"for ICQ UIN:" + IcqSlickFixture.icqAccountID
                       + "After it was explicitly uninstalled"
-                      ,icqProviderRefs == null || icqProviderRefs.length == 0);
+                      ,icqProviderRefs == null || icqProviderRefs.size() == 0);
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.
@@ -241,7 +244,7 @@ public class TestAccountUninstallation
         try
         {
             icqProviderRefs = IcqSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.ICQ + ")"
@@ -257,27 +260,28 @@ public class TestAccountUninstallation
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was not restored after being"
                       +"reinstalled. ICQ UIN:" + IcqSlickFixture.icqAccountID
-                      ,icqProviderRefs != null && icqProviderRefs.length > 0);
+                      ,icqProviderRefs != null && icqProviderRefs.size() > 0);
 
-        ServiceReference[] icqFactoryRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> icqFactoryRefs;
         try
         {
             icqFactoryRefs = IcqSlickFixture.bc.getServiceReferences(
-                ProtocolProviderFactory.class.getName(),
+                ProtocolProviderFactory.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.ICQ + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong: " + ex.getMessage());
+            return;
         }
 
         //we're the ones who've reinstalled the factory so it's our
         //responsibility to update the fixture.
         fixture.providerFactory
-            = (ProtocolProviderFactory)IcqSlickFixture.bc.getService(icqFactoryRefs[0]);
+            = IcqSlickFixture.bc.getService(icqFactoryRefs.iterator().next());
         fixture.provider
-            = (ProtocolProviderService)IcqSlickFixture.bc.getService(icqProviderRefs[0]);
+            = IcqSlickFixture.bc.getService(icqProviderRefs.iterator().next());
         IcqSlickFixture.icqAccountID
             = fixture.provider.getAccountID();
 
@@ -309,11 +313,11 @@ public class TestAccountUninstallation
             + IcqSlickFixture.icqAccountID
             , fixture.providerFactory.uninstallAccount(IcqSlickFixture.icqAccountID));
 
-        ServiceReference[] icqProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> icqProviderRefs;
         try
         {
             icqProviderRefs = IcqSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.ICQ + ")"
@@ -324,13 +328,14 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong: " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was still regged as an osgi service "
                       +"for ICQ UIN:" + IcqSlickFixture.icqAccountID
                       + "After it was explicitly uninstalled"
-                      ,icqProviderRefs == null || icqProviderRefs.length == 0);
+                      ,icqProviderRefs == null || icqProviderRefs.size() == 0);
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.

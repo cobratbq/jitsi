@@ -23,6 +23,8 @@ import net.java.sip.communicator.service.protocol.*;
 import org.jitsi.service.configuration.*;
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Contains tests verifying persistence of account uninstallation. In other
  * words we try to make sure that once uninstalled an account remains
@@ -83,33 +85,32 @@ public class TestAccountUninstallationPersistence
 
 
         //verify that the provider is not reinstalled
-        ServiceReference[] gibberishProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> gibberishProviderRefs;
         try
         {
             gibberishProviderRefs = GibberishSlickFixture.bc
-                .getServiceReferences(ProtocolProviderService.class.getName()
-                ,"(" + ProtocolProviderFactory.PROTOCOL
-                     + "=Gibberish)");
+                .getServiceReferences(ProtocolProviderService.class,
+                        "(" + ProtocolProviderFactory.PROTOCOL + "=Gibberish)");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't retrieve a service
         assertTrue("A Gibberish Protocol Provider Service was still regged "
                       +"as an osgi service after it was explicitly uninstalled"
                       ,gibberishProviderRefs == null
-                        || gibberishProviderRefs.length == 0);
+                        || gibberishProviderRefs.size() == 0);
 
         //and a nasty hack at the end - delete the configuration file so that
         //we get a fresh start on next run.
-        ServiceReference confReference
+        ServiceReference<ConfigurationService> confReference
             = GibberishSlickFixture.bc.getServiceReference(
-                ConfigurationService.class.getName());
+                ConfigurationService.class);
         ConfigurationService configurationService
-            = (ConfigurationService) GibberishSlickFixture
-                .bc.getService(confReference);
+            = GibberishSlickFixture.bc.getService(confReference);
 
         configurationService.purgeStoredConfiguration();
     }

@@ -49,7 +49,7 @@ public class ProtocolProviderActivator
      * that the service in question can be properly disposed of upon stopping
      * this activator.
      */
-    private ServiceRegistration accountManagerServiceRegistration;
+    private ServiceRegistration<AccountManager> accountManagerServiceRegistration;
 
     /**
      * The account manager.
@@ -141,14 +141,11 @@ public class ProtocolProviderActivator
     {
         if (calendarService == null)
         {
-            ServiceReference serviceReference
-                = bundleContext.getServiceReference(
-                    CalendarService.class.getName());
+            ServiceReference<CalendarService> serviceReference
+                = bundleContext.getServiceReference(CalendarService.class);
             if(serviceReference == null)
                 return null;
-            calendarService
-                = (CalendarService)
-                    bundleContext.getService(serviceReference);
+            calendarService = bundleContext.getService(serviceReference);
         }
         return calendarService;
     }
@@ -170,16 +167,13 @@ public class ProtocolProviderActivator
 
         try
         {
-            ServiceReference[] serRefs
-                = bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class.getName(),
+            Collection<ServiceReference<ProtocolProviderFactory>> serRefs
+                = bundleContext.getServiceReferences(ProtocolProviderFactory.class,
                         osgiFilter);
 
-            if ((serRefs != null) && (serRefs.length != 0))
+            if ((serRefs != null) && !serRefs.isEmpty())
             {
-                protocolProviderFactory
-                    = (ProtocolProviderFactory)
-                        bundleContext.getService(serRefs[0]);
+                protocolProviderFactory = bundleContext.getService(serRefs.iterator().next());
             }
         }
         catch (InvalidSyntaxException ex)
@@ -209,7 +203,7 @@ public class ProtocolProviderActivator
 
         accountManager = new AccountManager(bundleContext);
         accountManagerServiceRegistration =
-            bundleContext.registerService(AccountManager.class.getName(),
+            bundleContext.registerService(AccountManager.class,
                 accountManager, null);
         if(logger.isTraceEnabled())
         {
@@ -259,29 +253,25 @@ public class ProtocolProviderActivator
     public static List<ProtocolProviderService>
         getProtocolProviders()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderService.class.getName(),
-                null);
+                ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("ProtocolProviderActivator : " + e);
         }
 
-        List<ProtocolProviderService>
-            providersList = new ArrayList<ProtocolProviderService>();
+        List<ProtocolProviderService> providersList = new ArrayList<>();
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderService> serRef : serRefs)
             {
-                ProtocolProviderService pp
-                    = (ProtocolProviderService)bundleContext.getService(serRef);
-
+                ProtocolProviderService pp = bundleContext.getService(serRef);
                 providersList.add(pp);
             }
         }

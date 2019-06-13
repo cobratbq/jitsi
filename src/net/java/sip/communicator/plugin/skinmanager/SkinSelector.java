@@ -31,7 +31,7 @@ import org.osgi.framework.*;
  * @author Yana Stamcheva
  */
 public class SkinSelector
-        extends JComboBox
+        extends JComboBox<Object>
         implements BundleListener
 {
     /**
@@ -70,8 +70,8 @@ public class SkinSelector
     /**
      * Casts the data model to <tt>DefaultComboBoxModel</tt>.
      */
-    private final DefaultComboBoxModel dataModel
-        = (DefaultComboBoxModel) super.dataModel;
+    private final DefaultComboBoxModel<Object> dataModel
+        = (DefaultComboBoxModel<Object>) super.dataModel;
 
     /**
      * Constructor.

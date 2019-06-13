@@ -92,6 +92,7 @@ public class ContactInfoContactPanel
                 // selection, getValueIsAdjusting() becomes false
                 if (!e.getValueIsAdjusting())
                 {
+                    @SuppressWarnings("unchecked")
                     JList<Contact> list = (JList<Contact>) e.getSource();
 
                     Contact selectedContact = list.getSelectedValue();

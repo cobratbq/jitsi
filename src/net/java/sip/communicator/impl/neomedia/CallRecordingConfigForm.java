@@ -72,7 +72,7 @@ public class CallRecordingConfigForm
      * Directory choose dialog.
      */
     private final SipCommFileChooser dirChooser;
-    private JComboBox formatsComboBox;
+    private JComboBox<String> formatsComboBox;
     private JCheckBox saveCallsToCheckBox;
     /**
      * Directory where calls are stored. Default is SC_HOME/calls.
@@ -196,10 +196,10 @@ public class CallRecordingConfigForm
      */
     private Component createFormatsComboBox()
     {
-        ComboBoxModel formatsComboBoxModel
-            = new DefaultComboBoxModel(RecorderImpl.SUPPORTED_FORMATS);
+        ComboBoxModel<String> formatsComboBoxModel
+            = new DefaultComboBoxModel<>(RecorderImpl.SUPPORTED_FORMATS);
 
-        formatsComboBox = new JComboBox();
+        formatsComboBox = new JComboBox<>();
         formatsComboBox.setPreferredSize(new Dimension(200, 30));
         formatsComboBox.setModel(formatsComboBoxModel);
 

@@ -741,10 +741,10 @@ public class CallSipImpl
     private static Map<String, String> extractRequestHeaders(Request req)
     {
         Map<String, String> headers = new HashMap<>();
-        for (Iterator<String> headerNameIter = req.getHeaderNames();
-             headerNameIter.hasNext();)
-        {
-            String name = headerNameIter.next();
+        @SuppressWarnings("unchecked")
+        Iterator<String> it = req.getHeaderNames();
+        while (it.hasNext()) {
+            String name = it.next();
             SIPHeader header = (SIPHeader)req.getHeader(name);
             if (header != null)
                 headers.put(name, header.getValue());

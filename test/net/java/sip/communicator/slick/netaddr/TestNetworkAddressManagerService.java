@@ -82,15 +82,13 @@ public class TestNetworkAddressManagerService
         super.setUp();
         BundleContext context = NetworkAddressManagerServiceLick.bc;
         // get the configuration service
-        ServiceReference confRef = context
-            .getServiceReference(ConfigurationService.class.getName());
-        configurationService = (ConfigurationService) context
-            .getService(confRef);
+        ServiceReference<ConfigurationService> confRef = context
+            .getServiceReference(ConfigurationService.class);
+        configurationService = context.getService(confRef);
         // get the netaddr service
-        ServiceReference netRef = context.getServiceReference(
-            NetworkAddressManagerService.class.getName());
-        networkAddressManagerService = (NetworkAddressManagerService)
-            context.getService(netRef);
+        ServiceReference<NetworkAddressManagerService> netRef = context.getServiceReference(
+            NetworkAddressManagerService.class);
+        networkAddressManagerService = context.getService(netRef);
     }
 
     /**

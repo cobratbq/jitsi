@@ -53,12 +53,12 @@ public class SmileyActivator
     /**
      * The smileyy service registration.
      */
-    private ServiceRegistration smileyServReg = null;
+    private ServiceRegistration<?> smileyServReg = null;
 
     /**
      * The source implementation reference.
      */
-    private static ReplacementService smileySource = null;
+    private static ReplacementServiceSmileyImpl smileySource = null;
 
     /**
      * Starts the Smiley replacement source bundle
@@ -71,17 +71,15 @@ public class SmileyActivator
     {
         bundleContext = context;
 
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceSmileyImpl.SMILEY_SOURCE);
         smileySource = new ReplacementServiceSmileyImpl();
 
-        smileyServReg
-            = context.registerService(SmiliesReplacementService.class.getName(),
+        smileyServReg = context.registerService(SmiliesReplacementService.class,
                 smileySource, hashtable);
 
-        smileyServReg
-            = context.registerService(ReplacementService.class.getName(),
+        smileyServReg = context.registerService(ReplacementService.class,
                 smileySource, hashtable);
 
         logger.info("Smiley source implementation [STARTED].");
@@ -110,17 +108,13 @@ public class SmileyActivator
     {
         if (resourcesService == null)
         {
-            ServiceReference serviceReference =
-                bundleContext
-                    .getServiceReference(ResourceManagementService.class
-                        .getName());
+            ServiceReference<ResourceManagementService> serviceReference =
+                bundleContext.getServiceReference(ResourceManagementService.class);
 
             if (serviceReference == null)
                 return null;
 
-            resourcesService =
-                (ResourceManagementService) bundleContext
-                    .getService(serviceReference);
+            resourcesService = bundleContext.getService(serviceReference);
         }
         return resourcesService;
     }

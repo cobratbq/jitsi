@@ -131,11 +131,9 @@ public class PacketLoggingActivator
     {
         if (configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService) bundleContext.getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }

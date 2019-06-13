@@ -22,6 +22,8 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Tests whether accounts are uninstalled properly. It is important that
  * tests from this class be called last since they will install the accounts
@@ -117,11 +119,11 @@ public class TestAccountUninstallation
                      , Bundle.UNINSTALLED, providerBundle.getState());
 
         //verify that the provider is no longer available
-        ServiceReference[] gibberishProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> gibberishProviderRefs;
         try
         {
             gibberishProviderRefs = GibberishSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=Gibberish)"
@@ -132,6 +134,7 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong: " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
@@ -140,7 +143,7 @@ public class TestAccountUninstallation
             + "for Gibberish URI:" + fixture.userID1
             + "After it was explicitly uninstalled"
             , gibberishProviderRefs == null
-              || gibberishProviderRefs.length == 0);
+              || gibberishProviderRefs.isEmpty());
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.
@@ -172,7 +175,7 @@ public class TestAccountUninstallation
         try
         {
             gibberishProviderRefs = GibberishSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=Gibberish)"
@@ -183,35 +186,36 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was not restored after being"
                       +"reinstalled. Gibberish URI:" + fixture.userID1
                       ,gibberishProviderRefs != null
-                        && gibberishProviderRefs.length > 0);
+                        && !gibberishProviderRefs.isEmpty());
 
-        ServiceReference[] gibberishFactoryRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> gibberishFactoryRefs;
         try
         {
             gibberishFactoryRefs = GibberishSlickFixture.bc.getServiceReferences(
-                ProtocolProviderFactory.class.getName(),
+                ProtocolProviderFactory.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                       + "=Gibberish)");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //we're the ones who've reinstalled the factory so it's our
         //responsibility to update the fixture.
         fixture.providerFactory
-            = (ProtocolProviderFactory)GibberishSlickFixture.bc.getService(
-                gibberishFactoryRefs[0]);
-        fixture.provider1
-            = (ProtocolProviderService)GibberishSlickFixture.bc.getService(
-                gibberishProviderRefs[0]);
+            = GibberishSlickFixture.bc.getService(
+                gibberishFactoryRefs.iterator().next());
+        fixture.provider1 = GibberishSlickFixture.bc.getService(
+                gibberishProviderRefs.iterator().next());
 
 
         //verify that the provider is also restored in the provider factory
@@ -252,24 +256,25 @@ public class TestAccountUninstallation
                 fixture.provider2.getAccountID()));
 
         //make sure no providers have remained installed.
-        ServiceReference[] gibberishProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> gibberishProviderRefs;
         try
         {
             gibberishProviderRefs = GibberishSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                       + "=Gibberish)");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was still regged as an osgi "
                       + "service for Gibberish URI:" + fixture.userID1
                       + "After it was explicitly uninstalled"
-                      ,gibberishProviderRefs == null || gibberishProviderRefs.length == 0);
+                      ,gibberishProviderRefs == null || gibberishProviderRefs.isEmpty());
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.

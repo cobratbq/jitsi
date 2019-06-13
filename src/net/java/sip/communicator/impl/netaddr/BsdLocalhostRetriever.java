@@ -174,18 +174,15 @@ public class BsdLocalhostRetriever
         }
 
         @Override
-        protected List getFieldOrder()
+        protected List<String> getFieldOrder()
         {
             return
                 Arrays.asList(
-                        new String[]
-                        {
-                            "sin_len",
-                            "sin_family",
-                            "sin_port",
-                            "sin_addr",
-                            "sin_zero"
-                        });
+                        "sin_len",
+                        "sin_family",
+                        "sin_port",
+                        "sin_addr",
+                        "sin_zero");
         }
     }
 
@@ -229,19 +226,16 @@ public class BsdLocalhostRetriever
         }
 
         @Override
-        protected List getFieldOrder()
+        protected List<String> getFieldOrder()
         {
             return
                 Arrays.asList(
-                        new String[]
-                        {
-                            "sin6_len",
-                            "sin6_family",
-                            "sin6_port",
-                            "sin6_flowinfo",
-                            "sin6_addr",
-                            "sin6_scope_id"
-                        });
+                        "sin6_len",
+                        "sin6_family",
+                        "sin6_port",
+                        "sin6_flowinfo",
+                        "sin6_addr",
+                        "sin6_scope_id");
         }
     }
 

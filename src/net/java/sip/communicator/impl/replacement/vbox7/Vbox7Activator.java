@@ -40,7 +40,7 @@ public class Vbox7Activator
     /**
      * The vbox7 service registration.
      */
-    private ServiceRegistration vbox7ServReg = null;
+    private ServiceRegistration<ReplacementService> vbox7ServReg = null;
 
     /**
      * The source implementation reference.
@@ -56,13 +56,11 @@ public class Vbox7Activator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceVbox7Impl.VBOX7_CONFIG_LABEL);
         vbox7Source = new ReplacementServiceVbox7Impl();
-
-        vbox7ServReg =
-            context.registerService(ReplacementService.class.getName(),
+        vbox7ServReg = context.registerService(ReplacementService.class,
                 vbox7Source, hashtable);
 
         logger.info("Vbox7 source implementation [STARTED].");

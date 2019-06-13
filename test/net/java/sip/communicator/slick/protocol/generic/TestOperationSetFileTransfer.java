@@ -69,9 +69,9 @@ public abstract class TestOperationSetFileTransfer
     {
         if(fileAccessService == null)
         {
-            ServiceReference ref = getContext()
-                .getServiceReference(FileAccessService.class.getName());
-            fileAccessService = (FileAccessService)getContext().getService(ref);
+            ServiceReference<FileAccessService> ref = getContext()
+                .getServiceReference(FileAccessService.class);
+            fileAccessService = getContext().getService(ref);
         }
 
         return fileAccessService;

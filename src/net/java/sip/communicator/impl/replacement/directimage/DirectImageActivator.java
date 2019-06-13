@@ -43,7 +43,7 @@ public class DirectImageActivator
     /**
      * The direct image source service registration.
      */
-    private ServiceRegistration directImageSourceServReg = null;
+    private ServiceRegistration<?> directImageSourceServReg = null;
 
     /**
      * The source implementation reference.
@@ -70,7 +70,7 @@ public class DirectImageActivator
     public void start(BundleContext context) throws Exception
     {
         bundleContext = context;
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceDirectImageImpl.DIRECT_IMAGE_CONFIG_LABEL);
         directImageSource = new ReplacementServiceDirectImageImpl();
@@ -113,12 +113,10 @@ public class DirectImageActivator
     {
         if(confService == null)
         {
-            ServiceReference confReference
+            ServiceReference<ConfigurationService> confReference
                 = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            confService
-                = (ConfigurationService) bundleContext.getService(
-                    confReference);
+                    ConfigurationService.class);
+            confService = bundleContext.getService(confReference);
         }
         return confService;
     }

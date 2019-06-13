@@ -98,12 +98,9 @@ public class SkinManagerActivator
     {
         if (uiService == null)
         {
-            ServiceReference uiReference =
-                bundleContext.getServiceReference(UIService.class.getName());
-
-            uiService =
-                (UIService) bundleContext
-                    .getService(uiReference);
+            ServiceReference<UIService> uiReference =
+                bundleContext.getServiceReference(UIService.class);
+            uiService = bundleContext.getService(uiReference);
         }
 
         return uiService;

@@ -62,7 +62,7 @@ public class IcqSlickFixture extends TestCase
      */
     public static Hashtable<String, List<String>> preInstalledBuddyList  = null;
 
-    public ServiceReference        icqServiceRef   = null;
+    public ServiceReference<ProtocolProviderService> icqServiceRef = null;
     public ProtocolProviderService provider        = null;
     public ProtocolProviderFactory providerFactory = null;
     public String                  ourUserID       = null;
@@ -86,25 +86,25 @@ public class IcqSlickFixture extends TestCase
     public void setUp() throws Exception
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.ICQ+")";
         try{
             serRefs = IcqSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+                    ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol ICQ",
-            (serRefs != null) && (serRefs.length >  0));
+            (serRefs != null) && (serRefs.size() >  0));
 
         //Keep the reference for later usage.
-        providerFactory = (ProtocolProviderFactory)
-            IcqSlickFixture.bc.getService(serRefs[0]);
+        providerFactory = IcqSlickFixture.bc.getService(serRefs.iterator().next());
 
         ourUserID =
             System.getProperty(
@@ -112,9 +112,9 @@ public class IcqSlickFixture extends TestCase
 
 
         //find the protocol provider service
-        ServiceReference[] icqProviderRefs
+        Collection<ServiceReference<ProtocolProviderService>> icqProviderRefs
             = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.ICQ+")"
                 +"("+ProtocolProviderFactory.USER_ID+"="
@@ -125,11 +125,11 @@ public class IcqSlickFixture extends TestCase
         assertNotNull("No Protocol Provider was found for ICQ UIN:"+ ourUserID,
                      icqProviderRefs);
         assertTrue("No Protocol Provider was found for ICQ UIN:"+ ourUserID,
-                     icqProviderRefs.length > 0);
+                     icqProviderRefs.size() > 0);
 
         //save the service for other tests to use.
-        icqServiceRef = icqProviderRefs[0];
-        provider = (ProtocolProviderService)bc.getService(icqServiceRef);
+        icqServiceRef = icqProviderRefs.iterator().next();
+        provider = bc.getService(icqServiceRef);
     }
 
     @Override
@@ -155,7 +155,7 @@ public class IcqSlickFixture extends TestCase
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
                 = bundles[i].getRegisteredServices();
 
             if (registeredServices == null)

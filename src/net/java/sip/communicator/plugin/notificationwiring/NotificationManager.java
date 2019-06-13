@@ -363,30 +363,27 @@ public class NotificationManager
     public static Map<Object, ProtocolProviderFactory>
         getProtocolProviderFactories()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
                 = NotificationWiringActivator.bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class.getName(),
-                        null);
+                        ProtocolProviderFactory.class, null);
         }
         catch (InvalidSyntaxException e)
         {
             logger.error("NotificationManager : " + e);
         }
 
-        Map<Object, ProtocolProviderFactory>
-            providerFactoriesMap = new Hashtable<Object, ProtocolProviderFactory>();
+        Map<Object, ProtocolProviderFactory> providerFactoriesMap = new Hashtable<>();
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
             {
                 ProtocolProviderFactory providerFactory
-                    = (ProtocolProviderFactory)
-                        NotificationWiringActivator.bundleContext.getService(serRef);
+                    = NotificationWiringActivator.bundleContext.getService(serRef);
 
                 providerFactoriesMap.put(
                         serRef.getProperty(ProtocolProviderFactory.PROTOCOL),
@@ -403,14 +400,12 @@ public class NotificationManager
     public static List<ProtocolProviderService>
         getProtocolProviders()
     {
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> serRefs = null;
         try
         {
             // get all registered provider factories
-            serRefs
-                = NotificationWiringActivator.bundleContext.getServiceReferences(
-                        ProtocolProviderService.class.getName(),
-                        null);
+            serRefs = NotificationWiringActivator.bundleContext.getServiceReferences(
+                        ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException e)
         {
@@ -418,15 +413,13 @@ public class NotificationManager
         }
 
         List<ProtocolProviderService>
-            providersList = new ArrayList<ProtocolProviderService>();
+            providersList = new ArrayList<>();
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderService> serRef : serRefs)
             {
-                ProtocolProviderService pp
-                    = (ProtocolProviderService)
-                        NotificationWiringActivator.bundleContext.getService(serRef);
+                ProtocolProviderService pp = NotificationWiringActivator.bundleContext.getService(serRef);
 
                 providersList.add(pp);
             }
@@ -1757,7 +1750,7 @@ public class NotificationManager
      */
     public void serviceChanged(ServiceEvent event)
     {
-        ServiceReference serviceRef = event.getServiceReference();
+        ServiceReference<?> serviceRef = event.getServiceReference();
 
         // if the event is caused by a bundle being stopped, we don't want to
         // know

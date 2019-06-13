@@ -65,11 +65,9 @@ public class TestCredentialsStorageService
     {
         super(name);
         BundleContext context = CredentialsStorageServiceLick.bc;
-        ServiceReference ref =
-            context.getServiceReference(CredentialsStorageService.class
-                .getName());
-        credentialsService =
-            (CredentialsStorageService) context.getService(ref);
+        ServiceReference<CredentialsStorageService> ref =
+            context.getServiceReference(CredentialsStorageService.class);
+        credentialsService = context.getService(ref);
     }
 
     /**

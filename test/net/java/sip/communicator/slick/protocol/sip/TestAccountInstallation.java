@@ -70,26 +70,26 @@ public class TestAccountInstallation
             .setProperty(CertificateService.PNAME_ALWAYS_TRUST, true);
 
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.SIP+")";
         try{
             serRefs = SipSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+                    ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol SIP",
-            serRefs != null && serRefs.length >  0);
+            serRefs != null && serRefs.size() >  0);
 
         //Keep the reference for later usage.
-        ProtocolProviderFactory sipProviderFactory = (ProtocolProviderFactory)
-            SipSlickFixture.bc.getService(serRefs[0]);
+        ProtocolProviderFactory sipProviderFactory = SipSlickFixture.bc.getService(serRefs.iterator().next());
 
         //make sure the account is empty
         assertTrue("There was an account registered with the account mananger "
@@ -153,28 +153,29 @@ public class TestAccountInstallation
                             ProtocolProviderFactory.USER_ID)
              + "))";
 
+        Collection<ServiceReference<ProtocolProviderService>> serRefsService;
         try
         {
-            serRefs = SipSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderService.class.getName(),
-                    osgiFilter);
+            serRefsService = SipSlickFixture.bc.getServiceReferences(
+                    ProtocolProviderService.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex)
         {
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + "is not a valid osgi filter");
+            return;
         }
 
         assertTrue("A SIP protocol provider was apparently not installed as "
                 + "requested."
-                , serRefs != null && serRefs.length > 0);
+                , serRefsService != null && serRefsService.size() > 0);
 
         Object icqProtocolProvider
-            = SipSlickFixture.bc.getService(serRefs[0]);
+            = SipSlickFixture.bc.getService(serRefsService.iterator().next());
 
         assertTrue("The installed protocol provider does not implement "
                   + "the protocol provider service."
-                  ,icqProtocolProvider instanceof ProtocolProviderService);
+                  , icqProtocolProvider != null);
     }
 
     /**

@@ -92,7 +92,7 @@ public class AuthorizationRequestedDialog
 
     private SIPCommCheckBox addContactCheckBox;
 
-    private JComboBox<MetaContactGroup> groupComboBox;
+    private JComboBox<Object> groupComboBox;
 
     private Object lock = new Object();
 

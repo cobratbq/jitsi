@@ -97,7 +97,7 @@ public class ProxyRouter
      * @return the next hops for the <tt>request</tt>.
      */
     @Deprecated
-    public ListIterator getNextHops(Request request)
+    public ListIterator<?> getNextHops(Request request)
     {
         return this.getRouterFor(request).getNextHops(request);
     }

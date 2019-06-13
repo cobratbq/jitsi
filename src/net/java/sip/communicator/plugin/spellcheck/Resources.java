@@ -138,13 +138,10 @@ public class Resources
         if (resourceService != null)
             return resourceService;
 
-        ServiceReference configServiceRef =
+        ServiceReference<ResourceManagementService> configServiceRef =
             SpellCheckActivator.bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
-
-        resourceService =
-            (ResourceManagementService) SpellCheckActivator.bundleContext
-                .getService(configServiceRef);
+                .getServiceReference(ResourceManagementService.class);
+        resourceService = SpellCheckActivator.bundleContext.getService(configServiceRef);
 
         return resourceService;
     }

@@ -24,6 +24,7 @@ import javax.swing.text.*;
 
 import net.java.sip.communicator.impl.gui.main.chat.conference.*;
 import net.java.sip.communicator.service.contactlist.*;
+import net.java.sip.communicator.service.protocol.ConferenceDescription;
 
 /**
  * The main goal of the <tt>CListKeySearchListener</tt> is to listen for key
@@ -48,7 +49,7 @@ import net.java.sip.communicator.service.contactlist.*;
  */
 public class CListKeySearchListener implements KeyListener {
 
-    private JList contactList;
+    private JList<?> contactList;
 
     private char lastTypedKey = KeyEvent.CHAR_UNDEFINED;
 
@@ -61,7 +62,7 @@ public class CListKeySearchListener implements KeyListener {
      * ContactList.
      * @param contactList The contact list.
      */
-    public CListKeySearchListener(JList contactList) {
+    public CListKeySearchListener(JList<?> contactList) {
         this.contactList = contactList;
     }
 

@@ -58,11 +58,11 @@ public class AddContactDialog
 {
     private JLabel accountLabel;
 
-    private JComboBox accountCombo;
+    private JComboBox<Object> accountCombo;
 
     private JLabel groupLabel;
 
-    private JComboBox<MetaContactGroup> groupCombo;
+    private JComboBox<Object> groupCombo;
 
     private JLabel contactAddressLabel;
 
@@ -233,7 +233,7 @@ public class AddContactDialog
                 "service.gui.SELECT_ACCOUNT") + ": ");
         this.accountLabel.setToolTipText(accountInfo);
 
-        this.accountCombo = new JComboBox();
+        this.accountCombo = new JComboBox<>();
         this.accountCombo.setToolTipText(accountInfo);
 
         this.contactAddressLabel = new JLabel(
@@ -440,9 +440,9 @@ public class AddContactDialog
     /**
      * Initializes groups combo box.
      */
-    public static JComboBox<MetaContactGroup> createGroupCombo(final Dialog parentDialog)
+    public static JComboBox<Object> createGroupCombo(final Dialog parentDialog)
     {
-        final JComboBox<MetaContactGroup> groupCombo = new JComboBox<>();
+        final JComboBox<Object> groupCombo = new JComboBox<>();
 
         groupCombo.setRenderer(new GroupComboRenderer());
 
@@ -484,7 +484,7 @@ public class AddContactDialog
      * Update the group items in the combo supplied, by checking
      * and the edit permissions
      */
-    private static void updateGroupItems(JComboBox groupCombo,
+    private static void updateGroupItems(JComboBox<Object> groupCombo,
                                          ProtocolProviderService provider)
     {
         OperationSetPersistentPresencePermissions opsetPermissions = null;
@@ -724,7 +724,7 @@ public class AddContactDialog
     private static class AccountComboRenderer extends DefaultListCellRenderer
     {
         @Override
-        public Component getListCellRendererComponent(  JList list,
+        public Component getListCellRendererComponent(  JList<?> list,
                                                         Object value,
                                                         int index,
                                                         boolean isSelected,
@@ -741,18 +741,15 @@ public class AddContactDialog
                 ProtocolProviderService provider
                     = (ProtocolProviderService) value;
 
-                if (provider != null)
-                {
-                    Image protocolImg
-                        = ImageUtils.getBytesInImage(provider.getProtocolIcon()
-                            .getIcon(ProtocolIcon.ICON_SIZE_16x16));
+                Image protocolImg
+                    = ImageUtils.getBytesInImage(provider.getProtocolIcon()
+                        .getIcon(ProtocolIcon.ICON_SIZE_16x16));
 
-                    if (protocolImg != null)
-                        this.setIcon(ImageLoader.getIndexedProtocolIcon(
-                                protocolImg, provider));
+                if (protocolImg != null)
+                    this.setIcon(ImageLoader.getIndexedProtocolIcon(
+                            protocolImg, provider));
 
-                    this.setText(provider.getAccountID().getDisplayName());
-                }
+                this.setText(provider.getAccountID().getDisplayName());
             }
 
             if (isSelected)
@@ -777,7 +774,7 @@ public class AddContactDialog
         extends DefaultListCellRenderer
     {
         @Override
-        public Component getListCellRendererComponent(  JList list,
+        public Component getListCellRendererComponent(  JList<?> list,
                                                         Object value,
                                                         int index,
                                                         boolean isSelected,

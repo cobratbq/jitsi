@@ -40,7 +40,7 @@ public class HuluActivator
     /**
      * The hulu service registration.
      */
-    private ServiceRegistration huluServReg = null;
+    private ServiceRegistration<ReplacementService> huluServReg = null;
 
     /**
      * The source implementation reference.
@@ -56,14 +56,11 @@ public class HuluActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceHuluImpl.HULU_CONFIG_LABEL);
         huluSource = new ReplacementServiceHuluImpl();
-
-        huluServReg =
-            context.registerService(ReplacementService.class.getName(),
-                huluSource, hashtable);
+        huluServReg = context.registerService(ReplacementService.class, huluSource, hashtable);
 
         logger.info("HULU source implementation [STARTED].");
     }

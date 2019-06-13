@@ -40,7 +40,7 @@ public class TestPopupMessageHandler
     /**
      * reference to services we will retrieve from bundle context
      */
-    private static ServiceReference serviceReference = null;
+    private static ServiceReference<?> serviceReference = null;
 
     /**
      * the <tt>NotificationService</tt> reference we will get from bundle

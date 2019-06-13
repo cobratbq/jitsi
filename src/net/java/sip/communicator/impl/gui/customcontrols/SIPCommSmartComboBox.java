@@ -36,7 +36,7 @@ import net.java.sip.communicator.util.skin.*;
  * @author Adam Netocny
  */
 public class SIPCommSmartComboBox<E>
-    extends JComboBox
+    extends JComboBox<E>
 {
     private static final long serialVersionUID = 0L;
 
@@ -45,7 +45,7 @@ public class SIPCommSmartComboBox<E>
      */
     public SIPCommSmartComboBox()
     {
-        setModel(new FilterableComboBoxModel());
+        setModel(new FilterableComboBoxModel<>());
         setEditor(new CallComboEditor());
         setEditable(true);
         setFocusable(true);
@@ -55,22 +55,22 @@ public class SIPCommSmartComboBox<E>
      * The data model used for this combo box. Filters the contents of the
      * combo box popup according to the user input.
      */
-    public static class FilterableComboBoxModel
-        extends AbstractListModel
-        implements MutableComboBoxModel
+    public static class FilterableComboBoxModel<E>
+        extends AbstractListModel<E>
+        implements MutableComboBoxModel<E>
     {
         private Filter filter;
 
-        private final List<Object> filteredItems;
+        private final List<E> filteredItems;
 
-        private final List<Object> items;
+        private final List<E> items;
 
         private Object selectedItem;
 
         public FilterableComboBoxModel()
         {
-            items = new ArrayList<Object>();
-            filteredItems = new ArrayList<Object>(items.size());
+            items = new ArrayList<>();
+            filteredItems = new ArrayList<>(items.size());
 
             updateFilteredItems();
         }
@@ -80,7 +80,7 @@ public class SIPCommSmartComboBox<E>
             return items.contains(obj);
         }
 
-        public void addElement(Object obj)
+        public void addElement(E obj)
         {
             items.add(obj);
             updateFilteredItems();
@@ -98,7 +98,7 @@ public class SIPCommSmartComboBox<E>
             updateFilteredItems();
         }
 
-        public void insertElementAt(Object obj, int index)
+        public void insertElementAt(E obj, int index)
         {
             items.add(index, obj);
             updateFilteredItems();
@@ -121,7 +121,7 @@ public class SIPCommSmartComboBox<E>
             }
             else
             {
-                for (Object item : items)
+                for (E item : items)
                     if (filter.accept(item))
                         filteredItems.add(item);
             }
@@ -133,7 +133,7 @@ public class SIPCommSmartComboBox<E>
             return filteredItems.size();
         }
 
-        public Object getElementAt(int index)
+        public E getElementAt(int index)
         {
             return filteredItems.get(index);
         }
@@ -159,9 +159,9 @@ public class SIPCommSmartComboBox<E>
         }
     }
 
-    public static interface Filter
+    public interface Filter
     {
-        public boolean accept(Object obj);
+        boolean accept(Object obj);
     }
 
     private static class StartsWithFilter implements Filter

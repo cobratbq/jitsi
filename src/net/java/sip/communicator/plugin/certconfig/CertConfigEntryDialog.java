@@ -65,10 +65,10 @@ public class CertConfigEntryDialog
     private JButton cmdBrowse;
     private JTextField txtDisplayName;
     private JTextField txtKeyStore;
-    private JComboBox cboKeyStoreTypes;
+    private JComboBox<KeyStoreType> cboKeyStoreTypes;
     private JCheckBox chkSavePassword;
     private JPasswordField txtKeyStorePassword;
-    private JComboBox cboAlias;
+    private JComboBox<String> cboAlias;
     private JButton cmdShowCert;
     private KeyStore keyStore;
 
@@ -152,13 +152,13 @@ public class CertConfigEntryDialog
         lblKeyStoreType.setText(
             R.getI18NString("plugin.certconfig.KEYSTORE_TYPE"));
         cboKeyStoreTypes =
-            new JComboBox(cs.getSupportedKeyStoreTypes().toArray());
+            new JComboBox<>(cs.getSupportedKeyStoreTypes().toArray(new KeyStoreType[0]));
         cboKeyStoreTypes.addItemListener(this);
         cboKeyStoreTypes.setEnabled(false);
 
         JLabel lblAlias = new JLabel();
         lblAlias.setText(R.getI18NString("plugin.certconfig.ALIAS"));
-        cboAlias = new JComboBox();
+        cboAlias = new JComboBox<>();
         cboAlias.addItemListener(this);
         cboAlias.setEnabled(false);
 

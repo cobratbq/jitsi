@@ -40,7 +40,7 @@ public abstract class AdHocMultiUserChatSlickFixture extends TestCase
      * An osgi service reference for the protocol provider corresponding to our
      * first testing account.
      */
-    public ServiceReference provider1ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider1ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our first testing account.
@@ -56,7 +56,7 @@ public abstract class AdHocMultiUserChatSlickFixture extends TestCase
      * An osgi service reference for the protocol provider corresponding to our
      * second testing account.
      */
-    public ServiceReference provider2ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider2ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our second testing account.
@@ -72,7 +72,7 @@ public abstract class AdHocMultiUserChatSlickFixture extends TestCase
      * An osgi service reference for the protocol provider corresponding to our
      * third testing account.
      */
-    public ServiceReference provider3ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider3ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our third testing account.
@@ -222,7 +222,7 @@ public abstract class AdHocMultiUserChatSlickFixture extends TestCase
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
             = bundles[i].getRegisteredServices();
 
             if (registeredServices == null)

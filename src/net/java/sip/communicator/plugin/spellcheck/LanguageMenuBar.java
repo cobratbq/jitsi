@@ -671,6 +671,7 @@ public class LanguageMenuBar
         {
             if (!e.getValueIsAdjusting())
             {
+                @SuppressWarnings("unchecked")
                 JList<Object> source = (JList<Object>) e.getSource();
                 Parameters.Locale locale
                     = (Parameters.Locale) source.getSelectedValue();

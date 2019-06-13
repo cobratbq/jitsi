@@ -41,7 +41,7 @@ public class GibberishActivator
      * A reference to the registration of our Gibberish protocol provider
      * factory.
      */
-    private ServiceRegistration  gibberishPpFactoryServReg   = null;
+    private ServiceRegistration<ProtocolProviderFactory> gibberishPpFactoryServReg = null;
 
     /**
      * A reference to the Gibberish protocol provider factory.
@@ -79,7 +79,7 @@ public class GibberishActivator
 
         //reg the gibberish provider factory.
         gibberishPpFactoryServReg =  context.registerService(
-                    ProtocolProviderFactory.class.getName(),
+                    ProtocolProviderFactory.class,
                     gibberishProviderFactory,
                     hashtable);
 
@@ -133,14 +133,13 @@ public class GibberishActivator
     {
         if (resourceService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(ResourceManagementService.class.getName());
+            ServiceReference<ResourceManagementService> serviceReference = bundleContext
+                .getServiceReference(ResourceManagementService.class);
 
             if(serviceReference == null)
                 return null;
 
-            resourceService = (ResourceManagementService) bundleContext
-                .getService(serviceReference);
+            resourceService = bundleContext.getService(serviceReference);
         }
 
         return resourceService;

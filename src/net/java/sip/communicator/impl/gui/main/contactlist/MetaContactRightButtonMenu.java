@@ -973,7 +973,7 @@ public class MetaContactRightButtonMenu
     {
         // Search for plugin components registered through the OSGI bundle
         // context.
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<PluginComponentFactory>> serRefs = null;
 
         String osgiFilter = "("
             + Container.CONTAINER_ID
@@ -982,8 +982,7 @@ public class MetaContactRightButtonMenu
         try
         {
             serRefs = GuiActivator.bundleContext.getServiceReferences(
-                PluginComponentFactory.class.getName(),
-                osgiFilter);
+                PluginComponentFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException exc)
         {
@@ -992,11 +991,9 @@ public class MetaContactRightButtonMenu
 
         if (serRefs != null)
         {
-            for (int i = 0; i < serRefs.length; i ++)
+            for (ServiceReference<PluginComponentFactory> ref : serRefs)
             {
-                PluginComponentFactory factory =
-                    (PluginComponentFactory) GuiActivator
-                        .bundleContext.getService(serRefs[i]);
+                PluginComponentFactory factory = GuiActivator.bundleContext.getService(ref);
 
                 PluginComponent component =
                     factory.getPluginComponentInstance(this);

@@ -75,7 +75,7 @@ public class OtrConfigurationPanel
          * @author George Politis
          */
         private static class AccountsComboBox
-            extends JComboBox
+            extends JComboBox<AccountsComboBox.AccountsComboBoxItem>
         {
             /**
              * A class hosted in an {@link AccountsComboBox} that holds a single

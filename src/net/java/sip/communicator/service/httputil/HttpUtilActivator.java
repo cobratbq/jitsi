@@ -71,12 +71,10 @@ public class HttpUtilActivator
     {
         if(guiCertificateVerification == null)
         {
-            ServiceReference guiVerifyReference
-                = bundleContext.getServiceReference(
-                    CertificateService.class.getName());
+            ServiceReference<CertificateService> guiVerifyReference
+                = bundleContext.getServiceReference(CertificateService.class);
             if(guiVerifyReference != null)
-                guiCertificateVerification = (CertificateService)
-                    bundleContext.getService(guiVerifyReference);
+                guiCertificateVerification = bundleContext.getService(guiVerifyReference);
         }
 
         return guiCertificateVerification;
@@ -94,12 +92,9 @@ public class HttpUtilActivator
     {
         if(credentialsService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        CredentialsStorageService.class.getName());
-            credentialsService
-                = (CredentialsStorageService) bundleContext.getService(
-                        confReference);
+            ServiceReference<CredentialsStorageService> confReference
+                = bundleContext.getServiceReference(CredentialsStorageService.class);
+            credentialsService = bundleContext.getService(confReference);
         }
         return credentialsService;
     }

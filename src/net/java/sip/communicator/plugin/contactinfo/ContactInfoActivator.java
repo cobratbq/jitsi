@@ -130,11 +130,9 @@ public class ContactInfoActivator implements BundleActivator
     {
         if (browserLauncherService == null)
         {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
-
-            browserLauncherService = (BrowserLauncherService) bundleContext
-                .getService(serviceReference);
+            ServiceReference<BrowserLauncherService> serviceReference = bundleContext
+                .getServiceReference(BrowserLauncherService.class);
+            browserLauncherService = bundleContext.getService(serviceReference);
         }
 
         return browserLauncherService;

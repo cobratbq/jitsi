@@ -22,6 +22,8 @@ import net.java.sip.communicator.service.protocol.*;
 
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Tests whether accounts are uninstalled properly. It is important that
  * tests from this class be called last since they will install the accounts
@@ -117,11 +119,11 @@ public class TestAccountUninstallation
                      , Bundle.UNINSTALLED, providerBundle.getState());
 
         //verify that the provider is no longer available
-        ServiceReference[] jabberProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> jabberProviderRefs;
         try
         {
             jabberProviderRefs = JabberSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.JABBER + ")"
@@ -132,13 +134,14 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong: " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was still regged as an osgi service "
                       +"for Jabber URI:" + fixture.userID1
                       + "After it was explicitly uninstalled"
-                      ,jabberProviderRefs == null || jabberProviderRefs.length == 0);
+                      ,jabberProviderRefs == null || jabberProviderRefs.size() == 0);
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.
@@ -170,7 +173,7 @@ public class TestAccountUninstallation
         try
         {
             jabberProviderRefs = JabberSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 + "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.JABBER + ")"
@@ -181,32 +184,34 @@ public class TestAccountUninstallation
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was not restored after being"
                       +"reinstalled. Jabber URI:" + fixture.userID1
-                      ,jabberProviderRefs != null && jabberProviderRefs.length > 0);
+                      ,jabberProviderRefs != null && jabberProviderRefs.size() > 0);
 
-        ServiceReference[] jabberFactoryRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> jabberFactoryRefs;
         try
         {
             jabberFactoryRefs = JabberSlickFixture.bc.getServiceReferences(
-                ProtocolProviderFactory.class.getName(),
+                ProtocolProviderFactory.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.JABBER + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //we're the ones who've reinstalled the factory so it's our
         //responsibility to update the fixture.
         fixture.providerFactory
-            = (ProtocolProviderFactory)JabberSlickFixture.bc.getService(jabberFactoryRefs[0]);
+            = JabberSlickFixture.bc.getService(jabberFactoryRefs.iterator().next());
         fixture.provider1
-            = (ProtocolProviderService)JabberSlickFixture.bc.getService(jabberProviderRefs[0]);
+            = JabberSlickFixture.bc.getService(jabberProviderRefs.iterator().next());
 
 
         //verify that the provider is also restored in the provider factory
@@ -252,24 +257,25 @@ public class TestAccountUninstallation
                 fixture.provider3.getAccountID()));
 
         //make sure no providers have remained installed.
-        ServiceReference[] jabberProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> jabberProviderRefs;
         try
         {
             jabberProviderRefs = JabberSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                       + "=" +ProtocolNames.JABBER + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't see a service
         assertTrue("A Protocol Provider Service was still regged as an osgi "
                       + "service for Jabber URI:" + fixture.userID1
                       + "After it was explicitly uninstalled"
-                      ,jabberProviderRefs == null || jabberProviderRefs.length == 0);
+                      ,jabberProviderRefs == null || jabberProviderRefs.size() == 0);
 
         //verify that the provider factory knows that we have uninstalled the
         //provider.

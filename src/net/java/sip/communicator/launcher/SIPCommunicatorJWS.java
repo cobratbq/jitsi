@@ -49,9 +49,8 @@ public class SIPCommunicatorJWS
             final String[] _chainArgs = chainArgs.split("\\s");
             try
             {
-                Class c = Class.forName(chainMain);
-                final Method m = c.getMethod("main",
-                    new Class[] {_chainArgs.getClass()});
+                Class<?> c = Class.forName(chainMain);
+                final Method m = c.getMethod("main", _chainArgs.getClass());
                 new Thread()
                 {
                     public void run()
@@ -86,22 +85,22 @@ public class SIPCommunicatorJWS
                     .getResourceAsStream("/logging.properties"));
 
         Handler[] hs = LogManager.getLogManager().getLogger("").getHandlers();
-        for (int i = 0; i < hs.length; i++)
-            LogManager.getLogManager().getLogger("").removeHandler(hs[i]);
+        for (Handler handler : hs)
+            LogManager.getLogManager().getLogger("").removeHandler(handler);
         LogManager.getLogManager().getLogger("").addHandler(new FileHandler());
         LogManager.getLogManager().getLogger("")
             .addHandler(new ConsoleHandler());
 
         Handler[] h = LogManager.getLogManager().getLogger("").getHandlers();
-        for (int i = 0; i < h.length; i++)
-            h[i].setFormatter(new ScLogFormatter());
+        for (Handler handler : h)
+            handler.setFormatter(new ScLogFormatter());
 
         // be evil :-)
         // find the path of the nativelibs under webstart (findLibrary is
         // protected and therefore at least documented api)
         Method findLibrary =
             SIPCommunicatorJWS.class.getClassLoader().getClass()
-                .getDeclaredMethod("findLibrary", new Class[] {String.class});
+                .getDeclaredMethod("findLibrary", String.class);
         findLibrary.setAccessible(true);
         File path =
             new File((String) findLibrary.invoke(
@@ -128,42 +127,30 @@ public class SIPCommunicatorJWS
             System.getProperty("net.java.sip.communicator.SC_JWS_BASEDIR");
         ClassLoader cl = SIPCommunicatorJWS.class.getClassLoader();
         Method getJarFile =
-            cl.getClass().getDeclaredMethod("getJarFile",
-                new Class[] {URL.class});
+            cl.getClass().getDeclaredMethod("getJarFile", URL.class);
         getJarFile.setAccessible(true);
 
-        Iterator propIt = pIn.entrySet().iterator();
-        while (propIt.hasNext())
-        {
-            Map.Entry e = (Map.Entry) propIt.next();
-            if (((String) e.getKey()).startsWith("felix.auto.start."))
-            {
+        for (Map.Entry<Object, Object> e : pIn.entrySet()) {
+            if (((String) e.getKey()).startsWith("felix.auto.start.")) {
                 String[] refs = ((String) e.getValue()).split("\\s");
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < refs.length; i++)
-                {
-                    String ref = refs[i];
+                for (String ref : refs) {
                     JarFile localFile =
-                        (JarFile) getJarFile.invoke(cl, new Object[] {
-                            new URL(baseServerUrl + ref.replace("@URL@", ""))});
-                    if (localFile != null)
-                    {
+                            (JarFile) getJarFile.invoke(cl, new Object[]{
+                                    new URL(baseServerUrl + ref.replace("@URL@", ""))});
+                    if (localFile != null) {
                         String localFileName =
-                            new File(localFile.getName()).toURI().toString();
+                                new File(localFile.getName()).toURI().toString();
                         sb.append("reference:");
                         sb.append(localFileName);
                         sb.append(" ");
-                    }
-                    else
-                    {
+                    } else {
                         throw new Exception("ref <" + ref
-                            + "> not found in cache");
+                                + "> not found in cache");
                     }
                 }
                 pOut.put(e.getKey(), sb.toString());
-            }
-            else
-            {
+            } else {
                 pOut.put(e.getKey(), e.getValue());
             }
         }
@@ -183,11 +170,8 @@ public class SIPCommunicatorJWS
                 File desktop =
                     new File(System.getProperty("user.home") + "/Desktop");
                 File[] files = desktop.listFiles();
-                for (int i = 0; i < files.length; i++)
-                {
-                    File file = files[i];
-                    if (file.getName().contains("jws_app_shortcut_"))
-                    {
+                for (File file : files) {
+                    if (file.getName().contains("jws_app_shortcut_")) {
                         file.setExecutable(true, false);
                     }
                 }
@@ -198,7 +182,7 @@ public class SIPCommunicatorJWS
         }
 
         // Handle the "-open" argument from the javaws command line
-        Vector _args = new Vector();
+        Vector<String> _args = new Vector<>();
         for(int i = 0; i < args.length ; i++)
         {
             String arg = args[i];
@@ -223,6 +207,6 @@ public class SIPCommunicatorJWS
         }
 
         // launch the original app
-        SIPCommunicator.main((String[])_args.toArray(new String[_args.size()]));
+        SIPCommunicator.main(_args.toArray(new String[0]));
     }
 }

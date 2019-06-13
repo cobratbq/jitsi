@@ -132,33 +132,33 @@ public class TestOperationSetFileTransferImpl
         }
 
         // We will register new protocol provider for our tests
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.ICQ+")";
         try{
             serRefs = IcqSlickFixture.bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+                    ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol ICQ",
-            (serRefs != null) && (serRefs.length >  0));
+            (serRefs != null) && (serRefs.size() >  0));
 
         BundleContext bc = IcqSlickFixture.bc;
 
         //Keep the reference for later usage.
-        providerFactory = (ProtocolProviderFactory)
-            bc.getService(serRefs[0]);
+        providerFactory = bc.getService(serRefs.iterator().next());
 
         // fisrt install the account
         String USER_ID = IcqSlickFixture.testerAgent.getIcqUIN();
         final String PASSWORD = System.getProperty(
             IcqProtocolProviderSlick.TESTED_IMPL_PWD_PROP_NAME, null);
-        Hashtable<String,String> props = new Hashtable<String,String>();
+        Hashtable<String,String> props = new Hashtable<>();
         props.put("USER_ID", USER_ID);
         props.put("PASSWORD", PASSWORD);
         try
@@ -171,9 +171,9 @@ public class TestOperationSetFileTransferImpl
         String secondProviderID = IcqSlickFixture.testerAgent.getIcqUIN();
 
         //find the protocol provider service
-        ServiceReference[] icqProviderRefs
+        Collection<ServiceReference<ProtocolProviderService>> icqProviderRefs
             = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(&"
                 +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.ICQ+")"
                 +"("+ProtocolProviderFactory.USER_ID+"="
@@ -184,10 +184,9 @@ public class TestOperationSetFileTransferImpl
         assertNotNull("No Protocol Provider was found for ICQ UIN:"+ secondProviderID,
                      icqProviderRefs);
         assertTrue("No Protocol Provider was found for ICQ UIN:"+ secondProviderID,
-                     icqProviderRefs.length > 0);
+                     icqProviderRefs.size() > 0);
 
-        ProtocolProviderService provider2 =
-            (ProtocolProviderService)bc.getService(icqProviderRefs[0]);
+        ProtocolProviderService provider2 = bc.getService(icqProviderRefs.iterator().next());
 
         secondProviderAccount = provider2.getAccountID();
 

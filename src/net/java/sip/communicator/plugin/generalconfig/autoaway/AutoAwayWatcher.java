@@ -124,12 +124,11 @@ public class AutoAwayWatcher
         GeneralConfigPluginActivator.bundleContext.addServiceListener(this);
 
         // lets check current providers
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = GeneralConfigPluginActivator.bundleContext
-                .getServiceReferences(ProtocolProviderService.class.getName(),
-                    null);
+                .getServiceReferences(ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -143,12 +142,10 @@ public class AutoAwayWatcher
         // in case we found any
         if (protocolProviderRefs != null)
         {
-            for (int i = 0; i < protocolProviderRefs.length; i++)
+            for (ServiceReference<ProtocolProviderService> ref : protocolProviderRefs)
             {
-                ProtocolProviderService provider = (ProtocolProviderService)
-                    GeneralConfigPluginActivator.bundleContext
-                        .getService(protocolProviderRefs[i]);
-
+                ProtocolProviderService provider = GeneralConfigPluginActivator.bundleContext
+                    .getService(ref);
                 this.handleProviderAdded(provider);
             }
         }
@@ -163,12 +160,11 @@ public class AutoAwayWatcher
         GeneralConfigPluginActivator.bundleContext.removeServiceListener(this);
 
         // lets check current providers and remove registration state listener
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = GeneralConfigPluginActivator.bundleContext
-                .getServiceReferences(ProtocolProviderService.class.getName(),
-                    null);
+                .getServiceReferences(ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -182,12 +178,9 @@ public class AutoAwayWatcher
         // in case we found any
         if (protocolProviderRefs != null)
         {
-            for (int i = 0; i < protocolProviderRefs.length; i++)
+            for (ServiceReference<ProtocolProviderService> ref : protocolProviderRefs)
             {
-                ProtocolProviderService provider = (ProtocolProviderService)
-                    GeneralConfigPluginActivator.bundleContext
-                        .getService(protocolProviderRefs[i]);
-
+                ProtocolProviderService provider = GeneralConfigPluginActivator.bundleContext.getService(ref);
                 this.handleProviderRemoved(provider);
             }
         }

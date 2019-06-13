@@ -148,12 +148,9 @@ public class KeybindingChooserActivator
     {
         if(configService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                        ConfigurationService.class.getName());
-            configService
-                = (ConfigurationService) bundleContext.getService(
-                        confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configService = bundleContext.getService(confReference);
         }
         return configService;
     }
@@ -169,12 +166,9 @@ public class KeybindingChooserActivator
     {
         if(keybindingService == null)
         {
-            ServiceReference keybindingReference
-                = bundleContext.getServiceReference(
-                        KeybindingsService.class.getName());
-            keybindingService
-                = (KeybindingsService) bundleContext.getService(
-                        keybindingReference);
+            ServiceReference<KeybindingsService> keybindingReference
+                = bundleContext.getServiceReference(KeybindingsService.class);
+            keybindingService = bundleContext.getService(keybindingReference);
         }
         return keybindingService;
     }
@@ -190,12 +184,9 @@ public class KeybindingChooserActivator
     {
         if(globalShortcutService == null)
         {
-            ServiceReference globalShortcutReference
-                = bundleContext.getServiceReference(
-                        GlobalShortcutService.class.getName());
-            globalShortcutService
-                = (GlobalShortcutService) bundleContext.getService(
-                        globalShortcutReference);
+            ServiceReference<GlobalShortcutService> globalShortcutReference
+                = bundleContext.getServiceReference(GlobalShortcutService.class);
+            globalShortcutService = bundleContext.getService(globalShortcutReference);
         }
         return globalShortcutService;
     }

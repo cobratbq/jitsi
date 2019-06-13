@@ -18,6 +18,7 @@ package net.java.sip.communicator.impl.protocol.jabber.caps;
 
 import net.java.sip.communicator.util.*;
 import org.jitsi.service.configuration.*;
+import org.jivesoftware.smack.packet.IQ;
 import org.jivesoftware.smack.provider.*;
 import org.jivesoftware.smackx.caps.cache.*;
 import org.jivesoftware.smackx.disco.packet.*;
@@ -111,7 +112,7 @@ public class CapsConfigurationPersistence
 
         if((xml != null) && (xml.length() != 0))
         {
-            IQProvider discoverInfoProvider
+            IQProvider<IQ> discoverInfoProvider
                 = ProviderManager.getIQProvider(
                     "query",
                     "http://jabber.org/protocol/disco#info");

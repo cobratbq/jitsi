@@ -69,12 +69,12 @@ public class SelectScreenDialog
         /**
          * The combo box with the devices.
          */
-        private JComboBox deviceComboBox = null;
+        private JComboBox<MediaDevice> deviceComboBox = null;
 
         /**
          * The <tt>JList</tt> with the devices.
          */
-        private JList deviceList = null;
+        private JList<MediaDevice> deviceList = null;
 
         /**
          * The current component that displays the list with the devices.
@@ -96,14 +96,14 @@ public class SelectScreenDialog
         {
             if(!OSUtils.IS_WINDOWS)
             {
-                deviceComboBox = new JComboBox(desktopDevices.toArray());
+                deviceComboBox = new JComboBox<>(desktopDevices.toArray(new MediaDevice[0]));
                 deviceComboBox.setRenderer(new ComboRenderer());
                 devicePanel.add(deviceComboBox);
                 deviceComponent = deviceComboBox;
             }
             else
             {
-                deviceList = new JList(desktopDevices.toArray());
+                deviceList = new JList<>(desktopDevices.toArray(new MediaDevice[0]));
                 deviceList.setCellRenderer(new ComboRenderer());
                 JScrollPane listScroller = new JScrollPane(deviceList);
                 listScroller.setPreferredSize(new Dimension(200, 38));
@@ -419,7 +419,7 @@ public class SelectScreenDialog
         extends DefaultListCellRenderer
     {
         @Override
-        public Component getListCellRendererComponent(JList list, Object value,
+        public Component getListCellRendererComponent(JList<?> list, Object value,
             int index, boolean isSelected, boolean cellHasFocus)
         {
             super.getListCellRendererComponent(

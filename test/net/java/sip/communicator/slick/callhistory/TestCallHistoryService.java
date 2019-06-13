@@ -51,13 +51,13 @@ public class TestCallHistoryService
 
     public static MockOperationSetBasicTelephony mockBTelphonyOpSet = null;
 
-    private static ServiceReference callHistoryServiceRef = null;
+    private static ServiceReference<CallHistoryService> callHistoryServiceRef = null;
     public static CallHistoryService callHistoryService = null;
 
     /**
      * A reference to the registration of the first mock provider.
      */
-    public static ServiceRegistration mockPrServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockPrServiceRegistration = null;
 
     private static Date controlDate1 = null;
     private static Date controlDate2 = null;
@@ -110,7 +110,7 @@ public class TestCallHistoryService
 
        System.setProperty(MetaContactListService.PROVIDER_MASK_PROPERTY, "1");
 
-       Hashtable<String, String> mockProvProperties = new Hashtable<String, String>();
+       Hashtable<String, String> mockProvProperties = new Hashtable<>();
        mockProvProperties.put(ProtocolProviderFactory.PROTOCOL
                               , mockProvider.getProtocolName());
        mockProvProperties.put(MetaContactListService.PROVIDER_MASK_PROPERTY,
@@ -118,18 +118,16 @@ public class TestCallHistoryService
 
        mockPrServiceRegistration =
            CallHistoryServiceLick.bc.registerService(
-               ProtocolProviderService.class.getName(),
+               ProtocolProviderService.class,
                mockProvider,
                mockProvProperties);
        logger.debug("Registered a mock protocol provider! ");
 
        callHistoryServiceRef =
            CallHistoryServiceLick.bc.
-           getServiceReference(CallHistoryService.class.getName());
+           getServiceReference(CallHistoryService.class);
 
-       callHistoryService =
-            (CallHistoryService) CallHistoryServiceLick.bc.
-            getService(callHistoryServiceRef);
+       callHistoryService = CallHistoryServiceLick.bc.getService(callHistoryServiceRef);
 
         // Will genarate 4 Calls with 4 different participants
         participantAddresses.add("participant_address_1");

@@ -111,9 +111,9 @@ public class TestConfigurationServicePersistency extends TestCase
     {
         super(name);
         BundleContext context = ConfigurationServiceLick.bc;
-        ServiceReference ref = context.getServiceReference(
-            ConfigurationService.class.getName());
-        configurationService = (ConfigurationService)context.getService(ref);
+        ServiceReference<ConfigurationService> ref = context.getServiceReference(
+            ConfigurationService.class);
+        configurationService = context.getService(ref);
     }
 
     /**

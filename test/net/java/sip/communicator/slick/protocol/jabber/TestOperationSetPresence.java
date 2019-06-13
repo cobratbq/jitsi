@@ -267,7 +267,7 @@ public class TestOperationSetPresence
     /**
      * Used by methods testing state transiotions
      *
-     * @param newStatus the JabberStatusEnum field corresponding to the status
+     * @param newStatusName the JabberStatusEnum field corresponding to the status
      * that we'd like the opeation set to enter.
      *
      * @throws Exception in case changing the state causes an exception
@@ -723,9 +723,9 @@ public class TestOperationSetPresence
         implements ProviderPresenceStatusListener
     {
         public ArrayList<ProviderPresenceStatusChangeEvent> collectedPresEvents
-            = new ArrayList<ProviderPresenceStatusChangeEvent>();
+            = new ArrayList<>();
         public ArrayList<PropertyChangeEvent> collectedStatMsgEvents
-            = new ArrayList<PropertyChangeEvent>();
+            = new ArrayList<>();
 
         public void providerStatusChanged(ProviderPresenceStatusChangeEvent evt)
         {
@@ -792,21 +792,21 @@ public class TestOperationSetPresence
          * Collects all SubscriptionEvent generated.
          */
         public ArrayList<SubscriptionEvent> collectedSubscriptionEvents
-            = new ArrayList<SubscriptionEvent>();
+            = new ArrayList<>();
 
         /**
          * Collects all SubscriptionMovedEvent generated.
          */
         public ArrayList<SubscriptionMovedEvent>
             collectedSubscriptionMovedEvents
-            = new ArrayList<SubscriptionMovedEvent>();
+            = new ArrayList<>();
 
         /**
          * Collects all ContactPropertyChangeEvent generated.
          */
         public ArrayList<ContactPropertyChangeEvent>
             collectedContactPropertyChangeEvents
-            = new ArrayList<ContactPropertyChangeEvent>();
+            = new ArrayList<>();
 
         /**
          * Blocks until at least one SubscriptionEvent is received or until
@@ -1030,7 +1030,7 @@ public class TestOperationSetPresence
     public static void waitForEvent(
             Object eventCollector,
             long waitFor,
-            List collectedEvents)
+            List<? extends EventObject> collectedEvents)
     {
         long startTime = System.currentTimeMillis();
         long elapsedTime = 0;

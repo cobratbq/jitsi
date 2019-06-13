@@ -132,20 +132,17 @@ public class ProvisioningActivator
             return;
         }
 
-        ServiceReference serviceReferences[] = bundleContext.
-            getServiceReferences(ProvisioningDiscoveryService.class.getName(),
-                    null);
+        Collection<ServiceReference<ProvisioningDiscoveryService>> serviceReferences = bundleContext.
+            getServiceReferences(ProvisioningDiscoveryService.class, null);
 
         /* search the provisioning discovery implementation that correspond to
          * the method name
          */
         if(serviceReferences != null)
         {
-            for(ServiceReference ref : serviceReferences)
+            for(ServiceReference<ProvisioningDiscoveryService> ref : serviceReferences)
             {
-                ProvisioningDiscoveryService provdisc =
-                    (ProvisioningDiscoveryService)bundleContext.getService(ref);
-
+                ProvisioningDiscoveryService provdisc = bundleContext.getService(ref);
                 if(provdisc.getMethodName().equals(method))
                 {
                     /* may block for sometime depending on the method used */
@@ -187,12 +184,9 @@ public class ProvisioningActivator
     {
         if (uiService == null)
         {
-            ServiceReference uiReference =
-                bundleContext.getServiceReference(UIService.class.getName());
-
-            uiService =
-                (UIService) bundleContext
-                    .getService(uiReference);
+            ServiceReference<UIService> uiReference
+                    = bundleContext.getServiceReference(UIService.class);
+            uiService = bundleContext.getService(uiReference);
         }
 
         return uiService;
@@ -209,13 +203,9 @@ public class ProvisioningActivator
     {
         if (resourceService == null)
         {
-            ServiceReference resourceReference
-                = bundleContext.getServiceReference(
-                    ResourceManagementService.class.getName());
-
-            resourceService =
-                (ResourceManagementService) bundleContext
-                    .getService(resourceReference);
+            ServiceReference<ResourceManagementService> resourceReference
+                = bundleContext.getServiceReference(ResourceManagementService.class);
+            resourceService = bundleContext.getService(resourceReference);
         }
 
         return resourceService;
@@ -232,11 +222,9 @@ public class ProvisioningActivator
     {
         if (configurationService == null)
         {
-            ServiceReference confReference
-                = bundleContext.getServiceReference(
-                    ConfigurationService.class.getName());
-            configurationService
-                = (ConfigurationService)bundleContext.getService(confReference);
+            ServiceReference<ConfigurationService> confReference
+                = bundleContext.getServiceReference(ConfigurationService.class);
+            configurationService = bundleContext.getService(confReference);
         }
         return configurationService;
     }
@@ -253,12 +241,9 @@ public class ProvisioningActivator
     {
         if (credentialsService == null)
         {
-            ServiceReference credentialsReference
-                = bundleContext.getServiceReference(
-                    CredentialsStorageService.class.getName());
-            credentialsService
-                = (CredentialsStorageService) bundleContext
-                                        .getService(credentialsReference);
+            ServiceReference<CredentialsStorageService> credentialsReference
+                = bundleContext.getServiceReference(CredentialsStorageService.class);
+            credentialsService = bundleContext.getService(credentialsReference);
         }
         return credentialsService;
     }
@@ -275,12 +260,9 @@ public class ProvisioningActivator
     {
         if (netaddrService == null)
         {
-            ServiceReference netaddrReference
-                = bundleContext.getServiceReference(
-                    NetworkAddressManagerService.class.getName());
-            netaddrService
-                = (NetworkAddressManagerService) bundleContext
-                                        .getService(netaddrReference);
+            ServiceReference<NetworkAddressManagerService> netaddrReference
+                = bundleContext.getServiceReference(NetworkAddressManagerService.class);
+            netaddrService = bundleContext.getService(netaddrReference);
         }
         return netaddrService;
     }

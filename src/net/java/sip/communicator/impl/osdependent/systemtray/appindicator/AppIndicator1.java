@@ -112,7 +112,7 @@ interface AppIndicator1 extends Library
         public Pointer app_indicator_reserved_6;
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList(
                 "parent_class",
                 "new_icon",
@@ -143,7 +143,7 @@ interface AppIndicator1 extends Library
         public Pointer priv;
 
         @Override
-        protected List getFieldOrder()
+        protected List<String> getFieldOrder()
         {
             return Arrays.asList("parent", "priv");
         }

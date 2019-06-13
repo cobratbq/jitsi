@@ -41,7 +41,7 @@ public class FlickrActivator
     /**
      * Flickr service registration.
      */
-    private ServiceRegistration flickrServReg = null;
+    private ServiceRegistration<ReplacementService> flickrServReg = null;
 
     /**
      * The source implementation reference.
@@ -57,14 +57,11 @@ public class FlickrActivator
      */
     public void start(BundleContext context) throws Exception
     {
-        Hashtable<String, String> hashtable = new Hashtable<String, String>();
+        Hashtable<String, String> hashtable = new Hashtable<>();
         hashtable.put(ReplacementService.SOURCE_NAME,
             ReplacementServiceFlickrImpl.FLICKR_CONFIG_LABEL);
         flickrSource = new ReplacementServiceFlickrImpl();
-
-        flickrServReg =
-            context.registerService(ReplacementService.class.getName(),
-                flickrSource, hashtable);
+        flickrServReg = context.registerService(ReplacementService.class, flickrSource, hashtable);
 
         logger.info("Flickr source implementation [STARTED].");
     }

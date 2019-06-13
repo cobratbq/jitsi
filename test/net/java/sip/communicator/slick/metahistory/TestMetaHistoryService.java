@@ -67,12 +67,12 @@ public class TestMetaHistoryService
     public static MockBasicInstantMessaging mockBImOpSet = null;
     public static MockOperationSetBasicTelephony mockBTelphonyOpSet = null;
 
-    private static ServiceReference metaHistoryServiceRef = null;
+    private static ServiceReference<MetaHistoryService> metaHistoryServiceRef = null;
     public static MetaHistoryService metaHistoryService = null;
 
     private static MockContact testContact = null;
 
-    private static ServiceReference metaCLref = null;
+    private static ServiceReference<MetaContactListService> metaCLref = null;
     private static MetaContactListService metaClService = null;
 
     private static MetaContact testMetaContact = null;
@@ -80,7 +80,7 @@ public class TestMetaHistoryService
     /**
      * A reference to the registration of the first mock provider.
      */
-    public static ServiceRegistration mockPrServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockPrServiceRegistration = null;
 
     private static Message[] messagesToSend = null;
 
@@ -164,11 +164,9 @@ public class TestMetaHistoryService
 
         metaHistoryServiceRef =
             MetaHistoryServiceLick.bc.
-            getServiceReference(MetaHistoryService.class.getName());
+            getServiceReference(MetaHistoryService.class);
 
-        metaHistoryService =
-            (MetaHistoryService)MetaHistoryServiceLick.bc.
-                getService(metaHistoryServiceRef);
+        metaHistoryService = MetaHistoryServiceLick.bc.getService(metaHistoryServiceRef);
 
         // fill in a contact to comunicate with
         MockContactGroup root =
@@ -178,14 +176,13 @@ public class TestMetaHistoryService
         root.addContact(testContact);
 
         metaCLref = MetaHistoryServiceLick.bc.getServiceReference(
-            MetaContactListService.class.getName());
+            MetaContactListService.class);
 
-        metaClService =
-            (MetaContactListService)MetaHistoryServiceLick.bc.getService(metaCLref);
+        metaClService = MetaHistoryServiceLick.bc.getService(metaCLref);
 
        System.setProperty(MetaContactListService.PROVIDER_MASK_PROPERTY, "1");
 
-       Hashtable<String, String> mockProvProperties = new Hashtable<String, String>();
+       Hashtable<String, String> mockProvProperties = new Hashtable<>();
        mockProvProperties.put(ProtocolProviderFactory.PROTOCOL
                               , mockProvider.getProtocolName());
        mockProvProperties.put(MetaContactListService.PROVIDER_MASK_PROPERTY,
@@ -193,7 +190,7 @@ public class TestMetaHistoryService
 
        mockPrServiceRegistration =
            MetaHistoryServiceLick.bc.registerService(
-               ProtocolProviderService.class.getName(),
+               ProtocolProviderService.class,
                mockProvider,
                mockProvProperties);
        logger.debug("Registered a mock protocol provider! ");

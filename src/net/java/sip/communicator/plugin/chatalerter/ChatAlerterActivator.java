@@ -118,12 +118,10 @@ public class ChatAlerterActivator
         // start listening for newly register or removed protocol providers
         bc.addServiceListener(this);
 
-        ServiceReference[] protocolProviderRefs;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
-            protocolProviderRefs = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
-                null);
+            protocolProviderRefs = bc.getServiceReferences(ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -139,14 +137,11 @@ public class ChatAlerterActivator
         {
             if (logger.isDebugEnabled())
                 logger.debug("Found "
-                         + protocolProviderRefs.length
+                         + protocolProviderRefs.size()
                          + " already installed providers.");
-            for (ServiceReference protocolProviderRef : protocolProviderRefs)
+            for (ServiceReference<ProtocolProviderService> protocolProviderRef : protocolProviderRefs)
             {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService)
-                        bc.getService(protocolProviderRef);
-
+                ProtocolProviderService provider = bc.getService(protocolProviderRef);
                 this.handleProviderAdded(provider);
             }
         }
@@ -177,12 +172,11 @@ public class ChatAlerterActivator
         // start listening for newly register or removed protocol providers
         bc.removeServiceListener(this);
 
-        ServiceReference[] protocolProviderRefs;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
             protocolProviderRefs = bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
-                null);
+                ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
@@ -196,12 +190,9 @@ public class ChatAlerterActivator
         // in case we found any
         if (protocolProviderRefs != null)
         {
-            for (ServiceReference protocolProviderRef : protocolProviderRefs)
+            for (ServiceReference<ProtocolProviderService> protocolProviderRef : protocolProviderRefs)
             {
-                ProtocolProviderService provider
-                    = (ProtocolProviderService)
-                        bc.getService(protocolProviderRef);
-
+                ProtocolProviderService provider = bc.getService(protocolProviderRef);
                 this.handleProviderRemoved(provider);
             }
         }
@@ -494,11 +485,11 @@ public class ChatAlerterActivator
     {
         if(uiService == null)
         {
-            ServiceReference serviceRef = bundleContext
-                .getServiceReference(UIService.class.getName());
+            ServiceReference<UIService> serviceRef = bundleContext
+                .getServiceReference(UIService.class);
 
             if (serviceRef != null)
-                uiService = (UIService) bundleContext.getService(serviceRef);
+                uiService = bundleContext.getService(serviceRef);
         }
 
         return uiService;

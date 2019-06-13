@@ -51,39 +51,31 @@ public class KnownFingerprintsTableModel
 
     public static final int FINGERPRINT_INDEX = 2;
 
-    public final LinkedHashMap<Contact, List<String>> allContactsFingerprints =
-        new LinkedHashMap<Contact, List<String>>();
+    public final LinkedHashMap<Contact, List<String>> allContactsFingerprints = new LinkedHashMap<>();
 
     public KnownFingerprintsTableModel()
     {
         // Get the protocolproviders
-        ServiceReference[] protocolProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> protocolProviderRefs;
         try
         {
-            protocolProviderRefs =
-                OtrActivator.bundleContext
-                    .getServiceReferences(
-                        ProtocolProviderService.class.getName(), null);
+            protocolProviderRefs = OtrActivator.bundleContext.getServiceReferences(
+                        ProtocolProviderService.class, null);
         }
         catch (InvalidSyntaxException ex)
         {
             return;
         }
 
-        if (protocolProviderRefs == null
-            || protocolProviderRefs.length < 1)
+        if (protocolProviderRefs == null || protocolProviderRefs.size() < 1)
             return;
 
         // Populate contacts.
-        for (int i = 0; i < protocolProviderRefs.length; i++)
+        for (ServiceReference<ProtocolProviderService> ref : protocolProviderRefs)
         {
-            ProtocolProviderService provider
-                = (ProtocolProviderService) OtrActivator
-                    .bundleContext
-                        .getService(protocolProviderRefs[i]);
+            ProtocolProviderService provider = OtrActivator.bundleContext.getService(ref);
 
-            Iterator<MetaContact> metaContacts =
-                OtrActivator.getContactListService()
+            Iterator<MetaContact> metaContacts = OtrActivator.getContactListService()
                     .findAllMetaContactsForProvider(provider);
             while (metaContacts.hasNext())
             {

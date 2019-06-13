@@ -42,7 +42,7 @@ public class JabberSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * first testing account.
      */
-    public ServiceReference provider1ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider1ServiceRef = null;
 
     /**
       * The protocol provider corresponding to our first testing account.
@@ -58,7 +58,7 @@ public class JabberSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * second testing account.
      */
-    public ServiceReference provider2ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider2ServiceRef = null;
 
     /**
      * The protocol provider corresponding to our first testing account.
@@ -74,7 +74,7 @@ public class JabberSlickFixture
      * An osgi service reference for the protocol provider corresponding to our
      * third testing account.
      */
-    public ServiceReference provider3ServiceRef = null;
+    public ServiceReference<ProtocolProviderService> provider3ServiceRef = null;
 
     /**
       * The protocol provider corresponding to our third testing account.
@@ -133,24 +133,24 @@ public class JabberSlickFixture
         throws Exception
     {
         // first obtain a reference to the provider factory
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
         String osgiFilter = "(" + ProtocolProviderFactory.PROTOCOL
                             + "="+ProtocolNames.JABBER+")";
         try{
-            serRefs = bc.getServiceReferences(
-                    ProtocolProviderFactory.class.getName(), osgiFilter);
+            serRefs = bc.getServiceReferences(ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             //this really shouldhn't occur as the filter expression is static.
             fail(osgiFilter + " is not a valid osgi filter");
+            return;
         }
 
         assertTrue(
             "Failed to find a provider factory service for protocol Jabber",
-            (serRefs != null) && (serRefs.length >  0));
+            (serRefs != null) && !serRefs.isEmpty());
 
         //Keep the reference for later usage.
-        providerFactory = (ProtocolProviderFactory)bc.getService(serRefs[0]);
+        providerFactory = bc.getService(serRefs.iterator().next());
 
         userID1
             = System.getProperty(
@@ -172,9 +172,9 @@ public class JabberSlickFixture
                 JabberProtocolProviderServiceLick.CHAT_ROOM_NAME);
 
         //find the protocol providers exported for the three accounts
-        ServiceReference[] jabberProvider1Refs
+        Collection<ServiceReference<ProtocolProviderService>> jabberProvider1Refs
         = bc.getServiceReferences(
-            ProtocolProviderService.class.getName(),
+            ProtocolProviderService.class,
             "(&"
             +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.JABBER+")"
             +"("+ProtocolProviderFactory.USER_ID+"="
@@ -185,11 +185,11 @@ public class JabberSlickFixture
         assertNotNull("No Protocol Provider was found for Jabber account1:"
                       + userID1, jabberProvider1Refs);
         assertTrue("No Protocol Provider was found for Jabber account1:"+
-            userID1, jabberProvider1Refs.length > 0);
+            userID1, jabberProvider1Refs.size() > 0);
 
-        ServiceReference[] jabberProvider2Refs
+        Collection<ServiceReference<ProtocolProviderService>> jabberProvider2Refs
         = bc.getServiceReferences(
-            ProtocolProviderService.class.getName(),
+            ProtocolProviderService.class,
             "(&"
             +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.JABBER+")"
             +"("+ProtocolProviderFactory.USER_ID+"="
@@ -200,11 +200,11 @@ public class JabberSlickFixture
         assertNotNull("No Protocol Provider was found for Jabber account2:"
                       + userID2, jabberProvider2Refs);
         assertTrue("No Protocol Provider was found for Jabber account2:"+
-            userID2, jabberProvider2Refs.length > 0);
+            userID2, jabberProvider2Refs.size() > 0);
 
-        ServiceReference[] jabberProvider3Refs
+        Collection<ServiceReference<ProtocolProviderService>> jabberProvider3Refs
         = bc.getServiceReferences(
-            ProtocolProviderService.class.getName(),
+            ProtocolProviderService.class,
             "(&"
             +"("+ProtocolProviderFactory.PROTOCOL+"="+ProtocolNames.JABBER+")"
             +"("+ProtocolProviderFactory.USER_ID+"="
@@ -215,17 +215,17 @@ public class JabberSlickFixture
         assertNotNull("No Protocol Provider was found for Jabber account3:"
                       + userID3, jabberProvider3Refs);
         assertTrue("No Protocol Provider was found for Jabber account3:"+
-            userID3, jabberProvider3Refs.length > 0);
+            userID3, jabberProvider3Refs.size() > 0);
 
         //save the service for other tests to use.
-        provider1ServiceRef = jabberProvider1Refs[0];
-        provider1 = (ProtocolProviderService)bc.getService(provider1ServiceRef);
+        provider1ServiceRef = jabberProvider1Refs.iterator().next();
+        provider1 = bc.getService(provider1ServiceRef);
 
-        provider2ServiceRef = jabberProvider2Refs[0];
-        provider2 = (ProtocolProviderService)bc.getService(provider2ServiceRef);
+        provider2ServiceRef = jabberProvider2Refs.iterator().next();
+        provider2 = bc.getService(provider2ServiceRef);
 
-        provider3ServiceRef = jabberProvider3Refs[0];
-        provider3 = (ProtocolProviderService)bc.getService(provider3ServiceRef);
+        provider3ServiceRef = jabberProvider3Refs.iterator().next();
+        provider3 = bc.getService(provider3ServiceRef);
     }
 
     /**
@@ -249,14 +249,13 @@ public class JabberSlickFixture
      * @return the Bundle that has registered the protocol provider service
      * we're testing in the slick.
      */
-    public Bundle findProtocolProviderBundle(
-        ProtocolProviderService provider)
+    public Bundle findProtocolProviderBundle(ProtocolProviderService provider)
     {
         Bundle[] bundles = bc.getBundles();
 
         for (int i = 0; i < bundles.length; i++)
         {
-            ServiceReference[] registeredServices
+            ServiceReference<?>[] registeredServices
                 = bundles[i].getRegisteredServices();
 
             if (registeredServices == null)

@@ -656,14 +656,14 @@ public class Messenger
 
         bundleContext.addServiceListener(serviceListener);
 
-        ServiceReference[] serviceReferences
+        Collection<ServiceReference<ProtocolProviderService>> serviceReferences
             = bundleContext.getServiceReferences(
-                    ProtocolProviderService.class.getName(),
+                    ProtocolProviderService.class,
                     null);
 
-        if ((serviceReferences != null) && (serviceReferences.length != 0))
+        if ((serviceReferences != null) && (serviceReferences.size() != 0))
         {
-            for (ServiceReference serviceReference : serviceReferences)
+            for (ServiceReference<ProtocolProviderService> serviceReference : serviceReferences)
             {
                 serviceListener.serviceChanged(
                         new ServiceEvent(

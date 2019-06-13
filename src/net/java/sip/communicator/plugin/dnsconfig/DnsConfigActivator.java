@@ -43,7 +43,7 @@ public class DnsConfigActivator
 
     static BundleContext bundleContext;
     private static FileAccessService fileAccessService;
-    private ServiceRegistration configForm = null;
+    private ServiceRegistration<ConfigurationForm> configForm = null;
 
     /**
      * The <tt>ConfigurationService</tt> registered in {@link #bundleContext}
@@ -61,7 +61,7 @@ public class DnsConfigActivator
         throws Exception
     {
         bundleContext = bc;
-        Dictionary<String, String> properties = new Hashtable<String, String>();
+        Dictionary<String, String> properties = new Hashtable<>();
         properties.put(ConfigurationForm.FORM_TYPE,
                        ConfigurationForm.ADVANCED_TYPE);
 
@@ -69,7 +69,7 @@ public class DnsConfigActivator
         if(!getConfigurationService().getBoolean(DISABLED_PROP, false))
         {
             configForm = bc.registerService(
-                ConfigurationForm.class.getName(),
+                ConfigurationForm.class,
                 new LazyConfigurationForm(
                     DnsContainerPanel.class.getName(),
                     getClass().getClassLoader(),

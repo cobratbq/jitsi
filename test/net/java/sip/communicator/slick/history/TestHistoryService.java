@@ -35,7 +35,7 @@ public class TestHistoryService extends TestCase {
      */
     private HistoryService historyService = null;
 
-    private ServiceReference historyServiceRef = null;
+    private ServiceReference<HistoryService> historyServiceRef = null;
 
     private History history = null;
 
@@ -66,16 +66,13 @@ public class TestHistoryService extends TestCase {
     {
         BundleContext context = HistoryServiceLick.bc;
 
-        historyServiceRef = context.getServiceReference(HistoryService.class
-                .getName());
-        this.historyService = (HistoryService) context
-                .getService(historyServiceRef);
+        historyServiceRef = context.getServiceReference(HistoryService.class);
+        this.historyService = context.getService(historyServiceRef);
 
         HistoryID testID = HistoryID.createFromRawID(new String[] { "test",
                 "alltests" });
 
-        this.history = this.historyService.createHistory(testID,
-                    recordStructure);
+        this.history = this.historyService.createHistory(testID, recordStructure);
     }
 
     @Override

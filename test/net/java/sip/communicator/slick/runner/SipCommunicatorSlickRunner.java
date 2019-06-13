@@ -254,7 +254,7 @@ public class SipCommunicatorSlickRunner
 
         try
         {
-            ServiceReference[] srl
+            ServiceReference<?>[] srl
                 = bc.getServiceReferences(
                         (String) null,
                         "(service.pid=" + id + ")");

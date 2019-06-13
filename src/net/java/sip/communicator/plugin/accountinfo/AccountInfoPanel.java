@@ -61,7 +61,7 @@ public class AccountInfoPanel
     /**
      * Combo box that is used for switching between accounts.
      */
-    private final JComboBox accountsComboBox;
+    private final JComboBox<AccountDetailsPanel> accountsComboBox;
 
     /**
      * Instances of the <tt>AccountDetailsPanel</tt> are created for every
@@ -69,8 +69,7 @@ public class AccountInfoPanel
      * this map.
      */
     private final Map<AccountID, AccountDetailsPanel>
-        accountsTable =
-            new HashMap<AccountID, AccountDetailsPanel>();
+        accountsTable = new HashMap<>();
 
     /**
      * The parent dialog.
@@ -88,7 +87,7 @@ public class AccountInfoPanel
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        accountsComboBox = new JComboBox();
+        accountsComboBox = new JComboBox<>();
         accountsComboBox.setOpaque(false);
         accountsComboBox.addItemListener(new ItemListener()
         {
@@ -147,15 +146,13 @@ public class AccountInfoPanel
             ArrayList<AccountID> accountsList =
                 providerFactory.getRegisteredAccounts();
 
-            ServiceReference serRef;
+            ServiceReference<ProtocolProviderService> serRef;
             ProtocolProviderService protocolProvider;
 
             for (AccountID accountID : accountsList)
             {
                 serRef = providerFactory.getProviderForAccount(accountID);
-
-                protocolProvider = (ProtocolProviderService)AccountInfoActivator
-                    .bundleContext.getService(serRef);
+                protocolProvider = AccountInfoActivator.bundleContext.getService(serRef);
 
                 currentDetailsPanel = new AccountDetailsPanel(
                     dialog,
@@ -198,7 +195,7 @@ public class AccountInfoPanel
 
         @Override
         public Component getListCellRendererComponent(
-            JList list, Object value, int index,
+            JList<?> list, Object value, int index,
                 boolean isSelected, boolean hasFocus)
         {
             JLabel renderer
@@ -345,7 +342,7 @@ public class AccountInfoPanel
      *
      * @return The combo box that switches between account detail panels.
      */
-    public JComboBox getAccountsComboBox()
+    public JComboBox<AccountDetailsPanel> getAccountsComboBox()
     {
         return accountsComboBox;
     }

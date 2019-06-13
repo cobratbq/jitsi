@@ -226,11 +226,10 @@ public class AimAccountRegistrationWizard
             AccountID accountID
                 = providerFactory.installAccount(user, accountProperties);
 
-            ServiceReference serRef
+            ServiceReference<ProtocolProviderService> serRef
                 = providerFactory.getProviderForAccount(accountID);
 
-            protocolProvider
-                = (ProtocolProviderService) AimAccRegWizzActivator.bundleContext
+            protocolProvider = AimAccRegWizzActivator.bundleContext
                     .getService(serRef);
         }
         catch (IllegalStateException exc)

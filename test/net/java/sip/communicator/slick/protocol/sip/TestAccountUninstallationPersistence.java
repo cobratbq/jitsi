@@ -23,6 +23,8 @@ import net.java.sip.communicator.service.protocol.*;
 import org.jitsi.service.configuration.*;
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Contains tests verifying persistence of account uninstallation. In other
  * words we try to make sure that once uninstalled an account remains
@@ -82,31 +84,32 @@ public class TestAccountUninstallationPersistence
 
 
         //verify that the provider is not reinstalled
-        ServiceReference[] sipProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> sipProviderRefs;
         try
         {
             sipProviderRefs = SipSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                     + "=" +ProtocolNames.SIP + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't retrieve a service
         assertTrue("A SIP Protocol Provider Service was still regged as an "
                       +"osgi service after it was explicitly uninstalled"
-                      ,sipProviderRefs == null || sipProviderRefs.length == 0);
+                      ,sipProviderRefs == null || sipProviderRefs.size() == 0);
 
         //and a nasty hack at the end - delete the configuration file so that
         //we get a fresh start on next run.
-        ServiceReference confReference
+        ServiceReference<ConfigurationService> confReference
             = SipSlickFixture.bc.getServiceReference(
-                ConfigurationService.class.getName());
+                ConfigurationService.class);
         ConfigurationService configurationService
-            = (ConfigurationService) SipSlickFixture.bc.getService(confReference);
+            = SipSlickFixture.bc.getService(confReference);
 
         configurationService.purgeStoredConfiguration();
     }

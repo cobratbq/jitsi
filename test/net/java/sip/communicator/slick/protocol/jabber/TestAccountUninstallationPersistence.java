@@ -23,6 +23,8 @@ import net.java.sip.communicator.service.protocol.*;
 import org.jitsi.service.configuration.*;
 import org.osgi.framework.*;
 
+import java.util.Collection;
+
 /**
  * Contains tests verifying persistence of account uninstallation. In other
  * words we try to make sure that once uninstalled an account remains
@@ -82,31 +84,32 @@ public class TestAccountUninstallationPersistence
 
 
         //verify that the provider is not reinstalled
-        ServiceReference[] jabberProviderRefs = null;
+        Collection<ServiceReference<ProtocolProviderService>> jabberProviderRefs;
         try
         {
             jabberProviderRefs = JabberSlickFixture.bc.getServiceReferences(
-                ProtocolProviderService.class.getName(),
+                ProtocolProviderService.class,
                 "(" + ProtocolProviderFactory.PROTOCOL
                     + "=" +ProtocolNames.JABBER + ")");
         }
         catch (InvalidSyntaxException ex)
         {
             fail("We apparently got our filter wrong " + ex.getMessage());
+            return;
         }
 
         //make sure we didn't retrieve a service
         assertTrue("A Jabber Protocol Provider Service was still regged as an "
                       +"osgi service after it was explicitly uninstalled"
-                      ,jabberProviderRefs == null || jabberProviderRefs.length == 0);
+                      ,jabberProviderRefs == null || jabberProviderRefs.size() == 0);
 
         //and a nasty hack at the end - delete the configuration file so that
         //we get a fresh start on next run.
-        ServiceReference confReference
+        ServiceReference<ConfigurationService> confReference
             = JabberSlickFixture.bc.getServiceReference(
-                ConfigurationService.class.getName());
+                ConfigurationService.class);
         ConfigurationService configurationService
-            = (ConfigurationService) JabberSlickFixture.bc.getService(confReference);
+            = JabberSlickFixture.bc.getService(confReference);
 
         configurationService.purgeStoredConfiguration();
     }

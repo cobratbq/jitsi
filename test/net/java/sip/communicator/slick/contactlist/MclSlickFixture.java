@@ -59,7 +59,7 @@ public class MclSlickFixture
     /**
      * A reference to the registration of the first mock provider.
      */
-    public static ServiceRegistration mockPrServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockPrServiceRegistration = null;
 
     /** The provider we will be using to replace mockProvider*/
     public static MockProvider replacementMockPr = null;
@@ -91,10 +91,10 @@ public class MclSlickFixture
     public static MetaContactGroup metaP1Grp1 = null;
 
     /** The presence operation set for the mockP1 provider */
-    public static MockPersistentPresenceOperationSet mockPresOpSetP1 = null;
+    public static MockPersistentPresenceOperationSet mockPresOpSetP1;
 
     /** A reference to the service registration of mock p1 */
-    public static ServiceRegistration mockP1ServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockP1ServiceRegistration = null;
 
     /** The provider we will be using to replace mockP1*/
     public static MockProvider replacementMockP1 = null;
@@ -120,7 +120,7 @@ public class MclSlickFixture
     public static MockPersistentPresenceOperationSet mockPresOpSetP2 = null;
 
     /** A reference to the service registration of the mockP2 provider. */
-    public static ServiceRegistration mockP2ServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockP2ServiceRegistration = null;
 
     /** The provider we will be using to replace mockP2*/
     public static MockProvider replacementMockP2 = null;
@@ -162,11 +162,9 @@ public class MclSlickFixture
     public void setUp()
     {
         //find a reference to the meta contaact list service.
-        ServiceReference ref = bundleContext.getServiceReference(
-            MetaContactListService.class.getName());
-        metaClService
-            = (MetaContactListService)bundleContext.getService(ref);
-
+        ServiceReference<MetaContactListService> ref = bundleContext.getServiceReference(
+            MetaContactListService.class);
+        metaClService = bundleContext.getService(ref);
     }
 
     /**

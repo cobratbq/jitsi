@@ -105,7 +105,7 @@ public class IcqAccRegWizzActivator
      */
     public static ProtocolProviderFactory getIcqProtocolProviderFactory() {
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs;
 
         String osgiFilter = "("
             + ProtocolProviderFactory.PROTOCOL
@@ -113,13 +113,14 @@ public class IcqAccRegWizzActivator
 
         try {
             serRefs = bundleContext.getServiceReferences(
-                ProtocolProviderFactory.class.getName(), osgiFilter);
+                ProtocolProviderFactory.class, osgiFilter);
         }
         catch (InvalidSyntaxException ex){
             logger.error("IcqAccRegWizzActivator : " + ex);
+            throw new IllegalStateException("Failed to acquire ProtocolProviderFactory.", ex);
         }
 
-        return (ProtocolProviderFactory) bundleContext.getService(serRefs[0]);
+        return bundleContext.getService(serRefs.iterator().next());
     }
 
     /**
@@ -130,11 +131,10 @@ public class IcqAccRegWizzActivator
      */
     public static BrowserLauncherService getBrowserLauncher() {
         if (browserLauncherService == null) {
-            ServiceReference serviceReference = bundleContext
-                .getServiceReference(BrowserLauncherService.class.getName());
+            ServiceReference<BrowserLauncherService> serviceReference = bundleContext
+                .getServiceReference(BrowserLauncherService.class);
 
-            browserLauncherService = (BrowserLauncherService) bundleContext
-                .getService(serviceReference);
+            browserLauncherService = bundleContext.getService(serviceReference);
         }
 
         return browserLauncherService;

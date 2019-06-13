@@ -74,7 +74,7 @@ public class AdvancedConfigActivator
     /**
      * The OSGi service registration of the panel.
      */
-    private static ServiceRegistration panelRegistration;
+    private static ServiceRegistration<?> panelRegistration;
 
     /**
      * Starts this bundle.

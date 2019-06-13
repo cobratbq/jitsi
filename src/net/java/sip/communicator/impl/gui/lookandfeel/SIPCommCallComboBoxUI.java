@@ -50,7 +50,7 @@ public class SIPCommCallComboBoxUI extends SIPCommComboBoxUI
     @Override
     protected ComboPopup createPopup()
     {
-        SIPCommComboPopup popup = new SIPCommComboPopup( comboBox );
+        SIPCommComboPopup popup = new SIPCommComboPopup(comboBox);
         popup.getAccessibleContext().setAccessibleParent(comboBox);
 
         return popup;
@@ -60,7 +60,7 @@ public class SIPCommCallComboBoxUI extends SIPCommComboBoxUI
     {
         private static final long serialVersionUID = 0L;
 
-        public SIPCommComboPopup(JComboBox combo)
+        public SIPCommComboPopup(JComboBox<?> combo)
         {
             super(combo);
         }

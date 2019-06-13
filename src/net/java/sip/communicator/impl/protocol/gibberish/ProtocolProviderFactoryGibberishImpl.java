@@ -124,7 +124,7 @@ public class ProtocolProviderFactoryGibberishImpl
         if(!registeredAccounts.containsKey(accountID))
             return;
 
-        ServiceRegistration registration = registeredAccounts.get(accountID);
+        ServiceRegistration<ProtocolProviderService> registration = registeredAccounts.get(accountID);
 
         // kill the service
         if (registration != null)
@@ -143,7 +143,7 @@ public class ProtocolProviderFactoryGibberishImpl
         // and check for a password.
         this.storeAccount(accountID);
 
-        Hashtable<String, String> properties = new Hashtable<String, String>();
+        Hashtable<String, String> properties = new Hashtable<>();
         properties.put(PROTOCOL, ProtocolNames.GIBBERISH);
         properties.put(USER_ID, accountID.getUserID());
 
@@ -156,7 +156,7 @@ public class ProtocolProviderFactoryGibberishImpl
 
         registration
             = context.registerService(
-                        ProtocolProviderService.class.getName(),
+                        ProtocolProviderService.class,
                         protocolProvider,
                         properties);
 

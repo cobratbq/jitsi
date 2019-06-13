@@ -33,14 +33,13 @@ import net.java.sip.communicator.util.*;
  * @author Lyubomir Marinov
  */
 public class ContactListModel
-    extends AbstractListModel
+    extends AbstractListModel<Object>
 {
     private final MetaContactListService contactList;
 
     private final MetaContactGroup rootGroup;
 
-    private final List<MetaContactGroup> closedGroups
-        = new Vector<MetaContactGroup>();
+    private final List<MetaContactGroup> closedGroups = new Vector<>();
 
     private boolean showOffline = true;
 

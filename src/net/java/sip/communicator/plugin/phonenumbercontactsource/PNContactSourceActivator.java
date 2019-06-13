@@ -131,14 +131,13 @@ public class PNContactSourceActivator
         bundleContext.addServiceListener(
             new ProtocolProviderServiceRegListener());
 
-        ServiceReference[] serRefs = null;
+        Collection<ServiceReference<ProtocolProviderFactory>> serRefs = null;
         try
         {
             // get all registered provider factories
             serRefs
                 = bundleContext.getServiceReferences(
-                        ProtocolProviderFactory.class.getName(),
-                        null);
+                        ProtocolProviderFactory.class, null);
         }
         catch (InvalidSyntaxException e)
         {
@@ -147,23 +146,13 @@ public class PNContactSourceActivator
 
         if (serRefs != null)
         {
-            for (ServiceReference serRef : serRefs)
+            for (ServiceReference<ProtocolProviderFactory> serRef : serRefs)
             {
-                ProtocolProviderFactory providerFactory
-                    = (ProtocolProviderFactory)
-                        bundleContext.getService(serRef);
-
-                ProtocolProviderService protocolProvider;
-
-                for (AccountID accountID
-                        : providerFactory.getRegisteredAccounts())
+                ProtocolProviderFactory providerFactory = bundleContext.getService(serRef);
+                for (AccountID accountID : providerFactory.getRegisteredAccounts())
                 {
-                    serRef = providerFactory.getProviderForAccount(accountID);
-
-                    protocolProvider
-                        = (ProtocolProviderService) bundleContext
-                            .getService(serRef);
-
+                    ServiceReference<ProtocolProviderService> serRefService = providerFactory.getProviderForAccount(accountID);
+                    ProtocolProviderService protocolProvider = bundleContext.getService(serRefService);
                     handleProviderAdded(protocolProvider);
                 }
             }
@@ -179,7 +168,7 @@ public class PNContactSourceActivator
     {
         public void serviceChanged(ServiceEvent event)
         {
-            ServiceReference serviceRef = event.getServiceReference();
+            ServiceReference<?> serviceRef = event.getServiceReference();
 
             // if the event is caused by a bundle being stopped, we don't want to
             // know

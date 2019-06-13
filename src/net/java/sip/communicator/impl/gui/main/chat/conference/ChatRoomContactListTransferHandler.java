@@ -60,9 +60,8 @@ public class ChatRoomContactListTransferHandler
     {
         if (component instanceof JList)
         {
-            JList list = (JList) component;
-            return new ContactListTransferable(
-                list.getSelectedIndex(), list.getSelectedValue());
+            JList<?> list = (JList<?>) component;
+            return new ContactListTransferable(list.getSelectedIndex(), list.getSelectedValue());
         }
 
         return super.createTransferable(component);

@@ -23,6 +23,7 @@ import junit.framework.*;
 import net.java.sip.communicator.impl.protocol.mock.*;
 import net.java.sip.communicator.service.contactlist.*;
 import net.java.sip.communicator.service.history.*;
+import net.java.sip.communicator.service.metahistory.MetaHistoryService;
 import net.java.sip.communicator.service.msghistory.*;
 import net.java.sip.communicator.service.protocol.*;
 import net.java.sip.communicator.service.protocol.event.*;
@@ -63,14 +64,14 @@ public class TestMsgHistoryServiceMultiChat
     public static MockBasicInstantMessaging mockBImOpSet = null;
     public static MockMultiUserChat mockMultiChat = null;
 
-    private static ServiceReference msgHistoryServiceRef = null;
+    private static ServiceReference <MessageHistoryService> msgHistoryServiceRef = null;
     public static MessageHistoryService msgHistoryService = null;
 
     public static HistoryService historyService = null;
 
     private static MockContact testContact = null;
 
-    private static ServiceReference metaCLref = null;
+    private static ServiceReference<MetaContactListService> metaCLref = null;
     private static MetaContactListService metaClService = null;
 
     private static MetaContact testMetaContact = null;
@@ -78,7 +79,7 @@ public class TestMsgHistoryServiceMultiChat
     /**
      * A reference to the registration of the first mock provider.
      */
-    public static ServiceRegistration mockPrServiceRegistration = null;
+    public static ServiceRegistration<ProtocolProviderService> mockPrServiceRegistration = null;
 
     private static Message[] messagesToSend = null;
 
@@ -140,20 +141,15 @@ public class TestMsgHistoryServiceMultiChat
                 OperationSetMultiUserChat.class.getName());
 
         msgHistoryServiceRef =
+            MsgHistoryServiceLick.bc.getServiceReference(MessageHistoryService.class);
+
+        msgHistoryService = MsgHistoryServiceLick.bc.getService(msgHistoryServiceRef);
+
+        ServiceReference<HistoryService> historyServiceRef =
             MsgHistoryServiceLick.bc.
-            getServiceReference(MessageHistoryService.class.getName());
+            getServiceReference(HistoryService.class);
 
-        msgHistoryService =
-            (MessageHistoryService)MsgHistoryServiceLick.bc.
-                getService(msgHistoryServiceRef);
-
-        ServiceReference historyServiceRef =
-            MsgHistoryServiceLick.bc.
-            getServiceReference(HistoryService.class.getName());
-
-        historyService =
-            (HistoryService)MsgHistoryServiceLick.bc.
-                getService(historyServiceRef);
+        historyService = MsgHistoryServiceLick.bc.getService(historyServiceRef);
 
         // fill in a contact to comunicate with
         MockContactGroup root =
@@ -162,15 +158,12 @@ public class TestMsgHistoryServiceMultiChat
         testContact = new MockContact(TEST_CONTACT_NAME_1, mockProvider);
         root.addContact(testContact);
 
-        metaCLref = MsgHistoryServiceLick.bc.getServiceReference(
-            MetaContactListService.class.getName());
-
-        metaClService =
-            (MetaContactListService)MsgHistoryServiceLick.bc.getService(metaCLref);
+        metaCLref = MsgHistoryServiceLick.bc.getServiceReference(MetaContactListService.class);
+        metaClService = MsgHistoryServiceLick.bc.getService(metaCLref);
 
        System.setProperty(MetaContactListService.PROVIDER_MASK_PROPERTY, "1");
 
-       Hashtable<String, String> mockProvProperties = new Hashtable<String, String>();
+       Hashtable<String, String> mockProvProperties = new Hashtable<>();
        mockProvProperties.put(ProtocolProviderFactory.PROTOCOL
                               , mockProvider.getProtocolName());
        mockProvProperties.put(MetaContactListService.PROVIDER_MASK_PROPERTY,
@@ -178,7 +171,7 @@ public class TestMsgHistoryServiceMultiChat
 
        mockPrServiceRegistration =
            MsgHistoryServiceLick.bc.registerService(
-               ProtocolProviderService.class.getName(),
+               ProtocolProviderService.class,
                mockProvider,
                mockProvProperties);
        logger.debug("Registered a mock protocol provider! ");
