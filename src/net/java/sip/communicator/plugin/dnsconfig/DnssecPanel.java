@@ -317,9 +317,10 @@ public class DnssecPanel
      *
      * @return ComboBox render for the SecureResolveMode enum.
      */
-    private BasicComboBoxRenderer getResolveModeRenderer()
+    private ListCellRenderer<? super SecureResolveMode> getResolveModeRenderer()
     {
-        return new BasicComboBoxRenderer()
+        @SuppressWarnings("unchecked")
+        ListCellRenderer<? super SecureResolveMode> renderer = new BasicComboBoxRenderer()
         {
             /**
              * Serial version UID.
@@ -327,7 +328,7 @@ public class DnssecPanel
             private static final long serialVersionUID = 0L;
 
             @Override
-            public Component getListCellRendererComponent(JList list,
+            public Component getListCellRendererComponent(@SuppressWarnings("rawtypes") JList list,
                 Object value, int index, boolean isSelected,
                 boolean cellHasFocus)
             {
@@ -341,6 +342,7 @@ public class DnssecPanel
                 return c;
             }
         };
+        return renderer;
     }
 
     /**

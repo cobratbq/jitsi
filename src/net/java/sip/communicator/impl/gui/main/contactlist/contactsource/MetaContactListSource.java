@@ -1233,12 +1233,12 @@ public class MetaContactListSource
         List<CustomContactActionsService<Contact>> contactActionsServices
             = new ArrayList<>();
 
+        @SuppressWarnings("rawtypes")
         Collection<ServiceReference<CustomContactActionsService>> serRefs;
         try
         {
             // get all registered provider factories
-            serRefs
-                = GuiActivator.bundleContext.getServiceReferences(
+            serRefs = GuiActivator.bundleContext.getServiceReferences(
                     CustomContactActionsService.class, null);
         }
         catch (InvalidSyntaxException e)
@@ -1247,7 +1247,7 @@ public class MetaContactListSource
             return contactActionsServices;
         }
 
-        for (ServiceReference<CustomContactActionsService> serRef : serRefs)
+        for (@SuppressWarnings("rawtypes") ServiceReference<CustomContactActionsService> serRef : serRefs)
         {
             CustomContactActionsService<Contact> customActionService
                 = GuiActivator.bundleContext.getService(serRef);

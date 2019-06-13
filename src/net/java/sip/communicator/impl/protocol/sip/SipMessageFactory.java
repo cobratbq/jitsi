@@ -46,6 +46,7 @@ import net.java.sip.communicator.util.*;
  * @author Sebastien Mazy
  * @author Emil Ivov
  */
+@SuppressWarnings("rawtypes") // "rawtypes" suppressed due to interface MessageFactory defined in sip-api library.
 public class SipMessageFactory
     implements MessageFactory
 {

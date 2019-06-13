@@ -36,9 +36,7 @@ import org.jitsi.service.neomedia.*;
  * @author Damian Minkov
  */
 public class DeviceConfigurationComboBoxModel
-    implements ComboBoxModel,
-               ListModel,
-               PropertyChangeListener
+    implements ComboBoxModel<Object>, ListModel<Object>, PropertyChangeListener
 {
     /**
      * Type of the model - audio.
@@ -134,8 +132,7 @@ public class DeviceConfigurationComboBoxModel
     protected void fireContentsChanged(int index0, int index1)
     {
         ListDataListener[] listeners
-            = this.listeners.toArray(
-                    new ListDataListener[this.listeners.size()]);
+            = this.listeners.toArray(new ListDataListener[0]);
         ListDataEvent event
             = new ListDataEvent(
                     this,
@@ -169,7 +166,7 @@ public class DeviceConfigurationComboBoxModel
             return devices;
 
         AudioSystem audioSystem;
-        List<? extends CaptureDeviceInfo> infos = null;
+        List<? extends CaptureDeviceInfo> infos;
 
         switch (type)
         {

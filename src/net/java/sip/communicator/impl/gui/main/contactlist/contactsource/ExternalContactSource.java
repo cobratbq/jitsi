@@ -665,7 +665,7 @@ public class ExternalContactSource
      *
      * @return a list of all custom contact action services.
      */
-    @SuppressWarnings ("unchecked")
+    @SuppressWarnings("rawtypes")
     private List<CustomContactActionsService<SourceContact>>
         getContactActionsServices()
     {
@@ -688,6 +688,7 @@ public class ExternalContactSource
         {
             for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
+                @SuppressWarnings("unchecked")
                 CustomContactActionsService<SourceContact> customActionService
                     = GuiActivator.bundleContext.getService(serRef);
 
@@ -711,7 +712,7 @@ public class ExternalContactSource
      *
      * @return a list of all custom contact action services.
      */
-    @SuppressWarnings ("unchecked")
+    @SuppressWarnings("rawtypes")
     private List<CustomContactActionsService<ContactSourceService>>
         getGroupActionsServices()
     {
@@ -734,6 +735,7 @@ public class ExternalContactSource
         {
             for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
+                @SuppressWarnings("unchecked")
                 CustomContactActionsService<ContactSourceService> customActionService
                     = GuiActivator.bundleContext.getService(serRef);
 
@@ -757,7 +759,7 @@ public class ExternalContactSource
      *
      * @return a list of all custom contact action services.
      */
-    @SuppressWarnings ("unchecked")
+    @SuppressWarnings("rawtypes")
     private List<CustomContactActionsService<ContactSourceService>>
         getCustomActionsContactServices()
     {
@@ -780,6 +782,7 @@ public class ExternalContactSource
         {
             for (ServiceReference<CustomContactActionsService> serRef : serRefs)
             {
+                @SuppressWarnings("unchecked")
                 CustomContactActionsService<ContactSourceService>
                     customActionService
                         = GuiActivator.bundleContext.getService(serRef);

@@ -208,7 +208,7 @@ public abstract class PreCallDialog
                                         String text,
                                         Account[] accounts)
     {
-        Window receivedCallWindow = null;
+        Window receivedCallWindow;
 
         if (OSUtils.IS_MAC)
         {
@@ -227,9 +227,7 @@ public abstract class PreCallDialog
 
             if (accounts != null)
             {
-                accountsCombo
-                    = HudWidgetFactory.createHudComboBox(
-                        new DefaultComboBoxModel<>(accounts));
+                accountsCombo = createHudComboBox(new DefaultComboBoxModel<>(accounts));
             }
             else
                 callLabelAccount = HudWidgetFactory.createHudLabel("");
@@ -267,6 +265,11 @@ public abstract class PreCallDialog
         receivedCallWindow.setFocusableWindowState(false);
 
         return receivedCallWindow;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <E> JComboBox<E> createHudComboBox(ComboBoxModel<E> model) {
+        return HudWidgetFactory.createHudComboBox(model);
     }
 
     /**

@@ -360,7 +360,6 @@ public class NotificationContactSource
      *
      * @return a list of all custom contact action services.
      */
-    @SuppressWarnings ("unchecked")
     private static List<CustomContactActionsService<NotificationMessage>>
         getNotificationActionsServices()
     {
@@ -368,6 +367,7 @@ public class NotificationContactSource
             contactActionsServices
                 = new ArrayList<>();
 
+        @SuppressWarnings("rawtypes")
         Collection<ServiceReference<CustomContactActionsService>> serRefs;
         try
         {
@@ -382,9 +382,9 @@ public class NotificationContactSource
             return contactActionsServices;
         }
 
-        for (ServiceReference<CustomContactActionsService> serRef : serRefs)
+        for (@SuppressWarnings("rawtypes") ServiceReference<CustomContactActionsService> serRef : serRefs)
         {
-            CustomContactActionsService<NotificationMessage> customActionService
+            @SuppressWarnings("unchecked") CustomContactActionsService<NotificationMessage> customActionService
                 = GuiActivator.bundleContext.getService(serRef);
 
             if (customActionService.getContactSourceClass()

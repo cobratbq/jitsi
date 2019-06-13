@@ -1183,12 +1183,16 @@ public class ProtocolProviderServiceJabberImpl
                     "Fail setting bosh URL to XMPPBOSHConnection configuration",
                     e);
             }
+
+            TLSUtils.setTLSOnly(boshConfConnBuilder);
         }
         else
         {
-            confConn.setHostAddress(address.getAddress())
+            XMPPTCPConnectionConfiguration.Builder tcpConnConf = (XMPPTCPConnectionConfiguration.Builder) confConn;
+            tcpConnConf.setHostAddress(address.getAddress())
                     .setPort(address.getPort())
                     .setProxyInfo(proxy);
+            TLSUtils.setTLSOnly(tcpConnConf);
         }
 
         // if we have OperationSetPersistentPresence skip sending initial
@@ -1202,8 +1206,6 @@ public class ProtocolProviderServiceJabberImpl
         confConn.setSecurityMode(loginStrategy.isTlsRequired()
                 ? required
                 : ifpossible);
-
-        TLSUtils.setTLSOnly((ConnectionConfiguration.Builder) confConn);
 
         if(connection != null)
         {
@@ -1423,10 +1425,7 @@ public class ProtocolProviderServiceJabberImpl
     {
         return new HostTrustManager(
             cvs.getTrustManager(
-                Arrays.asList(new String[]{
-                        serviceName,
-                        "_xmpp-client." + serviceName
-                })
+                Arrays.asList(serviceName, "_xmpp-client." + serviceName)
             )
         );
     }

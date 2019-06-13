@@ -1686,6 +1686,7 @@ public class UIServiceImpl
         // give some time UI to load before showing another dialog
         new Timer().schedule(new TimerTask()
         {
+            @SuppressWarnings("fallthrough")
             @Override
             public void run()
             {
@@ -1709,7 +1710,7 @@ public class UIServiceImpl
                 {
                 case MessageDialog.OK_DONT_ASK_CODE:
                     ConfigurationUtils.setShowMasterPasswordWarning(false);
-                    // do fall through
+                    // fall through
 
                 case MessageDialog.OK_RETURN_CODE:
                     // open configuration of master password
