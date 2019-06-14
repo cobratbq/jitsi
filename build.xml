@@ -270,7 +270,7 @@
                 <src path="${src}"/>
                 <src path="${src2}"/>
                 <include name="**/*.java" />
-                <compilerarg line="-Xlint -Xlint:-serial -Xlint:-unchecked -Xlint:-rawtypes -Xmaxwarns ${maxwarns}"/>
+                <compilerarg line="-Xlint -Xlint:-serial -Xmaxwarns ${maxwarns}"/>
         </javac>
     </target>
 
