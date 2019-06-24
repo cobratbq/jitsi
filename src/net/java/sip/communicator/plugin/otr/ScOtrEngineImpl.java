@@ -43,6 +43,7 @@ import net.java.sip.communicator.service.protocol.AccountID;
 import net.java.sip.communicator.service.protocol.Contact;
 import net.java.sip.communicator.service.protocol.ContactResource;
 import net.java.sip.communicator.service.protocol.Message;
+import net.java.sip.communicator.service.protocol.OperationFailedException;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessaging;
 import net.java.sip.communicator.service.protocol.OperationSetBasicInstantMessagingTransport;
 import net.java.sip.communicator.service.protocol.ProtocolProviderService;
@@ -114,6 +115,17 @@ final class ScOtrEngineImpl implements ScOtrEngine,
         }
 
         @Override
+        public void publishClientProfilePayload(final byte[] bytes) {
+            // FIXME TODO
+        }
+
+        @Override
+        public byte[] restoreClientProfilePayload() {
+            // FIXME TODO
+            return new byte[0];
+        }
+
+        @Override
         public OtrPolicy getSessionPolicy(SessionID sessionID)
         {
             return getContactPolicy(getOtrContact(sessionID).contact);
@@ -121,7 +133,6 @@ final class ScOtrEngineImpl implements ScOtrEngine,
 
         @Override
         public void injectMessage(SessionID sessionID, String messageText)
-            throws OtrException
         {
             OtrContact otrContact = getOtrContact(sessionID);
             Contact contact = otrContact.contact;
@@ -175,9 +186,9 @@ final class ScOtrEngineImpl implements ScOtrEngine,
             {
                 imOpSet.sendInstantMessage(contact, resource, message);
             }
-            catch (OperationFailedException e)
+            catch (final OperationFailedException e)
             {
-                throw new OtrException(e);
+                throw new IllegalStateException("Failed to send injected message.", e);
             }
         }
 
@@ -337,11 +348,11 @@ final class ScOtrEngineImpl implements ScOtrEngine,
         }
 
         @Override
-        public String getReplyForUnreadableMessage(SessionID sessionID)
+        public String getReplyForUnreadableMessage(final SessionID sessionID, final String s)
         {
             AccountID accountID =
                 OtrActivator.getAccountIDByUID(sessionID.getAccountID());
-
+            // FIXME Use 's' for OTRv4 error identifier such that we can offer translated error messages.
             return OtrActivator.resourceService.getI18NString(
                 "plugin.otr.activator.unreadablemsgreply",
                 new String[] {accountID.getDisplayName(),

@@ -173,7 +173,13 @@ final class OtrContactMenu implements ActionListener,
                 OtrActivator.scOtrEngine.getContactPolicy(contact.contact);
             boolean state = ((JCheckBoxMenuItem) e.getSource()).isSelected();
 
-            policy.setEnableManual(state);
+            if (state) {
+                policy.setEnableManual();
+            } else {
+                policy.setAllowV2(false);
+                policy.setAllowV3(false);
+                policy.setAllowV4(false);
+            }
             OtrActivator.scOtrEngine.setContactPolicy(contact.contact, policy);
         }
 

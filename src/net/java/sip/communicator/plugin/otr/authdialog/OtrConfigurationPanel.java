@@ -35,7 +35,6 @@ import java.util.List;
  *
  * @author George Politis
  */
-// FIXME is this class being used?
 @SuppressWarnings("serial")
 public class OtrConfigurationPanel extends TransparentPanel
 {
@@ -301,8 +300,14 @@ public class OtrConfigurationPanel extends TransparentPanel
                 {
                     OtrPolicy otrPolicy = OtrActivator.scOtrEngine().getGlobalPolicy();
 
-                    otrPolicy.setEnableManual(((JCheckBox) e.getSource())
-                        .isSelected());
+                    final boolean selected = ((JCheckBox) e.getSource()).isSelected();
+                    if (selected) {
+                        otrPolicy.setEnableManual();
+                    } else {
+                        otrPolicy.setAllowV2(false);
+                        otrPolicy.setAllowV3(false);
+                        otrPolicy.setAllowV4(false);
+                    }
 
                     OtrActivator.scOtrEngine().setGlobalPolicy(otrPolicy);
 
